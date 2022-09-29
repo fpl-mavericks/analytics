@@ -3,4 +3,3 @@ pandas
 seaborn
 streamlit
 plotly
-altair
