@@ -96,7 +96,7 @@ if fpl_id == '':
 else:
     man_picks_data = get_manager_team_data(fpl_id, fpl_gw)
     manager_team_df = pd.DataFrame(man_picks_data['picks'])
-    ele_cut = ele_df[['id', 'web_name', 'team', 'pos']]
+    ele_cut = ele_df[['id', 'web_name', 'team', 'element_type']]
     manager_team_df.reanme(columns={'element': 'id'}, inplace=True)
     manager_team_df = manager_team_df.merge(ele_cut, how='left', on='id')
     st.dataframe(manager_team_df)
