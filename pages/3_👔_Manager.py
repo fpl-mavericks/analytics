@@ -31,6 +31,19 @@ def get_total_fpl_players():
     return base_resp.json()['total_players']
 
 
+ele_types_data = get_bootstrap_data()['element_types']
+ele_types_df = pd.DataFrame(ele_types_data)
+
+teams_data = get_bootstrap_data()['teams']
+teams_df = pd.DataFrame(teams_data)
+
+ele_data = get_bootstrap_data()['elements']
+ele_df = pd.DataFrame(ele_data)
+
+ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
+ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
+
+
 fpl_id = st.text_input('Please enter your FPL ID:', 392357)
 
 
@@ -83,5 +96,8 @@ if fpl_id == '':
 else:
     man_picks_data = get_manager_team_data(fpl_id, fpl_gw)
     manager_team_df = pd.DataFrame(man_picks_data['picks'])
+    ele_cut = ele_df[['id', 'web_name', 'team', 'pos']]
+    manager_team_df.reanme(columns={'element': 'id'}, inplace=True)
+    manager_team_df = manager_team_df.merge(ele_cut, how='left', on='id')
     st.dataframe(manager_team_df)
 
