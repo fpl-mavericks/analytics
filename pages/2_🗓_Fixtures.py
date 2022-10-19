@@ -79,7 +79,7 @@ filtered_team_df = filtered_team_df.loc[new_fixt_df.index]
 fig, ax = plt.subplots()
 #cmap='GnBu', 
 flatui = ["#00ff78", "#eceae6", "#ff0057", "#920947"]
-sns.heatmap(new_fixt_df, ax=ax, annot=filtered_team_df, fmt='', cmap=flatui, annot_kws={'size': annot_size}, cbar_kws={'label': 'Fixture Difficulty Rating (FDR)'})
+sns.heatmap(new_fixt_df, ax=ax, annot=filtered_team_df, fmt='', cmap=flatui, annot_kws={'size': annot_size}, cbar=False)
 
 ax.set_xlabel('Gameweek')
 ax.set_ylabel('Team')
