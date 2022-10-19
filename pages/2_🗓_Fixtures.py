@@ -77,7 +77,10 @@ new_fixt_df = new_fixt_df.astype(float)
 filtered_team_df = filtered_team_df.loc[new_fixt_df.index]
 
 fig, ax = plt.subplots()
-sns.heatmap(new_fixt_df, ax=ax, annot=filtered_team_df, fmt='', cmap='GnBu', annot_kws={'size': annot_size}, cbar_kws={'label': 'Fixture Difficulty Rating (FDR)'})
+#cmap='GnBu', 
+flatui = ["#00ff78", "#eceae6", "#ff0057", "#920947"]
+sns.heatmap(new_fixt_df, ax=ax, annot=filtered_team_df, fmt='', cmap=flatui, annot_kws={'size': annot_size}, cbar_kws={'label': 'Fixture Difficulty Rating (FDR)'})
+
 ax.set_xlabel('Gameweek')
 ax.set_ylabel('Team')
 st.write(fig)
@@ -93,9 +96,4 @@ def fdr_heatmap(slider1, slider2):
     sns.heatmap(new_fixt_df, ax=ax, annot=True)
     st.write(fig)
     #return new_fixt_df
-    
 
-#test = fdr_heatmap(3, 13)
-
-
-#sns.heatmap(team_fdr_df, annot=True)
