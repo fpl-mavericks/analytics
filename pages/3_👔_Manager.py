@@ -48,7 +48,7 @@ def chip_converter(name):
         return 'Triple Captain'
     if name == 'bboost':
         return 'Bench Boost'
-    if name == 'fh':
+    if name == 'freehit':
         return 'Free Hit'
     if name == 'wildcard':
         return 'Wildcard'
@@ -141,8 +141,13 @@ with col2:
         manager_team_df['vs'].fillna('BLANK', inplace=True)
         st.dataframe(manager_team_df, height=560)
 
-# KPI Box of total points for that GW
 
 # line plot of rank over time. Put average score on there too.
+# cols: GW, GWPoints, AvePoints
+
+if fpl_id == '':
+    st.write('')
+else:
+    man_picks_data = get_manager_team_data(fpl_id, fpl_gw)
 
 # Historic season ranks
