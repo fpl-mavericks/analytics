@@ -4,15 +4,31 @@
 Created on Thu Sep 29 20:20:43 2022
 
 @author: timyouell
+
+Useful Manager IDs
+
+Tim: 392357
+Brookie: 524077
+Cam: 1200628
+Rosco: 1842899
+Ben Youell: 1423578
+Matt Childs: 254665
+Dhilesh: 2448780
+Teebs: 11255
+Rank 1 post-GW12: 5409263
 """
 
 import streamlit as st
+import altair as alt
 import pandas as pd
 import requests
 from fpl_api_collection import (
     get_bootstrap_data, get_manager_history_data, get_manager_team_data,
     get_manager_details, get_player_data
 )
+
+
+
 
 base_url = 'https://fantasy.premierleague.com/api/'
 
@@ -75,9 +91,12 @@ with col1:
                 chips_df = pd.DataFrame(man_data['chips'])
                 chips_df['name'] = chips_df['name'].apply(chip_converter)
                 chips_df = chips_df[['event', 'name']]
+                ave_df = pd.DataFrame(get_bootstrap_data()['events'])[['id', 'average_entry_score']]
+                ave_df.columns=['event', 'GW_Average']
                 man_gw_hist = pd.DataFrame(man_data['current'])
                 man_gw_hist.sort_values('event', ascending=False, inplace=True)
                 man_gw_hist = man_gw_hist.merge(chips_df, on='event', how='left')
+                man_gw_hist = man_gw_hist.merge(ave_df, on='event', how='left')
                 man_gw_hist['name'].fillna('None', inplace=True)
                 man_gw_hist.set_index('event', inplace=True)
                 rn_cols = {'points': 'GWP', 'total_points': 'OP', 'rank': 'GWR',
@@ -88,8 +107,10 @@ with col1:
                 man_gw_hist.drop('rank_sort', axis=1, inplace=True)
                 man_gw_hist['TV'] = man_gw_hist['TV']/10
                 man_gw_hist['£'] = man_gw_hist['£']/10
+                man_gw_hist = man_gw_hist[['GW_Average', 'GWP', 'OP', 'GWR', 'OR', '£', 'TV', 'TM', 'TC', 'PoB', 'Chip']]
                 st.dataframe(man_gw_hist.style.format({'TV': '£{:.1f}',
-                                                       '£': '£{:.1f}'}), width=800)
+                                                       '£': '£{:.1f}'}),
+                             width=800, height=560)
             else:
                 st.write('FPL ID is too high to be a valid ID. Please try again.')
                 st.write('The total number of FPL players is: ' + str(total_players))
@@ -99,7 +120,7 @@ with col1:
 with col2:
     events_df = pd.DataFrame(get_bootstrap_data()['events'])
     complete_df = events_df.loc[events_df['finished'] == True]
-    gw_complete_list = complete_df['id'].tolist()
+    gw_complete_list = sorted(complete_df['id'].tolist(), reverse=True)
     
     fpl_gw = st.selectbox(
         'Team on specific Gameweek', gw_complete_list
@@ -129,17 +150,25 @@ with col2:
             pts_list.append(test_new)
         pts_df = pd.concat(pts_list)
         manager_team_df = manager_team_df.merge(pts_df, how='left', on='element')
-        manager_team_df.loc[((manager_team_df['multiplier'] == 2) | (manager_team_df['multiplier'] == 3)), 'total_points'] = manager_team_df['total_points']*manager_team_df['multiplier']
-        manager_team_df.loc[((manager_team_df['is_captain'] == True) & (manager_team_df['multiplier'] == 2)), 'web_name'] = manager_team_df['web_name'] + ' (C)'
-        manager_team_df.loc[(manager_team_df['multiplier'] == 3), 'web_name'] = manager_team_df['web_name'] + ' (TC)'
-        manager_team_df.loc[(manager_team_df['is_vice_captain'] == True), 'web_name'] = manager_team_df['web_name'] + ' (VC)'
-        manager_team_df = manager_team_df[['web_name', 'element_type', 'team', 'opponent_team', 'total_points']]
+        manager_team_df.loc[((manager_team_df['multiplier'] == 2) |
+                             (manager_team_df['multiplier'] == 3)),
+                            'total_points'] = manager_team_df['total_points']*manager_team_df['multiplier']
+        manager_team_df.loc[((manager_team_df['is_captain'] == True) &
+                             (manager_team_df['multiplier'] == 2)),
+                            'web_name'] = manager_team_df['web_name'] + ' (C)'
+        manager_team_df.loc[(manager_team_df['multiplier'] == 3),
+                            'web_name'] = manager_team_df['web_name'] + ' (TC)'
+        manager_team_df.loc[(manager_team_df['is_vice_captain'] == True),
+                            'web_name'] = manager_team_df['web_name'] + ' (VC)'
+        manager_team_df.loc[manager_team_df['multiplier'] != 0, 'Played'] = True
+        manager_team_df['Played'].fillna(False, inplace=True)
+        manager_team_df = manager_team_df[['web_name', 'element_type', 'team', 'opponent_team', 'total_points', 'Played']]
         rn_cols = {'element_type': 'Pos', 'team': 'Team', 'opponent_team': 'vs', 'total_points': 'GWP'}
         manager_team_df.rename(columns=rn_cols, inplace=True)
         manager_team_df.set_index('web_name', inplace=True)
         manager_team_df['vs'] = manager_team_df['vs'].map(teams_df.set_index('id')['short_name'])
         manager_team_df['vs'].fillna('BLANK', inplace=True)
-        st.dataframe(manager_team_df, height=560)
+        st.dataframe(manager_team_df, height=570)
 
 
 # line plot of rank over time. Put average score on there too.
@@ -148,6 +177,55 @@ with col2:
 if fpl_id == '':
     st.write('')
 else:
-    man_picks_data = get_manager_team_data(fpl_id, fpl_gw)
+    curr_df = pd.DataFrame(get_manager_history_data(fpl_id)['current'])
+    man_data = get_manager_details(fpl_id)
+    curr_df['Manager'] = man_data['player_first_name'] + ' ' + man_data['player_last_name']
+    ave_df = pd.DataFrame(get_bootstrap_data()['events'])[['id', 'average_entry_score']]
+    ave_df.columns=['event', 'points']
+    ave_df['Manager'] = 'GW Average'
+    ave_cut = ave_df.loc[ave_df['event'] <= max(curr_df['event'])]
+    concat_df = pd.concat([curr_df, ave_cut])
+    c = alt.Chart(concat_df).mark_line().encode(
+        x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
+        y=alt.Y('points', axis=alt.Axis(title='GW Points')),
+        color='Manager').properties(
+            height=400)
+    st.altair_chart(c, use_container_width=True)
+
+def collate_manager_history(fpl_id):
+    df = pd.DataFrame(get_manager_history_data(fpl_id)['current'])
+    data = get_manager_details(fpl_id)
+    df['Manager'] = data['player_first_name'] + ' ' + data['player_last_name']
+    return df
+    
+
+if fpl_id == '':
+    st.write('')
+else:
+    if 'ID' not in st.session_state:
+        st.session_state['ID'] = [fpl_id]
+    new_id = st.text_input('Select another FPL ID to compare:', '')
+    button = st.button('Add Manager')
+    if button and new_id != '':
+        st.session_state.ID.append(new_id)
+    filter_man = st.multiselect(
+        'Manager IDs',
+        st.session_state.ID,
+        st.session_state.ID,
+        key='ID'
+    )
+    df_list = []
+    for fpl_id in filter_man:
+        new_df = collate_manager_history(fpl_id)
+        df_list.append(new_df)
+    total_df = pd.concat(df_list)
+
+    c = alt.Chart(total_df).mark_line().encode(
+        x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
+        y=alt.Y('overall_rank', axis=alt.Axis(title='Overall Rank'), scale=alt.Scale(reverse=True)),
+        color='Manager').properties(
+            height=700)
+    st.altair_chart(c, use_container_width=True)
+        
 
 # Historic season ranks
