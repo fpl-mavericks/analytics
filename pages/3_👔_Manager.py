@@ -12,7 +12,7 @@ Brookie: 524077
 Cam: 1200628
 Rosco: 1842899
 Ben Youell: 1423578
-Matt Childs: 254665
+Matt Childs: 264665
 Dhilesh: 2448780
 Teebs: 11255
 Rank 1 post-GW12: 5409263
@@ -224,7 +224,7 @@ else:
         x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
         y=alt.Y('overall_rank', axis=alt.Axis(title='Overall Rank'), scale=alt.Scale(reverse=True)),
         color='Manager').properties(
-            height=700)
+            height=560)
     st.altair_chart(c, use_container_width=True)
         
 
