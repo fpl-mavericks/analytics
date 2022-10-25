@@ -14,6 +14,9 @@ import requests
 from fpl_api_collection import (
     get_bootstrap_data
 )
+from fpl_utils import (
+    define_sidebar
+)
 
 base_url = 'https://fantasy.premierleague.com/api/'
 
@@ -21,13 +24,7 @@ st.set_page_config(page_title='FPL Mavericks', page_icon=':soccer:', layout='wid
 st.title('FPL Mavericks Dashboard')
 #st.write('Please check back soon for Fantasy Premier League Football stats, graphs and predictions.')
 
-
-st.sidebar.subheader('About')
-st.sidebar.write("""This website is designed to help you analyse and
-                 ultimately pick the best Fantasy Premier League Football
-                 options for your team.""")
-st.sidebar.write('[Author](https://www.linkedin.com/in/tim-youell-616731a6)')
-st.sidebar.write('[GitHub](https://github.com/fpl-mavericks/analytics/)')
+define_sidebar()
 
 
 def get_total_fpl_players():

@@ -19,6 +19,7 @@ Rank 1 post-GW12: 5409263
 """
 
 import streamlit as st
+import datetime as dt
 import altair as alt
 import pandas as pd
 import requests
@@ -26,19 +27,15 @@ from fpl_api_collection import (
     get_bootstrap_data, get_manager_history_data, get_manager_team_data,
     get_manager_details, get_player_data
 )
-
-
+from fpl_utils import (
+    define_sidebar
+)
 
 
 base_url = 'https://fantasy.premierleague.com/api/'
 
 st.set_page_config(page_title='Manager', page_icon=':necktie:', layout='wide')
-
-st.sidebar.subheader('About')
-st.sidebar.write("""This website is designed to help you analyse and
-                 ultimately pick the best Fantasy Premier League Football
-                 options for your team.""")
-st.sidebar.write('[GitHub](https://github.com/TimYouell15)')
+define_sidebar()
 
 st.title('Manager')
 
@@ -69,13 +66,11 @@ def chip_converter(name):
     if name == 'wildcard':
         return 'Wildcard'
     
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns([2,1,1])
+
 
 with col1:
-    if ['ID'] not in st.session_state:
-        st.session_state['ID'] = [st.text_input('Please enter your FPL ID:', 392357)]
-        fpl_id = st.session_state['ID'][0]
-        
+    fpl_id = st.text_input('Please enter your FPL ID:', 392357)
     if fpl_id == '':
     	st.write('')
     else:
@@ -94,7 +89,7 @@ with col1:
                 chips_df['name'] = chips_df['name'].apply(chip_converter)
                 chips_df = chips_df[['event', 'name']]
                 ave_df = pd.DataFrame(get_bootstrap_data()['events'])[['id', 'average_entry_score']]
-                ave_df.columns=['event', 'GW_Average']
+                ave_df.columns=['event', 'Ave']
                 man_gw_hist = pd.DataFrame(man_data['current'])
                 man_gw_hist.sort_values('event', ascending=False, inplace=True)
                 man_gw_hist = man_gw_hist.merge(chips_df, on='event', how='left')
@@ -109,21 +104,21 @@ with col1:
                 man_gw_hist.drop('rank_sort', axis=1, inplace=True)
                 man_gw_hist['TV'] = man_gw_hist['TV']/10
                 man_gw_hist['£'] = man_gw_hist['£']/10
-                man_gw_hist = man_gw_hist[['GW_Average', 'GWP', 'OP', 'GWR', 'OR', '£', 'TV', 'TM', 'TC', 'PoB', 'Chip']]
+                man_gw_hist = man_gw_hist[['Ave', 'GWP', 'OP', 'GWR', 'OR', '£', 'TV', 'TM', 'TC', 'PoB', 'Chip']]
                 st.dataframe(man_gw_hist.style.format({'TV': '£{:.1f}',
                                                        '£': '£{:.1f}'}),
-                             width=800, height=560)
+                             width=800, height=522)
             else:
                 st.write('FPL ID is too high to be a valid ID. Please try again.')
                 st.write('The total number of FPL players is: ' + str(total_players))
         except ValueError:
             st.write('Please enter a valid FPL ID.')
 
+
 with col2:
     events_df = pd.DataFrame(get_bootstrap_data()['events'])
-    complete_df = events_df.loc[events_df['finished'] == True]
+    complete_df = events_df.loc[events_df['deadline_time'] < str(dt.datetime.now())]
     gw_complete_list = sorted(complete_df['id'].tolist(), reverse=True)
-    
     fpl_gw = st.selectbox(
         'Team on specific Gameweek', gw_complete_list
         )
@@ -170,11 +165,25 @@ with col2:
         manager_team_df.set_index('web_name', inplace=True)
         manager_team_df['vs'] = manager_team_df['vs'].map(teams_df.set_index('id')['short_name'])
         manager_team_df['vs'].fillna('BLANK', inplace=True)
-        st.dataframe(manager_team_df, height=570)
+        st.dataframe(manager_team_df, height=562)
 
 
-# line plot of rank over time. Put average score on there too.
-# cols: GW, GWPoints, AvePoints
+with col3:
+    # st.write(manager_name + '\'s Past Results')
+    # st.write('Best ever finish: ')
+    col = st.selectbox(
+        manager_name + '\'s Past Results', ['Season', 'Pts', 'OR']
+        )
+    hist_data = get_manager_history_data(fpl_id)
+    hist_df = pd.DataFrame(hist_data['past'])
+    hist_df.columns=['Season', 'Pts', 'OR']
+    if col == 'OR':
+        hist_df.sort_values(col, ascending=True, inplace=True)
+    else:
+        hist_df.sort_values(col, ascending=False, inplace=True)
+    hist_df.set_index('Season', inplace=True)
+    st.dataframe(hist_df, height=562)
+
 
 if fpl_id == '':
     st.write('')
@@ -199,11 +208,13 @@ def collate_manager_history(fpl_id):
     data = get_manager_details(fpl_id)
     df['Manager'] = data['player_first_name'] + ' ' + data['player_last_name']
     return df
-    
+
 
 if fpl_id == '':
     st.write('')
 else:
+    if 'ID' not in st.session_state:
+        st.session_state['ID'] = [fpl_id]
     new_id = st.text_input('Select another FPL ID to compare:', '')
     button = st.button('Add Manager')
     if button and new_id != '':
@@ -219,20 +230,94 @@ else:
         new_df = collate_manager_history(fpl_id)
         df_list.append(new_df)
     total_df = pd.concat(df_list)
-    # add slider below manager IDs multiselect for event filter
-    events_df = pd.DataFrame(get_bootstrap_data()['events'])
-    eve_cut = events_df.loc[(events_df['finished'] == True) | (events_df['is_current'] == True)]
-    gw_min = min(eve_cut['id'])
-    gw_max = max(eve_cut['id'])
-    slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [gw_min, gw_max], 1)
-    
-    filtered_df = total_df.loc[(total_df['event'] >= slider1) & (total_df['event'] <= slider2)]
-    c = alt.Chart(filtered_df).mark_line().encode(
+
+    c = alt.Chart(total_df).mark_line().encode(
         x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
         y=alt.Y('overall_rank', axis=alt.Axis(title='Overall Rank'), scale=alt.Scale(reverse=True)),
         color='Manager').properties(
-            height=560)
+            height=700)
     st.altair_chart(c, use_container_width=True)
-        
 
-# Historic season ranks
+
+
+# if 'count' not in st.session_state:
+#     st.session_state['count'] = 0
+# if fpl_id == '':
+#     st.write('')
+# if fpl_id != 392357 & st.session_state['count'] == 0:
+#     st.session_state['count'] += 1
+#     del st.session_state['ID']
+#     if 'ID' not in st.session_state:
+#         st.session_state['ID'] = [fpl_id]
+#     new_id = st.text_input('Select another FPL ID to compare:', '')
+#     button = st.button('Add Manager')
+#     if button and new_id != '':
+#         st.session_state.ID.append(int(new_id))
+#     filter_man = st.multiselect(
+#         'Manager IDs',
+#         st.session_state.ID,
+#         st.session_state.ID,
+#         key='ID'
+#     )
+#     df_list = []
+#     for fpl_id in filter_man:
+#         new_df = collate_manager_history(fpl_id)
+#         df_list.append(new_df)
+#     total_df = pd.concat(df_list)
+
+#     c = alt.Chart(total_df).mark_line().encode(
+#         x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
+#         y=alt.Y('overall_rank', axis=alt.Axis(title='Overall Rank'), scale=alt.Scale(reverse=True)),
+#         color='Manager').properties(
+#             height=700)
+#     st.altair_chart(c, use_container_width=True)
+# if fpl_id != 392357 & st.session_state['count'] != 0:
+#     if 'ID' not in st.session_state:
+#         st.session_state['ID'] = [fpl_id]
+#     new_id = st.text_input('Select another FPL ID to compare:', '')
+#     button = st.button('Add Manager')
+#     if button and new_id != '':
+#         st.session_state.ID.append(int(new_id))
+#     filter_man = st.multiselect(
+#         'Manager IDs',
+#         st.session_state.ID,
+#         st.session_state.ID,
+#         key='ID'
+#     )
+#     df_list = []
+#     for fpl_id in filter_man:
+#         new_df = collate_manager_history(fpl_id)
+#         df_list.append(new_df)
+#     total_df = pd.concat(df_list)
+
+#     c = alt.Chart(total_df).mark_line().encode(
+#         x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
+#         y=alt.Y('overall_rank', axis=alt.Axis(title='Overall Rank'), scale=alt.Scale(reverse=True)),
+#         color='Manager').properties(
+#             height=700)
+#     st.altair_chart(c, use_container_width=True)
+# else:
+#     if 'ID' not in st.session_state:
+#         st.session_state['ID'] = [fpl_id]
+#     new_id = st.text_input('Select another FPL ID to compare:', '')
+#     button = st.button('Add Manager')
+#     if button and new_id != '':
+#         st.session_state.ID.append(int(new_id))
+#     filter_man = st.multiselect(
+#         'Manager IDs',
+#         st.session_state.ID,
+#         st.session_state.ID,
+#         key='ID'
+#     )
+#     df_list = []
+#     for fpl_id in filter_man:
+#         new_df = collate_manager_history(fpl_id)
+#         df_list.append(new_df)
+#     total_df = pd.concat(df_list)
+
+#     c = alt.Chart(total_df).mark_line().encode(
+#         x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
+#         y=alt.Y('overall_rank', axis=alt.Axis(title='Overall Rank'), scale=alt.Scale(reverse=True)),
+#         color='Manager').properties(
+#             height=700)
+#     st.altair_chart(c, use_container_width=True)

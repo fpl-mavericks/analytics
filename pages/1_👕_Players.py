@@ -13,20 +13,17 @@ from fpl_api_collection import (
     get_player_id_dict, get_bootstrap_data, get_player_data
 )
 import plotly.graph_objects as go
+from fpl_utils import (
+    define_sidebar
+)
 
 base_url = 'https://fantasy.premierleague.com/api/'
 
 st.set_page_config(page_title='Player Stats', page_icon=':shirt:', layout='wide')
+define_sidebar()
 
 # 2 drop-down menus choosing 2 players
 full_player_dict = get_player_id_dict(web_name=False)
-
-
-st.sidebar.subheader('About')
-st.sidebar.write("""This website is designed to help you analyse and
-                 ultimately pick the best Fantasy Premier League Football
-                 options for your team.""")
-st.sidebar.write('[GitHub](https://github.com/TimYouell15)')
 
 
 ele_types_data = get_bootstrap_data()['element_types']

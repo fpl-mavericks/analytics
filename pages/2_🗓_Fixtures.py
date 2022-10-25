@@ -13,20 +13,18 @@ import matplotlib.pyplot as plt
 from fpl_api_collection import (
     get_bootstrap_data, get_current_gw, get_fixture_dfs
 )
+from fpl_utils import (
+    define_sidebar
+)
 
 base_url = 'https://fantasy.premierleague.com/api/'
 
 st.set_page_config(page_title='Fixtures', page_icon=':calendar:', layout='wide')
+define_sidebar()
 
 st.title("Premier League Fixture List")
 st.write('Use the sliders to filter the fixtures down to a specific gameweek range.')
 st.write('NB: Final GW before the 2022 Qatar World Cup is GW16.')
-
-st.sidebar.subheader('About')
-st.sidebar.write("""This website is designed to help you analyse and
-                 ultimately pick the best Fantasy Premier League Football
-                 options for your team.""")
-st.sidebar.write('[GitHub](https://github.com/TimYouell15)')
 
 
 def display_frame(df):

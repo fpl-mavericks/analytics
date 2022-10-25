@@ -11,17 +11,14 @@ import streamlit as st
 from fpl_api_collection import (
     get_league_table, get_current_gw, get_fixture_dfs
 )
+from fpl_utils import (
+    define_sidebar
+)
 
 base_url = 'https://fantasy.premierleague.com/api/'
 
 st.set_page_config(page_title='PL Table', page_icon=':sports-medal:', layout='wide')
-
-
-st.sidebar.subheader('About')
-st.sidebar.write("""This website is designed to help you analyse and
-                 ultimately pick the best Fantasy Premier League Football
-                 options for your team.""")
-st.sidebar.write('[Github](https://github.com/TimYouell15)')
+define_sidebar()
 
 st.title('English Premier League Table')
 
