@@ -72,8 +72,10 @@ def chip_converter(name):
 col1, col2 = st.columns(2)
 
 with col1:
-    fpl_id = st.text_input('Please enter your FPL ID:', 392357)
-    
+    if ['ID'] not in st.session_state:
+        st.session_state['ID'] = [st.text_input('Please enter your FPL ID:', 392357)]
+        fpl_id = st.session_state['ID'][0]
+        
     if fpl_id == '':
     	st.write('')
     else:
@@ -202,8 +204,6 @@ def collate_manager_history(fpl_id):
 if fpl_id == '':
     st.write('')
 else:
-    if 'ID' not in st.session_state:
-        st.session_state['ID'] = [fpl_id]
     new_id = st.text_input('Select another FPL ID to compare:', '')
     button = st.button('Add Manager')
     if button and new_id != '':
@@ -219,8 +219,15 @@ else:
         new_df = collate_manager_history(fpl_id)
         df_list.append(new_df)
     total_df = pd.concat(df_list)
-
-    c = alt.Chart(total_df).mark_line().encode(
+    # add slider below manager IDs multiselect for event filter
+    events_df = pd.DataFrame(get_bootstrap_data()['events'])
+    eve_cut = events_df.loc[(events_df['finished'] == True) | (events_df['is_current'] == True)]
+    gw_min = min(eve_cut['id'])
+    gw_max = max(eve_cut['id'])
+    slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [gw_min, gw_max], 1)
+    
+    filtered_df = total_df.loc[(total_df['event'] >= slider1) & (total_df['event'] <= slider2)]
+    c = alt.Chart(filtered_df).mark_line().encode(
         x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
         y=alt.Y('overall_rank', axis=alt.Axis(title='Overall Rank'), scale=alt.Scale(reverse=True)),
         color='Manager').properties(
