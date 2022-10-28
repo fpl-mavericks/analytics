@@ -88,7 +88,7 @@ ele_df = ele_df[ele_cols]
 indexed_ele_df = ele_df.set_index('Name')
 display_frame(indexed_ele_df)
 
-col1, col2, col3 = st.columns([1,2,7])
+col1, col2, col3 = st.columns([1,2,3])
 
 with col1:
     scatter_x_var = st.selectbox(

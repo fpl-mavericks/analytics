@@ -85,7 +85,7 @@ ordered_names = [name for num, name in get_player_id_dict(web_name=False).items(
 
 col1, col2 = st.columns([1,5])
 with col1:
-    selected_player = st.selectbox(label="Select a player to view price over time", options=ordered_names, index=410)
+    selected_player = st.selectbox(label="Select Player", options=ordered_names, index=410)
 
 def collate_hist_df_from_name(player_name):
     full_player_dict = get_player_id_dict(web_name=False)
