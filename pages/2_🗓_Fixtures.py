@@ -56,7 +56,7 @@ def get_annot_size(sl1, sl2):
 # [gw_min, gw_max] should be swapped with [current_gw, current_gw+5] for initial showing
 ct_gw = get_current_gw()
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns([1,1,4])
 with col1:
     select_options = ['Fixture Difficulty Rating (FDR)',
                      'Average Goals Against (GA)',

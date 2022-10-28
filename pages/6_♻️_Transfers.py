@@ -8,8 +8,9 @@ Created on Thu Sep 29 20:21:38 2022
 
 import streamlit as st
 import pandas as pd
+import altair as alt
 from fpl_api_collection import (
-    get_bootstrap_data, get_total_fpl_players
+    get_bootstrap_data, get_total_fpl_players, get_player_id_dict, get_player_data
 )
 from fpl_utils import (
     define_sidebar
@@ -79,10 +80,93 @@ st.dataframe(ele_df.style.format({'Price': '£{:.1f}',
                                   'TSB%': '{:.1%}',
                                   '%_+/-': '{:.2%}'}))
 
-#display_frame(ele_df)
-#.background_gradient(cmap='Greens')
-
-
-
 # Graph of ownership over time for a specific player, two y-axis (transfers in and price?)
+ordered_names = [name for num, name in get_player_id_dict(web_name=False).items()]
+
+col1, col2 = st.columns([1,5])
+with col1:
+    selected_player = st.selectbox(label="Select a player to view price over time", options=ordered_names, index=410)
+
+def collate_hist_df_from_name(player_name):
+    full_player_dict = get_player_id_dict(web_name=False)
+    p_id = [k for k, v in full_player_dict.items() if v == player_name]
+    p_data = get_player_data(str(p_id[0]))
+    p_df = pd.DataFrame(p_data['history'])
+    p_df.loc[p_df['was_home'] == True, 'result'] = p_df['team_h_score']\
+        .astype(str) + '-' + p_df['team_a_score'].astype(str)
+    p_df.loc[p_df['was_home'] == False, 'result'] = p_df['team_a_score']\
+            .astype(str) + '-' + p_df['team_h_score'].astype(str)
+    col_rn_dict = {'round': 'GW', 'opponent_team': 'vs',
+                   'total_points': 'Pts', 'minutes': 'Mins',
+                   'goals_scored': 'GS', 'assists': 'A', 'clean_sheets': 'CS',
+                   'goals_conceded': 'GC', 'own_goals': 'OG',
+                   'penalties_saved': 'Pen_Save',
+                   'penalties_missed': 'Pen_Miss', 'yellow_cards': 'YC',
+                   'red_cards': 'RC', 'saves': 'S', 'bonus': 'B',
+                   'bps': 'BPS', 'influence': 'I', 'creativity': 'C',
+                   'threat': 'T', 'ict_index': 'ICT', 'value': '£',
+                   'selected': 'SB', 'transfers_in': 'Tran_In',
+                   'transfers_out': 'Tran_Out'}
+    p_df.rename(columns=col_rn_dict, inplace=True)
+    col_order = ['GW', 'vs', 'result', 'Pts', 'Mins', 'GS', 'A', 'Pen_Miss',
+                 'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC', 'RC', 'B', 'BPS',
+                 '£', 'I', 'C', 'T', 'ICT', 'SB', 'Tran_In', 'Tran_Out']
+    p_df = p_df[col_order]
+    # map opponent teams
+    p_df['vs'] = p_df['vs'].map(teams_df.set_index('id')['short_name'])
+    p_df.set_index('GW', inplace=True)
+    return p_df
+
+
+player_hist_df = collate_hist_df_from_name(selected_player)
+player_hist_df['£'] = player_hist_df['£']/10
+min_price = player_hist_df['£'].min()
+max_price = player_hist_df['£'].max()
+
+min_sb = player_hist_df['SB'].min()
+max_sb = player_hist_df['SB'].max()
+
+base = alt.Chart(player_hist_df.reset_index()).encode(
+    alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW'))
+)
+
+price = base.mark_line(color='red').encode(
+    alt.Y('£',
+          axis=alt.Axis(tickMinStep=0.1, title='Price (£)', titleColor='Red'),
+          scale=alt.Scale(domain=[min_price-0.2, max_price+0.2]))
+)
+
+sel_by = base.mark_line(color='blue').encode(
+    alt.Y('SB',
+          axis=alt.Axis(tickMinStep=0.1, title='Selected By', titleColor='Blue'),
+          scale=alt.Scale(domain=[0, max_sb+1000000]))
+)
+
+c = alt.layer(price, sel_by).resolve_scale(y='independent')
+st.altair_chart(c, use_container_width=True)
+
+
+player_hist_df['T_+/-'] = player_hist_df['Tran_In'] - player_hist_df['Tran_Out']
+min_tran = player_hist_df['T_+/-'].min()
+max_tran = player_hist_df['T_+/-'].max()
+
+tran_range = max_tran - min_tran
+
+c = alt.Chart(player_hist_df.reset_index()).mark_line().encode(
+    x=alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW')),
+    y=alt.Y('T_+/-', axis=alt.Axis(tickMinStep=0.1, title='Transfers Total'), scale=alt.Scale(domain=[min_tran-(tran_range*0.1), max_tran+(tran_range*0.1)])),
+    ).properties(
+        height=400)
+st.altair_chart(c, use_container_width=True)
+
+
+
+
+# c = alt.Chart(player_hist_df.reset_index()).mark_line().encode(
+#     x=alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW')),
+#     y=alt.Y('£', axis=alt.Axis(tickMinStep=0.1, title='Price (£)'), scale=alt.Scale(domain=[min_price-0.2, max_price+0.2])),
+#     ).properties(
+#         height=400)
+# st.altair_chart(c, use_container_width=True)
+
 

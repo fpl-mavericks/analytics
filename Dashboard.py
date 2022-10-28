@@ -84,25 +84,25 @@ ele_cols = ['Name', 'Team', 'Pos', 'GW_Pts', 'Pts', '£', 'TSB%', 'GP', 'Mins',
             'GS', 'A', 'Pen_Miss', 'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC',
             'RC', 'B', 'BPS', 'Value', 'PPG', 'I', 'C', 'T', 'ICT', 'I_Rank',
             'C_Rank', 'T_Rank', 'ICT_Rank']
-
 ele_df = ele_df[ele_cols]
-
 indexed_ele_df = ele_df.set_index('Name')
-
 display_frame(indexed_ele_df)
 
+col1, col2, col3 = st.columns([1,2,7])
 
-scatter_x_var = st.selectbox(
-    'X axis variable',
-    ['£', 'Mins', 'TSB%', 'GP']
-)
+with col1:
+    scatter_x_var = st.selectbox(
+        'X axis variable',
+        ['£', 'Mins', 'TSB%', 'GP']
+    )
 scatter_lookup = {'GP': 'GP', '£': '£', 'Mins': 'Mins', 'TSB%': 'TSB%'}
 
-filter_pos = st.multiselect(
-    'Filter position type',
-    ['GKP', 'DEF', 'MID', 'FWD'],
-    ['GKP', 'DEF', 'MID', 'FWD']
-)
+with col2:
+    filter_pos = st.multiselect(
+        'Filter position type',
+        ['GKP', 'DEF', 'MID', 'FWD'],
+        ['GKP', 'DEF', 'MID', 'FWD']
+    )
 
 
 st.header('Points per ' + scatter_x_var)
