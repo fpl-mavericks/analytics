@@ -64,7 +64,9 @@ with col1:
     select_choice = st.selectbox("Sort fixtures by", select_options)
 with col2:
     radio_options = ['Fixture', 'Statistic']
-    radio_choice = st.radio("Toggle fixture or statistic (FDR/GA/GF)", radio_options)
+    radio_choice = st.radio("Toggle fixture or statistic (FDR/GA/GF)",
+                            radio_options,
+                            horizontal=True)
 
 slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [int(ct_gw), int(ct_gw+4)], 1)
 annot_size = get_annot_size(slider1, slider2)
