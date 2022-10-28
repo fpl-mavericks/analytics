@@ -216,6 +216,16 @@ def get_league_table():
     league_df = pd.concat(df_list)
     league_df.sort_values(['Pts', 'GD'], ascending=False, inplace=True)
     league_df['team'] = league_df['id'].map(teams_df.set_index('id')['short_name'])
+    league_df.drop('id', axis=1, inplace=True)
+    league_df.set_index('team', inplace=True)
+    league_df['GF'] = league_df['GF'].astype(int)
+    league_df['GA'] = league_df['GA'].astype(int)
+    league_df['GD'] = league_df['GD'].astype(int)
+
+    league_df['Pts/Game'] = (league_df['Pts']/league_df['GP']).round(2)
+    league_df['GF/Game'] = (league_df['GF']/league_df['GP']).round(2)
+    league_df['GA/Game'] = (league_df['GA']/league_df['GP']).round(2)
+    league_df['CS/Game'] = (league_df['CS']/league_df['GP']).round(2)
     return league_df
 
 

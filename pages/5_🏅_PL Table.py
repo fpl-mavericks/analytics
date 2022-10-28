@@ -24,17 +24,6 @@ st.title('English Premier League Table')
 
 league_df = get_league_table()
 
-league_df.drop('id', axis=1, inplace=True)
-league_df.set_index('team', inplace=True)
-league_df['GF'] = league_df['GF'].astype(int)
-league_df['GA'] = league_df['GA'].astype(int)
-league_df['GD'] = league_df['GD'].astype(int)
-
-league_df['Pts/Game'] = (league_df['Pts']/league_df['GP']).round(2)
-league_df['GF/Game'] = (league_df['GF']/league_df['GP']).round(2)
-league_df['GA/Game'] = (league_df['GA']/league_df['GP']).round(2)
-league_df['CS/Game'] = (league_df['CS']/league_df['GP']).round(2)
-
 team_fdr_df, team_fixt_df = get_fixture_dfs()
 
 ct_gw = get_current_gw()

@@ -83,7 +83,7 @@ with col1:
                 manager_data = get_manager_details(fpl_id)
                 manager_name = manager_data['player_first_name'] + ' ' + manager_data['player_last_name']
                 manager_team = manager_data['name']
-                st.write('Displaying FPL 2022/23 Season Data for ' + manager_name + '\'s Team (' + manager_team + ')')
+                st.write('Displaying 2022/23 FPL GW Season Data for ' + manager_name + '\'s Team (' + manager_team + ')')
                 man_data = get_manager_history_data(fpl_id)
                 chips_df = pd.DataFrame(man_data['chips'])
                 chips_df['name'] = chips_df['name'].apply(chip_converter)
@@ -120,7 +120,7 @@ with col2:
     complete_df = events_df.loc[events_df['deadline_time'] < str(dt.datetime.now())]
     gw_complete_list = sorted(complete_df['id'].tolist(), reverse=True)
     fpl_gw = st.selectbox(
-        'Team on specific Gameweek', gw_complete_list
+        'Team on Gameweek', gw_complete_list
         )
     
     if fpl_id == '':
