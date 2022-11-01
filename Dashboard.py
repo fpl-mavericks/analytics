@@ -51,7 +51,7 @@ ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')
 ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 
 rn_cols = {'web_name': 'Name', 'team': 'Team', 'element_type': 'Pos', 
-           'event_points': 'GW_Pts', 'total_points': 'Pts', 'now_cost': '£',
+           'event_points': 'GW_Pts', 'total_points': 'Pts', 'now_cost': 'Price',
            'selected_by_percent': 'TSB%', 'minutes': 'Mins',
            'goals_scored': 'GS', 'assists': 'A',
            'penalties_missed': 'Pen_Miss', 'clean_sheets': 'CS',
@@ -73,22 +73,24 @@ ele_df['GP'].fillna(0, inplace=True)
 ele_df['GP'] = ele_df['GP'].astype(int)
 
 
-ele_df['£'] = ele_df['£']/10
+ele_df['Price'] = ele_df['Price']/10
+
+ele_df['TSB%'].replace('0.0', '0.09', inplace=True)
+ele_df['TSB%'] = ele_df['TSB%'].astype(float)/100
 
 
-ele_df['TSB%'] = ele_df['TSB%'].astype(float)
-
-ele_df['TSB%'].replace(0.0, 0.09, inplace=True)
 
 st.header('Season Totals')
 
-ele_cols = ['Name', 'Team', 'Pos', 'GW_Pts', 'Pts', '£', 'TSB%', 'GP', 'Mins',
-            'GS', 'A', 'Pen_Miss', 'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC',
-            'RC', 'B', 'BPS', 'Value', 'PPG', 'I', 'C', 'T', 'ICT', 'I_Rank',
-            'C_Rank', 'T_Rank', 'ICT_Rank']
+ele_cols = ['Name', 'Team', 'Pos', 'GW_Pts', 'Pts', 'Price', 'TSB%', 'GP',
+            'Mins', 'GS', 'A', 'Pen_Miss', 'CS', 'GC', 'OG', 'Pen_Save', 'S',
+            'YC', 'RC', 'B', 'BPS', 'Value', 'PPG', 'I', 'C', 'T', 'ICT',
+            'I_Rank', 'C_Rank', 'T_Rank', 'ICT_Rank']
 ele_df = ele_df[ele_cols]
 indexed_ele_df = ele_df.set_index('Name')
-display_frame(indexed_ele_df)
+# display_frame(indexed_ele_df)
+st.dataframe(indexed_ele_df.style.format({'Price': '£{:.1f}',
+                                          'TSB%': '{:.1%}'}))
 
 
 col1, col2, col3 = st.columns([1,2,3])
@@ -96,9 +98,9 @@ col1, col2, col3 = st.columns([1,2,3])
 with col1:
     scatter_x_var = st.selectbox(
         'X axis variable',
-        ['£', 'Mins', 'TSB%', 'GP']
+        ['Price', 'Mins', 'TSB%', 'GP']
     )
-scatter_lookup = {'GP': 'GP', '£': '£', 'Mins': 'Mins', 'TSB%': 'TSB%'}
+scatter_lookup = {'GP': 'GP', 'Price': 'Price', 'Mins': 'Mins', 'TSB%': 'TSB%'}
 
 with col2:
     filter_pos = st.multiselect(
@@ -131,21 +133,34 @@ if scatter_x_var == 'Mins':
         var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
         droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
         var_df.drop(droppers, axis=1, inplace=True)
-        display_frame(var_df)
+        st.dataframe(var_df.style.format({'Price': '£{:.1f}',
+                                          'TSB%': '{:.1%}',
+                                          'Pts/Mins': '{:.3f}'}))
     else:
         var_df = var_df.loc[(var_df['Pos'].isin(filter_pos))]
         var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
         var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
         droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
         var_df.drop(droppers, axis=1, inplace=True)
-        display_frame(var_df)
+        st.dataframe(var_df.style.format({'Price': '£{:.1f}',
+                                          'TSB%': '{:.1%}',
+                                          'Pts/Mins': '{:.3f}'}))
 else:
     var_df = var_df.loc[(var_df['Pos'].isin(filter_pos))]
-    var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
+    per_var = 'Pts/' + scatter_x_var
+    var_df[per_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
     var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
     droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
     var_df.drop(droppers, axis=1, inplace=True)
-    display_frame(var_df)
+    if per_var == 'Pts/TSB%':
+        var_df[per_var] = var_df[per_var]/100
+        st.dataframe(var_df.style.format({'Price': '£{:.1f}',
+                                          'TSB%': '{:.1%}',
+                                          per_var: '{:.2f}'}))
+    else:
+        st.dataframe(var_df.style.format({'Price': '£{:.1f}',
+                                          'TSB%': '{:.1%}',
+                                          per_var: '{:.3f}'}))
 
 
 

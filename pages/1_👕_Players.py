@@ -95,15 +95,16 @@ def collate_hist_df_from_name(player_name):
                    'penalties_missed': 'Pen_Miss', 'yellow_cards': 'YC',
                    'red_cards': 'RC', 'saves': 'S', 'bonus': 'B',
                    'bps': 'BPS', 'influence': 'I', 'creativity': 'C',
-                   'threat': 'T', 'ict_index': 'ICT', 'value': '£',
+                   'threat': 'T', 'ict_index': 'ICT', 'value': 'Price',
                    'selected': 'SB', 'transfers_in': 'Tran_In',
                    'transfers_out': 'Tran_Out'}
     p_df.rename(columns=col_rn_dict, inplace=True)
     col_order = ['GW', 'vs', 'result', 'Pts', 'Mins', 'GS', 'A', 'Pen_Miss',
                  'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC', 'RC', 'B', 'BPS',
-                 '£', 'I', 'C', 'T', 'ICT', 'SB', 'Tran_In', 'Tran_Out']
+                 'Price', 'I', 'C', 'T', 'ICT', 'SB', 'Tran_In', 'Tran_Out']
     p_df = p_df[col_order]
     # map opponent teams
+    p_df['Price'] = p_df['Price']/10
     p_df['vs'] = p_df['vs'].map(teams_df.set_index('id')['short_name'])
     p_df.set_index('GW', inplace=True)
     return p_df
@@ -118,7 +119,7 @@ def collate_total_df_from_name(player_name):
                    'total_points': 'Pts', 'minutes': 'Mins',
                    'goals_scored': 'GS', 'clean_sheets': 'CS',
                    'goals_conceded': 'GC', 'own_goals': 'OG', 'assists': 'A',
-                   'penalties_saved': 'Pen_Save', 'now_cost': '£',
+                   'penalties_saved': 'Pen_Save', 'now_cost': 'Price',
                    'penalties_missed': 'Pen_Miss', 'yellow_cards': 'YC',
                    'red_cards': 'RC', 'saves': 'S', 'bonus': 'B', 'bps': 'BPS',
                    'selected_by_percent': 'TSB%', 'influence': 'I',
@@ -126,8 +127,11 @@ def collate_total_df_from_name(player_name):
     p_t = p_total_df.rename(columns=col_rn_dict)
     col_order = ['web_name', 'team', 'Form', 'PPG', 'Pts', 'Mins', 'GS', 'A',
                  'Pen_Miss', 'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC', 'RC',
-                 'B', 'BPS', 'I', 'C', 'T', 'ICT', '£', 'TSB%', 'element_type']
+                 'B', 'BPS', 'I', 'C', 'T', 'ICT', 'Price', 'TSB%', 'element_type']
     p_t = p_t[col_order]
+    p_t['Price'] = p_t['Price']/10
+    p_t['TSB%'].replace('0.0', '0.09', inplace=True)
+    p_t['TSB%'] = p_t['TSB%'].astype(float)/100
     p_t.set_index('web_name', inplace=True)
     return p_t
 
@@ -208,16 +212,18 @@ player1 = rows[0].selectbox("Choose Player One", full_player_dict.values(), inde
 player1_df = collate_hist_df_from_name(player1)
 player1_total_df = collate_total_df_from_name(player1)
 player1_total_df.drop('team', axis=1, inplace=True)
-rows[0].dataframe(player1_df)
-rows[0].dataframe(player1_total_df)
+rows[0].dataframe(player1_df.style.format({'Price': '£{:.1f}'}))
+rows[0].dataframe(player1_total_df.style.format({'Price': '£{:.1f}',
+                                                 'TSB%': '{:.1%}'}))
 
 
 player2 = rows[1].selectbox("Choose Player Two", full_player_dict.values(), index=17)
 player2_df = collate_hist_df_from_name(player2)
 player2_total_df = collate_total_df_from_name(player2)
 player2_total_df.drop('team', axis=1, inplace=True)
-rows[1].dataframe(player2_df)
-rows[1].dataframe(player2_total_df)
+rows[1].dataframe(player2_df.style.format({'Price': '£{:.1f}'}))
+rows[1].dataframe(player2_total_df.style.format({'Price': '£{:.1f}',
+                                                 'TSB%': '{:.1%}'}))
 
 
 rows[0].plotly_chart(get_ICT_spider_plot(player1, player2))
