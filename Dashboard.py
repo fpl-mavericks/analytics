@@ -78,6 +78,8 @@ ele_df['£'] = ele_df['£']/10
 
 ele_df['TSB%'] = ele_df['TSB%'].astype(float)
 
+ele_df['TSB%'].replace(0.0, 0.09, inplace=True)
+
 st.header('Season Totals')
 
 ele_cols = ['Name', 'Team', 'Pos', 'GW_Pts', 'Pts', '£', 'TSB%', 'GP', 'Mins',
@@ -87,6 +89,7 @@ ele_cols = ['Name', 'Team', 'Pos', 'GW_Pts', 'Pts', '£', 'TSB%', 'GP', 'Mins',
 ele_df = ele_df[ele_cols]
 indexed_ele_df = ele_df.set_index('Name')
 display_frame(indexed_ele_df)
+
 
 col1, col2, col3 = st.columns([1,2,3])
 
@@ -104,7 +107,6 @@ with col2:
         ['GKP', 'DEF', 'MID', 'FWD']
     )
 
-
 st.header('Points per ' + scatter_x_var)
 c = alt.Chart(ele_df.loc[ele_df['Pos'].isin(filter_pos)]).mark_circle(size=75).encode(
     alt.X(scatter_lookup[scatter_x_var], scale=alt.Scale(zero=False)),
@@ -116,12 +118,38 @@ st.altair_chart(c, use_container_width=True)
 
 # df for split on X axis variable
 # e.g. points per million df sorted by ppm
-
 var_df = indexed_ele_df.copy()
+if scatter_x_var == 'Mins':
+    radio_options = ['All Players', '> 15% Minutes']
+    radio_choice = st.radio("Toggle Players who have played more than 15% of minutes.",
+                            radio_options,
+                            horizontal=True)
+    max_mins = var_df['Mins'].max()
+    if radio_choice == '> 15% Minutes':
+        var_df = var_df.loc[(var_df['Pos'].isin(filter_pos)) & (var_df['Mins'] >= (max_mins/15))]
+        var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
+        var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
+        droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
+        var_df.drop(droppers, axis=1, inplace=True)
+        display_frame(var_df)
+    else:
+        var_df = var_df.loc[(var_df['Pos'].isin(filter_pos))]
+        var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
+        var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
+        droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
+        var_df.drop(droppers, axis=1, inplace=True)
+        display_frame(var_df)
+else:
+    var_df = var_df.loc[(var_df['Pos'].isin(filter_pos))]
+    var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
+    var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
+    droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
+    var_df.drop(droppers, axis=1, inplace=True)
+    display_frame(var_df)
 
-var_df = var_df.loc[var_df['Pos'].isin(filter_pos)]
-var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
-var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
-droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
-var_df.drop(droppers, axis=1, inplace=True)
-display_frame(var_df)
+
+
+
+
+
+
