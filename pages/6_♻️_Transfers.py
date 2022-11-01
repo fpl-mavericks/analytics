@@ -43,6 +43,8 @@ ele_df = pd.DataFrame(ele_data)
 ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
 ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 
+ele_df['full_name'] = ele_df['first_name'] + ' ' + ele_df['second_name'] + ' (' + ele_df['team'] + ')'
+
 rn_cols = {'web_name': 'Name', 'team': 'Team', 'element_type': 'Pos', 
            'event_points': 'GW_Pts', 'total_points': 'Pts',
            'now_cost': 'Price', 'selected_by_percent': 'TSB%',
@@ -61,7 +63,7 @@ ele_df.rename(columns=rn_cols, inplace=True)
 ele_df['Price'] = ele_df['Price']/10
 
 ele_cols = ['Name', 'Team', 'Pos', 'Pts', 'Price', 'TSB%', 'T_In', 'T_Out',
-            'T_In_Total', 'T_Out_Total']
+            'T_In_Total', 'T_Out_Total', 'full_name']
 
 ele_df = ele_df[ele_cols]
 
@@ -75,19 +77,29 @@ ele_df['%_+/-'] = ele_df['T_+/-']/total_mans
 ele_df.set_index('Name', inplace=True)
 ele_df.sort_values('T_+/-', ascending=False, inplace=True)
 
+ordered_names = ele_df['full_name'].tolist()
 
-st.dataframe(ele_df.style.format({'Price': '£{:.1f}',
+trans_df = ele_df.copy()
+
+trans_df.drop('full_name', axis=1, inplace=True)
+
+st.dataframe(trans_df.style.format({'Price': '£{:.1f}',
                                   'TSB%': '{:.1%}',
                                   '%_+/-': '{:.2%}'}))
 
 # Graph of ownership over time for a specific player, two y-axis (transfers in and price?)
-ordered_names = [name for num, name in get_player_id_dict(web_name=False).items()]
+#ordered_names = [name for num, name in get_player_id_dict(web_name=False).items()]
 
-col1, col2 = st.columns([1,5])
+#ele_df['full_name'] = ele_df.reset_index()['Name']
+
+#ordered_names = [.tolist() + ' (' + ele_df['Team'] + ')']
+
+col1, col2 = st.columns([2,4])
 with col1:
-    selected_player = st.selectbox(label="Select Player", options=ordered_names, index=410)
+    selected_player = st.selectbox(label="Select Player", options=ordered_names)
 
-def collate_hist_df_from_name(player_name):
+def collate_hist_df_from_name(ele_df, player_name):
+    player_df = ele_df.loc[ele_df['full_name'] == player_name]
     full_player_dict = get_player_id_dict(web_name=False)
     p_id = [k for k, v in full_player_dict.items() if v == player_name]
     p_data = get_player_data(str(p_id[0]))
@@ -104,24 +116,30 @@ def collate_hist_df_from_name(player_name):
                    'penalties_missed': 'Pen_Miss', 'yellow_cards': 'YC',
                    'red_cards': 'RC', 'saves': 'S', 'bonus': 'B',
                    'bps': 'BPS', 'influence': 'I', 'creativity': 'C',
-                   'threat': 'T', 'ict_index': 'ICT', 'value': '£',
+                   'threat': 'T', 'ict_index': 'ICT', 'value': 'Price',
                    'selected': 'SB', 'transfers_in': 'Tran_In',
                    'transfers_out': 'Tran_Out'}
     p_df.rename(columns=col_rn_dict, inplace=True)
     col_order = ['GW', 'vs', 'result', 'Pts', 'Mins', 'GS', 'A', 'Pen_Miss',
                  'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC', 'RC', 'B', 'BPS',
-                 '£', 'I', 'C', 'T', 'ICT', 'SB', 'Tran_In', 'Tran_Out']
+                 'Price', 'I', 'C', 'T', 'ICT', 'SB', 'Tran_In', 'Tran_Out']
     p_df = p_df[col_order]
+    p_df['Price'] = p_df['Price']/10
+    new_df = pd.DataFrame(data = {'GW': [(p_df['GW'].max() + 1)],
+                           'Price': [player_df['Price'][0]],
+                           'Tran_In': [player_df['T_In'][0]],
+                           'Tran_Out': [player_df['T_Out'][0]],
+                           'SB': [p_df['SB'].iloc[-1] + player_df['T_In'][0] - player_df['T_Out'][0]]})
+    p_df = pd.concat([p_df, new_df])
     # map opponent teams
     p_df['vs'] = p_df['vs'].map(teams_df.set_index('id')['short_name'])
     p_df.set_index('GW', inplace=True)
     return p_df
 
 
-player_hist_df = collate_hist_df_from_name(selected_player)
-player_hist_df['£'] = player_hist_df['£']/10
-min_price = player_hist_df['£'].min()
-max_price = player_hist_df['£'].max()
+player_hist_df = collate_hist_df_from_name(ele_df, selected_player)
+min_price = player_hist_df['Price'].min()
+max_price = player_hist_df['Price'].max()
 
 min_sb = player_hist_df['SB'].min()
 max_sb = player_hist_df['SB'].max()
@@ -131,7 +149,7 @@ base = alt.Chart(player_hist_df.reset_index()).encode(
 )
 
 price = base.mark_line(color='red').encode(
-    alt.Y('£',
+    alt.Y('Price',
           axis=alt.Axis(tickMinStep=0.1, title='Price (£)', titleColor='Red'),
           scale=alt.Scale(domain=[min_price-0.2, max_price+0.2]))
 )
@@ -160,13 +178,48 @@ c = alt.Chart(player_hist_df.reset_index()).mark_line().encode(
 st.altair_chart(c, use_container_width=True)
 
 
+def collate_tran_df_from_name(ele_df, player_name):
+    player_df = ele_df.loc[ele_df['full_name'] == player_name]
+    full_player_dict = get_player_id_dict(web_name=False)
+    p_id = [k for k, v in full_player_dict.items() if v == player_name]
+    p_data = get_player_data(str(p_id[0]))
+    p_df = pd.DataFrame(p_data['history'])
+    col_rn_dict = {'round': 'GW', 'value': 'Price',
+                   'selected': 'SB', 'transfers_in': 'Tran_In',
+                   'transfers_out': 'Tran_Out'}
+    p_df.rename(columns=col_rn_dict, inplace=True)
+    p_df = p_df[['GW', 'Price', 'SB', 'Tran_In', 'Tran_Out']]
+    p_df['Price'] = p_df['Price']/10
+    new_df = pd.DataFrame({'GW': [(p_df['GW'].max() + 1)],
+                           'Price': [player_df['Price'][0]],
+                           'Tran_In': [player_df['T_In'][0]],
+                           'Tran_Out': [player_df['T_Out'][0]],
+                           'SB': [p_df['SB'].iloc[-1] + player_df['T_In'][0] - player_df['T_Out'][0]]})
+    p_df = pd.concat([p_df, new_df])
+    p_df.set_index('GW', inplace=True)
+    return p_df
 
-
-# c = alt.Chart(player_hist_df.reset_index()).mark_line().encode(
-#     x=alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW')),
-#     y=alt.Y('£', axis=alt.Axis(tickMinStep=0.1, title='Price (£)'), scale=alt.Scale(domain=[min_price-0.2, max_price+0.2])),
-#     ).properties(
-#         height=400)
-# st.altair_chart(c, use_container_width=True)
+# with st.spinner('Getting Player Historic Data'):
+#     df_list = []
+#     for name in ordered_names:
+#         p_hist_df = collate_tran_df_from_name(ele_df, name)
+#         sp = p_hist_df['Price'].iloc[0]
+#         np = p_hist_df['Price'].iloc[-1]
+#         new_df = pd.DataFrame({'Player': [name],
+#                                'Start_Price': [sp],
+#                                'Now_Price': [np],
+#                                'Price_+/-': [np - sp]})
+#         df_list.append(new_df)
+#     total_df = pd.concat(df_list)
+#     total_df.sort_values('Price_+/-', ascending=False, inplace=True)
+#     total_df.set_index('Player', inplace=True)
+#     st.dataframe(total_df.style.format({'Start_Price': '£{:.1f}',
+#                                         'Now_Price': '£{:.1f}',
+#                                         'Price_+/-': '£{:.1f}'}))
+    
+        
+    
+    
+    
 
 
