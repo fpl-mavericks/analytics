@@ -7,7 +7,7 @@ Created on Thu Nov  3 09:17:16 2022
 """
 
 import pandas as pd
-from fpl_utils.fpl_api_collection import (
+from fpl_api_collection import (
     get_bootstrap_data, get_player_id_dict, get_player_data,
     get_total_fpl_players
 )
