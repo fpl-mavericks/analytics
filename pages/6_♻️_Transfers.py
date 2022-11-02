@@ -199,23 +199,10 @@ def collate_tran_df_from_name(ele_df, player_name):
     p_df.set_index('GW', inplace=True)
     return p_df
 
-# with st.spinner('Getting Player Historic Data'):
-#     df_list = []
-#     for name in ordered_names:
-#         p_hist_df = collate_tran_df_from_name(ele_df, name)
-#         sp = p_hist_df['Price'].iloc[0]
-#         np = p_hist_df['Price'].iloc[-1]
-#         new_df = pd.DataFrame({'Player': [name],
-#                                'Start_Price': [sp],
-#                                'Now_Price': [np],
-#                                'Price_+/-': [np - sp]})
-#         df_list.append(new_df)
-#     total_df = pd.concat(df_list)
-#     total_df.sort_values('Price_+/-', ascending=False, inplace=True)
-#     total_df.set_index('Player', inplace=True)
-#     st.dataframe(total_df.style.format({'Start_Price': '£{:.1f}',
-#                                         'Now_Price': '£{:.1f}',
-#                                         'Price_+/-': '£{:.1f}'}))
+
+prices_df = pd.read_csv('./data/player_prices.csv')
+
+st.dataframe(prices_df)
 
     
     
