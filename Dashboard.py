@@ -163,9 +163,9 @@ else:
                                           per_var: '{:.3f}'}))
 
 
-ht_df = pd.read_csv('data/haaland_transfers.csv')
+# ht_df = pd.read_csv('data/haaland_transfers.csv')
 
-st.dataframe(ht_df)
+# st.dataframe(ht_df)
 
 
 
