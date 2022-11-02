@@ -9,11 +9,11 @@ Created on Thu Sep 29 20:14:22 2022
 
 import streamlit as st
 import pandas as pd
-from fpl_api_collection import (
+from fpl_utils.fpl_api_collection import (
     get_player_id_dict, get_bootstrap_data, get_player_data
 )
 import plotly.graph_objects as go
-from fpl_utils import (
+from fpl_utils.fpl_utils import (
     define_sidebar
 )
 

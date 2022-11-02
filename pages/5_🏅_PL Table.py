@@ -8,10 +8,10 @@ Created on Thu Sep 29 20:21:38 2022
 
 import streamlit as st
 # import pandas as pd
-from fpl_api_collection import (
+from fpl_utils.fpl_api_collection import (
     get_league_table, get_current_gw, get_fixture_dfs
 )
-from fpl_utils import (
+from fpl_utils.fpl_utils import (
     define_sidebar
 )
 

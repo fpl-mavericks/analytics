@@ -11,10 +11,10 @@ import streamlit as st
 import altair as alt
 import pandas as pd
 import requests
-from fpl_api_collection import (
+from fpl_utils.fpl_api_collection import (
     get_bootstrap_data
 )
-from fpl_utils import (
+from fpl_utils.fpl_utils import (
     define_sidebar
 )
 

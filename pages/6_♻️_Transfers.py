@@ -9,10 +9,10 @@ Created on Thu Sep 29 20:21:38 2022
 import streamlit as st
 import pandas as pd
 import altair as alt
-from fpl_api_collection import (
+from fpl_utils.fpl_api_collection import (
     get_bootstrap_data, get_total_fpl_players, get_player_id_dict, get_player_data
 )
-from fpl_utils import (
+from fpl_utils.fpl_utils import (
     define_sidebar
 )
 
@@ -216,9 +216,7 @@ def collate_tran_df_from_name(ele_df, player_name):
 #     st.dataframe(total_df.style.format({'Start_Price': '£{:.1f}',
 #                                         'Now_Price': '£{:.1f}',
 #                                         'Price_+/-': '£{:.1f}'}))
-    
-        
-    
+
     
     
 

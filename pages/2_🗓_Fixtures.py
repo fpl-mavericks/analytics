@@ -10,11 +10,11 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from fpl_api_collection import (
+from fpl_utils.fpl_api_collection import (
     get_bootstrap_data, get_current_gw, get_fixture_dfs, get_league_table
 )
-from fpl_utils import (
-    define_sidebar
+from fpl_utils.fpl_utils import (
+    define_sidebar, get_annot_size
 )
 
 base_url = 'https://fantasy.premierleague.com/api/'
@@ -33,25 +33,6 @@ team_fdr_df, team_fixt_df = get_fixture_dfs()
 events_df = pd.DataFrame(get_bootstrap_data()['events'])
 gw_min = min(events_df['id'])
 gw_max = max(events_df['id'])
-
-
-def get_annot_size(sl1, sl2):
-    ft_size = sl2 - sl1
-    if ft_size >= 24:
-        annot_size = 2
-    elif (ft_size < 24) & (ft_size >= 16):
-        annot_size = 3
-    elif (ft_size < 16) & (ft_size >= 12):
-        annot_size = 4
-    elif (ft_size < 12) & (ft_size >= 9):
-        annot_size = 5
-    elif (ft_size < 9) & (ft_size >= 7):
-        annot_size = 6
-    elif (ft_size < 7) & (ft_size >= 5):
-        annot_size = 7
-    else:
-        annot_size = 8
-    return annot_size
 
 # [gw_min, gw_max] should be swapped with [current_gw, current_gw+5] for initial showing
 ct_gw = get_current_gw()

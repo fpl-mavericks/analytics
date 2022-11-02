@@ -7,7 +7,7 @@ Created on Thu Sep 29 20:20:45 2022
 """
 
 import streamlit as st
-from fpl_utils import (
+from fpl_utils.fpl_utils import (
     define_sidebar
 )
 

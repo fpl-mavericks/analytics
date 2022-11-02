@@ -16,3 +16,22 @@ def define_sidebar():
                      options for your team.""")
     st.sidebar.write('[Author](https://www.linkedin.com/in/tim-youell-616731a6)')
     st.sidebar.write('[GitHub](https://github.com/fpl-mavericks/analytics/)')
+
+
+def get_annot_size(sl1, sl2):
+    ft_size = sl2 - sl1
+    if ft_size >= 24:
+        annot_size = 2
+    elif (ft_size < 24) & (ft_size >= 16):
+        annot_size = 3
+    elif (ft_size < 16) & (ft_size >= 12):
+        annot_size = 4
+    elif (ft_size < 12) & (ft_size >= 9):
+        annot_size = 5
+    elif (ft_size < 9) & (ft_size >= 7):
+        annot_size = 6
+    elif (ft_size < 7) & (ft_size >= 5):
+        annot_size = 7
+    else:
+        annot_size = 8
+    return annot_size
