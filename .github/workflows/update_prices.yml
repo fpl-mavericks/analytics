@@ -3,7 +3,7 @@ name: Get Player Prices Data
 on:
   push:
   schedule:
-    - cron: '12 * * * *'
+    - cron: '5 12 * * *'
 
 jobs:
   get-data:
