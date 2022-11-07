@@ -6,6 +6,7 @@ Created on Thu Sep 29 20:21:38 2022
 @author: timyouell
 """
 
+import pandas as pd
 import streamlit as st
 # import pandas as pd
 from fpl_utils.fpl_api_collection import (
@@ -32,6 +33,7 @@ new_fixt_df = team_fixt_df.loc[:, ct_gw:(ct_gw+2)]
 new_fixt_df.columns = ['GW' + str(col) for col in new_fixt_df.columns.tolist()]
 
 league_df = league_df.join(new_fixt_df)
+
 
 float_cols = league_df.select_dtypes(include='float64').columns.values
 st.dataframe(league_df.style.format(subset=float_cols, formatter='{:.2f}'), height=740, width=1000)
