@@ -128,7 +128,7 @@ if scatter_x_var == 'Mins':
                             horizontal=True)
     max_mins = var_df['Mins'].max()
     if radio_choice == '> 25% Minutes':
-        var_df = var_df.loc[(var_df['Pos'].isin(filter_pos)) & (var_df['Mins'] >= (max_mins/25))]
+        var_df = var_df.loc[(var_df['Pos'].isin(filter_pos)) & (var_df['Mins'] >= (max_mins*0.25))]
         var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
         var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
         droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
