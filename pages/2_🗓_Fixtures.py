@@ -37,7 +37,7 @@ gw_max = max(events_df['id'])
 # [gw_min, gw_max] should be swapped with [current_gw, current_gw+5] for initial showing
 ct_gw = get_current_gw()
 
-col1, col2, col3 = st.columns([1,2,5])
+col1, col2, col3 = st.columns([2,2,2])
 with col1:
     select_options = ['Fixture Difficulty Rating (FDR)',
                      'Average Goals Against (GA)',
@@ -85,8 +85,7 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
     st.write(fig)
 
 elif select_choice == 'Average Goals Against (GA)':
-    st.write('Sorted based on Average Goals Against in previous fixtures.')
-    st.write('The higher up the plot, the higher chance of scoring in the selected GW range.')
+    st.write('The higher up the heatmap, the higher chance of scoring in the selected GW range.')
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
     team_ga_df = team_fixt_df.copy()
     for col in team_fixt_df.columns.tolist():
@@ -115,8 +114,7 @@ elif select_choice == 'Average Goals Against (GA)':
     st.write(fig)
 
 elif select_choice == 'Average Goals For (GF)':
-    st.write('Sorted based on Average Goals For in previous fixtures.')
-    st.write('The higher up the plot, the higher chance of not conceeding/keeping a clean sheet in the selected GW range.')
+    st.write('The higher up the plot, the higher chance of not conceeding in the selected GW range.')
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
     team_gf_df = team_fixt_df.copy()
     for col in team_fixt_df.columns.tolist():
