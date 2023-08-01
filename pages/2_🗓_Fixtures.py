@@ -24,7 +24,6 @@ define_sidebar()
 
 st.title("Premier League Fixtures")
 st.write('Use the sliders to filter the fixtures down to a specific gameweek range.')
-st.write('NB: Final GW before the 2022 Qatar World Cup is GW16.')
 
 
 league_df = get_league_table()
@@ -70,7 +69,7 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
     if radio_choice == 'Fixture':
         annot_df = filtered_team_df
     else:
-        annot_df = new_fixt_df.astype(int)
+        annot_df = new_fixt_df # .astype(int)
     sns.heatmap(new_fixt_df,
                 ax=ax,
                 annot=annot_df,
