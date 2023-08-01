@@ -70,7 +70,7 @@ col1, col2, col3 = st.columns([2,1,1])
 
 
 with col1:
-    fpl_id = st.text_input('Please enter your FPL ID:', 392357)
+    fpl_id = st.text_input('Please enter your FPL ID:', 94660)
     if fpl_id == '':
     	st.write('')
     else:
@@ -86,28 +86,31 @@ with col1:
                 st.write('Displaying 2022/23 FPL GW Season Data for ' + manager_name + '\'s Team (' + manager_team + ')')
                 man_data = get_manager_history_data(fpl_id)
                 chips_df = pd.DataFrame(man_data['chips'])
-                chips_df['name'] = chips_df['name'].apply(chip_converter)
-                chips_df = chips_df[['event', 'name']]
-                ave_df = pd.DataFrame(get_bootstrap_data()['events'])[['id', 'average_entry_score']]
-                ave_df.columns=['event', 'Ave']
-                man_gw_hist = pd.DataFrame(man_data['current'])
-                man_gw_hist.sort_values('event', ascending=False, inplace=True)
-                man_gw_hist = man_gw_hist.merge(chips_df, on='event', how='left')
-                man_gw_hist = man_gw_hist.merge(ave_df, on='event', how='left')
-                man_gw_hist['name'].fillna('None', inplace=True)
-                man_gw_hist.set_index('event', inplace=True)
-                rn_cols = {'points': 'GWP', 'total_points': 'OP', 'rank': 'GWR',
-                           'overall_rank': 'OR', 'bank': '£', 'value': 'TV',
-                           'event_transfers': 'TM', 'event_transfers_cost': 'TC',
-                           'points_on_bench': 'PoB', 'name': 'Chip'}
-                man_gw_hist.rename(columns=rn_cols, inplace=True)
-                man_gw_hist.drop('rank_sort', axis=1, inplace=True)
-                man_gw_hist['TV'] = man_gw_hist['TV']/10
-                man_gw_hist['£'] = man_gw_hist['£']/10
-                man_gw_hist = man_gw_hist[['Ave', 'GWP', 'OP', 'GWR', 'OR', '£', 'TV', 'TM', 'TC', 'PoB', 'Chip']]
-                st.dataframe(man_gw_hist.style.format({'TV': '£{:.1f}',
-                                                       '£': '£{:.1f}'}),
-                             width=800, height=522)
+                if len(chips_df) == 0:
+                    'Please wait for Season to start before viewing Manager Data'
+                else:
+                    chips_df['name'] = chips_df['name'].apply(chip_converter)
+                    chips_df = chips_df[['event', 'name']]
+                    ave_df = pd.DataFrame(get_bootstrap_data()['events'])[['id', 'average_entry_score']]
+                    ave_df.columns=['event', 'Ave']
+                    man_gw_hist = pd.DataFrame(man_data['current'])
+                    man_gw_hist.sort_values('event', ascending=False, inplace=True)
+                    man_gw_hist = man_gw_hist.merge(chips_df, on='event', how='left')
+                    man_gw_hist = man_gw_hist.merge(ave_df, on='event', how='left')
+                    man_gw_hist['name'].fillna('None', inplace=True)
+                    man_gw_hist.set_index('event', inplace=True)
+                    rn_cols = {'points': 'GWP', 'total_points': 'OP', 'rank': 'GWR',
+                               'overall_rank': 'OR', 'bank': '£', 'value': 'TV',
+                               'event_transfers': 'TM', 'event_transfers_cost': 'TC',
+                               'points_on_bench': 'PoB', 'name': 'Chip'}
+                    man_gw_hist.rename(columns=rn_cols, inplace=True)
+                    man_gw_hist.drop('rank_sort', axis=1, inplace=True)
+                    man_gw_hist['TV'] = man_gw_hist['TV']/10
+                    man_gw_hist['£'] = man_gw_hist['£']/10
+                    man_gw_hist = man_gw_hist[['Ave', 'GWP', 'OP', 'GWR', 'OR', '£', 'TV', 'TM', 'TC', 'PoB', 'Chip']]
+                    st.dataframe(man_gw_hist.style.format({'TV': '£{:.1f}',
+                                                           '£': '£{:.1f}'}),
+                                 width=800, height=522)
             else:
                 st.write('FPL ID is too high to be a valid ID. Please try again.')
                 st.write('The total number of FPL players is: ' + str(total_players))
