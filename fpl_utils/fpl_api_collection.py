@@ -152,21 +152,16 @@ def get_player_id_dict(web_name=True) -> dict:
 
 
 def collate_player_hist() -> pd.DataFrame():
-    player_dfs = []
-    player_dict = get_player_id_dict()
-    for player_id, player_name in player_dict.items():
-        print('Getting GW historic data for ' + player_name)
-        success = False
-        while not success:
-            try:
-                player_data = get_player_data(player_id)
-                player_df = pd.DataFrame(player_data['history'])
-                player_dfs.append(player_df)
-                success = True
-            except:
-                print('error getting ' + player_name + ' data')
-    hist_df = pd.concat(player_dfs)
-    return hist_df
+    res = []
+    p_dict = get_player_id_dict()
+    for p_id, p_name in p_dict.items():
+        resp = requests.get('{}element-summary/{}/'.format(base_url, p_id))
+        if resp.status_code != 200:
+            print('Request to {} data failed'.format(p_name))
+            raise Exception(f'Response was status code {resp.status_code}')
+        else:
+            res.append(resp.json()['history'])
+    return pd.DataFrame(res)
 
 
 # Team, games_played, wins, losses, draws, goals_for, goals_against, GD,
@@ -236,6 +231,7 @@ def get_current_gw():
 
 
 def get_fixture_dfs():
+    # doubles??
     fixt_df = pd.DataFrame(get_fixture_data())
     teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
     teams_list = teams_df['short_name'].unique().tolist()
