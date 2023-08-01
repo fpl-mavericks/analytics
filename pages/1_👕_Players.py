@@ -205,7 +205,9 @@ def get_stats_spider_plot(player_name1, player_name2):
     return fig
 
 
-try:
+if len(get_player_data(list(full_player_dict.keys())[0])['history']) == 0:
+    st.write("Please wait for season to begin for individual player statistics")
+else:
     rows = st.columns(2)
     
     player1 = rows[0].selectbox("Choose Player One", full_player_dict.values(), index=5)
@@ -217,7 +219,6 @@ try:
     rows[0].dataframe(player1_total_df.style.format({'Price': '£{:.1f}',
                                                      'TSB%': '{:.1%}'}))
     
-    
     player2 = rows[1].selectbox("Choose Player Two", full_player_dict.values(), index=17)
     player2_df = collate_hist_df_from_name(player2)
     player2_total_df = collate_total_df_from_name(player2)
@@ -226,12 +227,10 @@ try:
     rows[1].dataframe(player2_total_df.style.format({'Price': '£{:.1f}',
                                                      'TSB%': '{:.1%}'}))
     
-    
     rows[0].plotly_chart(get_ICT_spider_plot(player1, player2))
     rows[1].plotly_chart(get_stats_spider_plot(player1, player2))
 
-except:
-    st.write("Please wait for season to begin for individual player statistics")
+    
 
 #st.plotly_chart(get_spider_plot(player1, player2), use_container_width=True)
 
