@@ -177,7 +177,7 @@ def get_league_table():
         home_data.loc[:, 'was_home'] = True
         away_data.loc[:, 'was_home'] = False
         df = pd.concat([home_data, away_data])
-        df = df.loc[df['finished'] == True]
+        # df = df.loc[df['finished'] == True]
         df.sort_values('event', inplace=True)
         df.loc[(df['was_home'] == True) &
                (df['team_h_score'] > df['team_a_score']), 'win'] = True
