@@ -140,3 +140,5 @@ elif select_choice == 'Average Goals For (GF)':
     ax.set_xlabel('Gameweek')
     ax.set_ylabel('Team')
     st.write(fig)
+    
+#updated
