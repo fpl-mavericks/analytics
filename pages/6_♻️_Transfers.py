@@ -148,48 +148,50 @@ def collate_hist_df_from_name(ele_df, player_name):
     p_df.set_index('GW', inplace=True)
     return p_df
 
-
-player_hist_df = collate_hist_df_from_name(ele_df, selected_player)
-min_price = player_hist_df['Price'].min()
-max_price = player_hist_df['Price'].max()
-
-min_sb, max_sb = player_hist_df['SB'].min(), player_hist_df['SB'].max()
-min_gw, max_gw = player_hist_df.index.min(), player_hist_df.index.max()
-
-base = alt.Chart(player_hist_df.reset_index()).encode(
-    alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW'), scale=alt.Scale(domain=[min_gw, max_gw]))
-)
-
-price = base.mark_line(color='red').encode(
-    alt.Y('Price',
-          axis=alt.Axis(tickMinStep=0.1, title='Price (£)', titleColor='Red'),
-          scale=alt.Scale(domain=[min_price-0.2, max_price+0.2]))
-)
-
-sel_by = base.mark_line(color='blue').encode(
-    alt.Y('SB',
-          axis=alt.Axis(tickMinStep=0.1, title='Selected By', titleColor='Blue'),
-          scale=alt.Scale(domain=[0, max_sb+1000000]))
-)
-
-c = alt.layer(price, sel_by).resolve_scale(y='independent')
-st.altair_chart(c, use_container_width=True)
-
-
-player_hist_df['T_+/-'] = player_hist_df['Tran_In'] - player_hist_df['Tran_Out']
-min_tran, max_tran = player_hist_df['T_+/-'].min(), player_hist_df['T_+/-'].max()
-
-tran_range = max_tran - min_tran
-
-
-
-
-c = alt.Chart(player_hist_df.reset_index()).mark_line().encode(
-    x=alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW'), scale=alt.Scale(domain=[min_gw, max_gw])),
-    y=alt.Y('T_+/-', axis=alt.Axis(tickMinStep=0.1, title='Transfers Total'), scale=alt.Scale(domain=[min_tran-(tran_range*0.1), max_tran+(tran_range*0.1)])),
-    ).properties(
-        height=400)
-st.altair_chart(c, use_container_width=True)
+try:
+    player_hist_df = collate_hist_df_from_name(ele_df, selected_player)
+    min_price = player_hist_df['Price'].min()
+    max_price = player_hist_df['Price'].max()
+    
+    min_sb, max_sb = player_hist_df['SB'].min(), player_hist_df['SB'].max()
+    min_gw, max_gw = player_hist_df.index.min(), player_hist_df.index.max()
+    
+    base = alt.Chart(player_hist_df.reset_index()).encode(
+        alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW'), scale=alt.Scale(domain=[min_gw, max_gw]))
+    )
+    
+    price = base.mark_line(color='red').encode(
+        alt.Y('Price',
+              axis=alt.Axis(tickMinStep=0.1, title='Price (£)', titleColor='Red'),
+              scale=alt.Scale(domain=[min_price-0.2, max_price+0.2]))
+    )
+    
+    sel_by = base.mark_line(color='blue').encode(
+        alt.Y('SB',
+              axis=alt.Axis(tickMinStep=0.1, title='Selected By', titleColor='Blue'),
+              scale=alt.Scale(domain=[0, max_sb+1000000]))
+    )
+    
+    c = alt.layer(price, sel_by).resolve_scale(y='independent')
+    st.altair_chart(c, use_container_width=True)
+    
+    
+    player_hist_df['T_+/-'] = player_hist_df['Tran_In'] - player_hist_df['Tran_Out']
+    min_tran, max_tran = player_hist_df['T_+/-'].min(), player_hist_df['T_+/-'].max()
+    
+    tran_range = max_tran - min_tran
+    
+    
+    
+    
+    c = alt.Chart(player_hist_df.reset_index()).mark_line().encode(
+        x=alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW'), scale=alt.Scale(domain=[min_gw, max_gw])),
+        y=alt.Y('T_+/-', axis=alt.Axis(tickMinStep=0.1, title='Transfers Total'), scale=alt.Scale(domain=[min_tran-(tran_range*0.1), max_tran+(tran_range*0.1)])),
+        ).properties(
+            height=400)
+    st.altair_chart(c, use_container_width=True)
+except KeyError:
+    st.write('Please wait for the Season to begin before viewing transfer data on individual players.')
 
     
     
