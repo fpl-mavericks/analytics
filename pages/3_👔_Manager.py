@@ -221,6 +221,8 @@ def collate_manager_history(fpl_id):
 
 if fpl_id == '':
     st.write('')
+elif len(gw_complete_list) == 0:
+    st.write('')
 else:
     if 'ID' not in st.session_state:
         st.session_state['ID'] = [fpl_id]
