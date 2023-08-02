@@ -203,14 +203,17 @@ else:
         ave_df = pd.DataFrame(get_bootstrap_data()['events'])[['id', 'average_entry_score']]
         ave_df.columns=['event', 'points']
         ave_df['Manager'] = 'GW Average'
-        ave_cut = ave_df.loc[ave_df['event'] <= max(curr_df['event'])]
-        concat_df = pd.concat([curr_df, ave_cut])
-        c = alt.Chart(concat_df).mark_line().encode(
-            x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
-            y=alt.Y('points', axis=alt.Axis(title='GW Points')),
-            color='Manager').properties(
-                height=400)
-        st.altair_chart(c, use_container_width=True)
+        try:
+            ave_cut = ave_df.loc[ave_df['event'] <= max(curr_df['event'])]
+            concat_df = pd.concat([curr_df, ave_cut])
+            c = alt.Chart(concat_df).mark_line().encode(
+                x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
+                y=alt.Y('points', axis=alt.Axis(title='GW Points')),
+                color='Manager').properties(
+                    height=400)
+            st.altair_chart(c, use_container_width=True)
+        except KeyError:
+            st.write('')
 
 def collate_manager_history(fpl_id):
     df = pd.DataFrame(get_manager_history_data(fpl_id)['current'])
