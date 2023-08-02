@@ -193,6 +193,8 @@ with col3:
 
 if fpl_id == '':
     st.write('')
+elif len(gw_complete_list) == 0:
+    st.write('')
 else:
     curr_df = pd.DataFrame(get_manager_history_data(fpl_id)['current'])
     man_data = get_manager_details(fpl_id)
@@ -217,6 +219,8 @@ def collate_manager_history(fpl_id):
 
 
 if fpl_id == '':
+    st.write('')
+elif len(gw_complete_list) == 0:
     st.write('')
 else:
     if 'ID' not in st.session_state:
