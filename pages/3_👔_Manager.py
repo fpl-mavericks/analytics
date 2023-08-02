@@ -198,12 +198,12 @@ else:
     if len(curr_df) == 0:
         st.write('')
     else:
-        man_data = get_manager_details(fpl_id)
-        curr_df['Manager'] = man_data['player_first_name'] + ' ' + man_data['player_last_name']
-        ave_df = pd.DataFrame(get_bootstrap_data()['events'])[['id', 'average_entry_score']]
-        ave_df.columns=['event', 'points']
-        ave_df['Manager'] = 'GW Average'
         try:
+            man_data = get_manager_details(fpl_id)
+            curr_df['Manager'] = man_data['player_first_name'] + ' ' + man_data['player_last_name']
+            ave_df = pd.DataFrame(get_bootstrap_data()['events'])[['id', 'average_entry_score']]
+            ave_df.columns=['event', 'points']
+            ave_df['Manager'] = 'GW Average'
             ave_cut = ave_df.loc[ave_df['event'] <= max(curr_df['event'])]
             concat_df = pd.concat([curr_df, ave_cut])
             c = alt.Chart(concat_df).mark_line().encode(
