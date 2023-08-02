@@ -262,3 +262,14 @@ def get_fixture_dfs():
     team_fdr_df = pd.concat(team_fdr_data).set_index(0)
     team_fixt_df = pd.concat(team_fixt_data).set_index(0)
     return team_fdr_df, team_fixt_df
+
+
+def get_current_season():
+    events_df = pd.DataFrame(get_bootstrap_data()['events'])
+    start_year = events_df.iloc[0]['deadline_time'][:4]
+    end_year = events_df.iloc[37]['deadline_time'][2:4]
+    season = start_year + '/' + end_year
+    return season
+    
+    
+    

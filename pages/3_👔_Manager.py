@@ -25,7 +25,7 @@ import pandas as pd
 import requests
 from fpl_utils.fpl_api_collection import (
     get_bootstrap_data, get_manager_history_data, get_manager_team_data,
-    get_manager_details, get_player_data
+    get_manager_details, get_player_data, get_current_season
 )
 from fpl_utils.fpl_utils import (
     define_sidebar
@@ -83,7 +83,8 @@ with col1:
                 manager_data = get_manager_details(fpl_id)
                 manager_name = manager_data['player_first_name'] + ' ' + manager_data['player_last_name']
                 manager_team = manager_data['name']
-                st.write('Displaying 2022/23 FPL GW Season Data for ' + manager_name + '\'s Team (' + manager_team + ')')
+                season = get_current_season()
+                st.write('Displaying ' + season + ' FPL GW Season Data for ' + manager_name + '\'s Team (' + manager_team + ')')
                 man_data = get_manager_history_data(fpl_id)
                 chips_df = pd.DataFrame(man_data['chips'])
                 if len(chips_df) == 0:
@@ -127,6 +128,8 @@ with col2:
         )
     
     if fpl_id == '':
+        st.write('')
+    elif len(gw_complete_list) == 0:
         st.write('')
     else:
         man_picks_data = get_manager_team_data(fpl_id, fpl_gw)
