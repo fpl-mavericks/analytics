@@ -77,15 +77,25 @@ st.write("Currently only looking at data available through the FPL API. FBRef an
 # get player id from player name
 # player1_id = ...
 
+def convert_score_to_result(df):
+    df.loc[df['was_home'] == True, 'result'] = df['team_h_score'] \
+        .astype('Int64').astype(str) \
+        + '-' + df['team_a_score'].astype('Int64').astype(str)
+    df.loc[df['was_home'] == False, 'result'] = df['team_a_score'] \
+        .astype('Int64').astype(str) \
+        + '-' + df['team_h_score'].astype('Int64').astype(str)
+        
+def convert_opponent_string(df):
+    df.loc[df['was_home'] == True, 'vs'] = df['vs'] + ' (H)'
+    df.loc[df['was_home'] == False, 'vs'] = df['vs'] + ' (A)'
+
 
 def collate_hist_df_from_name(player_name):
     p_id = [k for k, v in full_player_dict.items() if v == player_name]
     p_data = get_player_data(str(p_id[0]))
     p_df = pd.DataFrame(p_data['history'])
-    p_df.loc[p_df['was_home'] == True, 'result'] = p_df['team_h_score']\
-        .astype(str) + '-' + p_df['team_a_score'].astype(str)
-    p_df.loc[p_df['was_home'] == False, 'result'] = p_df['team_a_score']\
-            .astype(str) + '-' + p_df['team_h_score'].astype(str)
+    convert_score_to_result(p_df)
+    p_df.loc[p_df['result'] == '<NA>-<NA>', 'result'] = '-'
     col_rn_dict = {'round': 'GW', 'opponent_team': 'vs',
                    'total_points': 'Pts', 'minutes': 'Mins',
                    'goals_scored': 'GS', 'assists': 'A', 'clean_sheets': 'CS',
@@ -100,11 +110,14 @@ def collate_hist_df_from_name(player_name):
     p_df.rename(columns=col_rn_dict, inplace=True)
     col_order = ['GW', 'vs', 'result', 'Pts', 'Mins', 'GS', 'A', 'Pen_Miss',
                  'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC', 'RC', 'B', 'BPS',
-                 'Price', 'I', 'C', 'T', 'ICT', 'SB', 'Tran_In', 'Tran_Out']
+                 'Price', 'I', 'C', 'T', 'ICT', 'SB', 'Tran_In', 'Tran_Out',
+                 'was_home']
     p_df = p_df[col_order]
     # map opponent teams
     p_df['Price'] = p_df['Price']/10
     p_df['vs'] = p_df['vs'].map(teams_df.set_index('id')['short_name'])
+    convert_opponent_string(p_df)
+    p_df.drop('was_home', axis=1, inplace=True)
     p_df.set_index('GW', inplace=True)
     return p_df
 

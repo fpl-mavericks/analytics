@@ -181,9 +181,6 @@ try:
     
     tran_range = max_tran - min_tran
     
-    
-    
-    
     c = alt.Chart(player_hist_df.reset_index()).mark_line().encode(
         x=alt.X('GW', axis=alt.Axis(tickMinStep=1, title='GW'), scale=alt.Scale(domain=[min_gw, max_gw])),
         y=alt.Y('T_+/-', axis=alt.Axis(tickMinStep=0.1, title='Transfers Total'), scale=alt.Scale(domain=[min_tran-(tran_range*0.1), max_tran+(tran_range*0.1)])),
