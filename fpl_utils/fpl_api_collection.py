@@ -201,12 +201,13 @@ def get_league_table():
                (df['team_h_score'] == 0), 'clean_sheet'] = True
         ws = len(df.loc[df['win'] == True])
         ds = len(df.loc[df['draw'] == True])
-        l_data = {'id': [t_id], 'GP': [len(df)], 'W': [ws], 'D': [ds],
+        finished_df = df.loc[df['finished'] == True]
+        l_data = {'id': [t_id], 'GP': [len(finished_df)], 'W': [ws], 'D': [ds],
                   'L': [len(df.loc[df['loss'] == True])],
                   'GF': [df['gf'].sum()], 'GA': [df['ga'].sum()],
                   'GD': [df['gf'].sum() - df['ga'].sum()],
                   'CS': [df['clean_sheet'].sum()], 'Pts': [(ws*3) + ds],
-                  'Form': [df['result'].tail(5).str.cat(sep='')]}
+                  'Form': [finished_df['result'].tail(5).str.cat(sep='')]}
         df_list.append(pd.DataFrame(l_data))
     league_df = pd.concat(df_list)
     league_df.sort_values(['Pts', 'GD'], ascending=False, inplace=True)

@@ -21,7 +21,7 @@ base_url = 'https://fantasy.premierleague.com/api/'
 st.set_page_config(page_title='PL Table', page_icon=':sports-medal:', layout='wide')
 define_sidebar()
 
-st.title('English Premier League Table')
+st.title('Premier League Table')
 
 league_df = get_league_table()
 
