@@ -7,13 +7,16 @@ Created on Wed Oct 26 10:08:16 2022
 """
 
 import streamlit as st
+from fpl_utils.fpl_api_collection import get_total_fpl_players
 
+total_players = get_total_fpl_players()
 
 def define_sidebar():
     st.sidebar.subheader('About')
     st.sidebar.write("""This website is designed to help you analyse and
                      ultimately pick the best Fantasy Premier League Football
                      options for your team.""")
+    st.sidebar.write("""Current number of FPL Teams: """ + str('{:,.0f}'.format(total_players)))
     st.sidebar.write('[Author](https://www.linkedin.com/in/tim-youell-616731a6)')
     st.sidebar.write('[GitHub](https://github.com/fpl-mavericks/analytics/)')
 

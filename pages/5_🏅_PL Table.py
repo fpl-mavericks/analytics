@@ -34,6 +34,34 @@ new_fixt_df.columns = ['GW' + str(col) for col in new_fixt_df.columns.tolist()]
 
 league_df = league_df.join(new_fixt_df)
 
-
 float_cols = league_df.select_dtypes(include='float64').columns.values
+
+league_df = league_df.reset_index()
+league_df.rename(columns={'team': 'Team'}, inplace=True)
+league_df.index += 1
+
+league_df['GD'] = league_df['GD'].map('{:+}'.format)
+
+def highlight_ucl(df):
+    return ['background-color: green']*len(df) if df.L == 2 else ['background-color: red']*len(df)
+    
+# st.dataframe(league_df.style.apply(highlight_ucl, axis=1).format(subset=float_cols, formatter='{:.2f}'), height=740, width=1000)
 st.dataframe(league_df.style.format(subset=float_cols, formatter='{:.2f}'), height=740, width=1000)
+
+
+# =============================================================================
+# league_df.index.dtype
+# def highlight_champo(df):
+#     if  df.reset_index()['index'] < 5:
+#         return 'background: lightgreen'
+#     else:
+#         return ''
+# 
+# league_df.style.apply(highlight_champo)
+# 
+# league_df.style.apply(lambda x: ['background: lightgreen' 
+#                                   if (x.reset_index()['index'] < 5)
+#                                   else '' for i in x], axis=1)
+# =============================================================================
+
+
