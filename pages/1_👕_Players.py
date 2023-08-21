@@ -6,7 +6,7 @@ Created on Thu Sep 29 20:14:22 2022
 @author: timyouell
 """
 
-
+import os
 import streamlit as st
 import pandas as pd
 from fpl_utils.fpl_api_collection import (
@@ -218,12 +218,22 @@ def get_stats_spider_plot(player_name1, player_name2):
     return fig
 
 
+def get_top_two_mid_ids():
+    ele_data = get_bootstrap_data()['elements']
+    ele_df = pd.DataFrame(ele_data)
+    mid_df = ele_df.loc[ele_df['element_type'] == 3]
+    mid_df_sorted = mid_df.sort_values('total_points', ascending=False)
+    top2 = mid_df_sorted.head(2).reset_index()
+    return top2['index'][0], top2['index'][1]
+
+
 if len(get_player_data(list(full_player_dict.keys())[0])['history']) == 0:
     st.write("Please wait for season to begin for individual player statistics")
 else:
+    ind1, ind2 = get_top_two_mid_ids()
     rows = st.columns(2)
     
-    player1 = rows[0].selectbox("Choose Player One", full_player_dict.values(), index=5)
+    player1 = rows[0].selectbox("Choose Player One", full_player_dict.values(), index=int(ind1))
     
     player1_df = collate_hist_df_from_name(player1)
     player1_total_df = collate_total_df_from_name(player1)
@@ -232,7 +242,7 @@ else:
     rows[0].dataframe(player1_total_df.style.format({'Price': '£{:.1f}',
                                                      'TSB%': '{:.1%}'}))
     
-    player2 = rows[1].selectbox("Choose Player Two", full_player_dict.values(), index=17)
+    player2 = rows[1].selectbox("Choose Player Two", full_player_dict.values(), index=int(ind2))
     player2_df = collate_hist_df_from_name(player2)
     player2_total_df = collate_total_df_from_name(player2)
     player2_total_df.drop('team', axis=1, inplace=True)
