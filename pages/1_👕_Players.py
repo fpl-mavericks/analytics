@@ -6,7 +6,6 @@ Created on Thu Sep 29 20:14:22 2022
 @author: timyouell
 """
 
-import os
 import streamlit as st
 import pandas as pd
 from fpl_utils.fpl_api_collection import (
