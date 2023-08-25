@@ -18,7 +18,7 @@ def define_sidebar():
                      options for your team.""")
     st.sidebar.write("""Current number of FPL Teams: """ + str('{:,.0f}'.format(total_players)))
     st.sidebar.write('[Author](https://www.linkedin.com/in/tim-youell-616731a6)')
-    st.sidebar.write('[GitHub](https://github.com/fpl-mavericks/analytics/)')
+    st.sidebar.write('[GitHub](https://github.com/TimYouell15)')
 
 
 def get_annot_size(sl1, sl2):
