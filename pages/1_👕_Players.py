@@ -54,8 +54,6 @@ ele_df = ele_df[ele_cols]
 # pivot=ele_df.pivot_table(index='element_type', values='total_points', aggfunc=np.mean).reset_index()
 # pp_position = pivot.sort_values('total_points',ascending=False)
 
-
-
 # comparison of players via spider web method?
 # - chances per 90
 # - assists per 90
