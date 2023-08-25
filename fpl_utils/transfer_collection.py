@@ -58,21 +58,24 @@ def collate_tran_df_from_name(ele_df, player_name):
     full_player_dict = get_player_id_dict(web_name=False)
     p_id = [k for k, v in full_player_dict.items() if v == player_name]
     p_data = get_player_data(str(p_id[0]))
-    p_df = pd.DataFrame(p_data['history'])
-    col_rn_dict = {'round': 'GW', 'value': 'Price',
-                   'selected': 'SB', 'transfers_in': 'Tran_In',
-                   'transfers_out': 'Tran_Out'}
-    p_df.rename(columns=col_rn_dict, inplace=True)
-    p_df = p_df[['GW', 'Price', 'SB', 'Tran_In', 'Tran_Out']]
-    p_df['Price'] = p_df['Price']/10
-    new_df = pd.DataFrame({'GW': [(p_df['GW'].max() + 1)],
-                           'Price': [player_df['Price'][0]],
-                           'Tran_In': [player_df['T_In'][0]],
-                           'Tran_Out': [player_df['T_Out'][0]],
-                           'SB': [p_df['SB'].iloc[-1] + player_df['T_In'][0] - player_df['T_Out'][0]]})
-    p_df = pd.concat([p_df, new_df])
-    p_df.set_index('GW', inplace=True)
-    return p_df
+    if len(p_data['history']) == 0:
+        print(player_name + ' not included as not enough data yet.')
+    else:
+        p_df = pd.DataFrame(p_data['history'])
+        col_rn_dict = {'round': 'GW', 'value': 'Price',
+                       'selected': 'SB', 'transfers_in': 'Tran_In',
+                       'transfers_out': 'Tran_Out'}
+        p_df.rename(columns=col_rn_dict, inplace=True)
+        p_df = p_df[['GW', 'Price', 'SB', 'Tran_In', 'Tran_Out']]
+        p_df['Price'] = p_df['Price']/10
+        new_df = pd.DataFrame({'GW': [(p_df['GW'].max() + 1)],
+                               'Price': [player_df['Price'][0]],
+                               'Tran_In': [player_df['T_In'][0]],
+                               'Tran_Out': [player_df['T_Out'][0]],
+                               'SB': [p_df['SB'].iloc[-1] + player_df['T_In'][0] - player_df['T_Out'][0]]})
+        p_df = pd.concat([p_df, new_df])
+        p_df.set_index('GW', inplace=True)
+        return p_df
 
 
 def get_hist_prices_df():
