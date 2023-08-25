@@ -59,7 +59,6 @@ def collate_tran_df_from_name(ele_df, player_name):
     p_id = [k for k, v in full_player_dict.items() if v == player_name]
     p_data = get_player_data(str(p_id[0]))
     if len(p_data['history']) == 0:
-        print(player_name + ' not included as not enough data yet.')
         return pd.DataFrame()
     else:
         p_df = pd.DataFrame(p_data['history'])
@@ -86,10 +85,7 @@ def get_hist_prices_df():
     for name in ordered_names:
             p_hist_df = collate_tran_df_from_name(ele_df, name)
             if len(p_hist_df) == 0:
-                new_df = pd.DataFrame({'Player': [name],
-                                        'Start_Price': ['NA'],
-                                        'Now_Price': ['NA'],
-                                        'Price_+/-': [0]})
+                print(name + ' not included as not enough data yet.')
             else:
                 sp = p_hist_df['Price'].iloc[0]
                 np = p_hist_df['Price'].iloc[-1]
