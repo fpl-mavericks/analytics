@@ -60,6 +60,7 @@ def collate_tran_df_from_name(ele_df, player_name):
     p_data = get_player_data(str(p_id[0]))
     if len(p_data['history']) == 0:
         print(player_name + ' not included as not enough data yet.')
+        return pd.DataFrame()
     else:
         p_df = pd.DataFrame(p_data['history'])
         col_rn_dict = {'round': 'GW', 'value': 'Price',
@@ -84,12 +85,18 @@ def get_hist_prices_df():
     df_list = []
     for name in ordered_names:
             p_hist_df = collate_tran_df_from_name(ele_df, name)
-            sp = p_hist_df['Price'].iloc[0]
-            np = p_hist_df['Price'].iloc[-1]
-            new_df = pd.DataFrame({'Player': [name],
-                                    'Start_Price': [sp],
-                                    'Now_Price': [np],
-                                    'Price_+/-': [np - sp]})
+            if len(p_hist_df) == 0:
+                new_df = pd.DataFrame({'Player': [name],
+                                        'Start_Price': ['NA'],
+                                        'Now_Price': ['NA'],
+                                        'Price_+/-': [0]})
+            else:
+                sp = p_hist_df['Price'].iloc[0]
+                np = p_hist_df['Price'].iloc[-1]
+                new_df = pd.DataFrame({'Player': [name],
+                                        'Start_Price': [sp],
+                                        'Now_Price': [np],
+                                        'Price_+/-': [np - sp]})
             df_list.append(new_df)
     total_df = pd.concat(df_list)
     total_df.sort_values('Price_+/-', ascending=False, inplace=True)
