@@ -20,7 +20,7 @@ base_url = 'https://fantasy.premierleague.com/api/'
 st.set_page_config(page_title='PL Table', page_icon=':sports-medal:', layout='wide')
 define_sidebar()
 
-st.title('Premier League Table Test')
+st.title('Premier League Table')
 
 league_df = get_league_table()
 
@@ -102,5 +102,5 @@ def color_fixtures(val):
 
 
 st.dataframe(league_df.style.applymap(color_fixtures, subset=new_fixt_cols) \
-             .format(subset=float_cols, formatter='{:.2f}'), height=740, width=1000)
+             .format(subset=float_cols, formatter='{:.2f}'), height=740, width=1150)
 
