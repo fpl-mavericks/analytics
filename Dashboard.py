@@ -70,6 +70,7 @@ ele_df.sort_values('Pts', ascending=False, inplace=True)
 
 ele_df['GP'] = (ele_df['Pts'].astype(float)/ele_df['PPG'].astype(float)).round(0)
 ele_df['GP'].fillna(0, inplace=True)
+ele_df = ele_df.loc[ele_df['GP'] >= 0]
 ele_df['GP'] = ele_df['GP'].astype(int)
 
 
