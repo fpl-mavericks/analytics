@@ -108,7 +108,7 @@ def collate_hist_df_from_name(player_name):
     col_order = ['GW', 'vs', 'result', 'Pts', 'Mins', 'GS', 'xG', 'A', 'xA',
                  'xGI', 'Pen_Miss', 'CS', 'GC', 'xGC', 'OG', 'Pen_Save', 'S',
                  'YC', 'RC', 'B', 'BPS', 'Price', 'I', 'C', 'T', 'ICT', 'SB',
-                 'Tran_In', 'Tran_Out']
+                 'Tran_In', 'Tran_Out', 'was_home']
     p_df = p_df[col_order]
     # map opponent teams
     p_df['Price'] = p_df['Price']/10
