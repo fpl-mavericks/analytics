@@ -49,7 +49,7 @@ with col1:
     ele_df['full_name'] = ele_df['first_name'] + ' ' + ele_df['second_name'] + ' (' + ele_df['team'] + ')'
     
     rn_cols = {'web_name': 'Name', 'team': 'Team', 'element_type': 'Pos', 
-               'event_points': 'GW_Pts', 'total_points': 'Pts',
+               'event_points': 'GW_Pts', 'total_points': 'T_Pts',
                'now_cost': 'Price', 'selected_by_percent': 'TSB%',
                'minutes': 'Mins', 'goals_scored': 'GS', 'assists': 'A',
                'penalties_missed': 'Pen_Miss', 'clean_sheets': 'CS',
@@ -65,8 +65,8 @@ with col1:
     ele_df.rename(columns=rn_cols, inplace=True)
     ele_df['Price'] = ele_df['Price']/10
     
-    ele_cols = ['Name', 'Team', 'Pos', 'Pts', 'Price', 'TSB%', 'T_In', 'T_Out',
-                'T_In_Total', 'T_Out_Total', 'full_name']
+    ele_cols = ['Name', 'Team', 'Pos', 'GW_Pts', 'T_Pts', 'Price', 'TSB%',
+                'T_In', 'T_Out', 'T_In_Total', 'T_Out_Total', 'full_name']
     
     ele_df = ele_df[ele_cols]
     
