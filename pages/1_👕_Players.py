@@ -93,22 +93,22 @@ def collate_hist_df_from_name(player_name):
     p_df = pd.DataFrame(p_data['history'])
     convert_score_to_result(p_df)
     p_df.loc[p_df['result'] == '<NA>-<NA>', 'result'] = '-'
-    col_rn_dict = {'round': 'GW', 'opponent_team': 'vs',
-                   'total_points': 'Pts', 'minutes': 'Mins',
-                   'goals_scored': 'GS', 'assists': 'A', 'clean_sheets': 'CS',
-                   'goals_conceded': 'GC', 'own_goals': 'OG',
-                   'penalties_saved': 'Pen_Save',
-                   'penalties_missed': 'Pen_Miss', 'yellow_cards': 'YC',
-                   'red_cards': 'RC', 'saves': 'S', 'bonus': 'B',
-                   'bps': 'BPS', 'influence': 'I', 'creativity': 'C',
-                   'threat': 'T', 'ict_index': 'ICT', 'value': 'Price',
-                   'selected': 'SB', 'transfers_in': 'Tran_In',
-                   'transfers_out': 'Tran_Out'}
-    p_df.rename(columns=col_rn_dict, inplace=True)
-    col_order = ['GW', 'vs', 'result', 'Pts', 'Mins', 'GS', 'A', 'Pen_Miss',
-                 'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC', 'RC', 'B', 'BPS',
-                 'Price', 'I', 'C', 'T', 'ICT', 'SB', 'Tran_In', 'Tran_Out',
-                 'was_home']
+    rn_dict = {'round': 'GW', 'opponent_team': 'vs', 'total_points': 'Pts',
+               'minutes': 'Mins', 'goals_scored': 'GS', 'assists': 'A',
+               'clean_sheets': 'CS', 'goals_conceded': 'GC', 'own_goals': 'OG',
+               'penalties_saved': 'Pen_Save', 'penalties_missed': 'Pen_Miss',
+               'yellow_cards': 'YC', 'red_cards': 'RC', 'saves': 'S',
+               'bonus': 'B', 'bps': 'BPS', 'influence': 'I', 'creativity': 'C',
+               'threat': 'T', 'ict_index': 'ICT', 'value': 'Price',
+               'selected': 'SB', 'transfers_in': 'Tran_In',
+               'transfers_out': 'Tran_Out', 'expected_goals': 'xG',
+               'expected_assists': 'xA', 'expected_goal_involvements': 'xGI',
+               'expected_goals_conceded': 'xGC'}
+    p_df.rename(columns=rn_dict, inplace=True)
+    col_order = ['GW', 'vs', 'result', 'Pts', 'Mins', 'GS', 'xG', 'A', 'xA',
+                 'xGI', 'Pen_Miss', 'CS', 'GC', 'xGC', 'OG', 'Pen_Save', 'S',
+                 'YC', 'RC', 'B', 'BPS', 'Price', 'I', 'C', 'T', 'ICT', 'SB',
+                 'Tran_In', 'Tran_Out']
     p_df = p_df[col_order]
     # map opponent teams
     p_df['Price'] = p_df['Price']/10
