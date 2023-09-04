@@ -123,20 +123,25 @@ def collate_total_df_from_name(player_name):
     p_id = [k for k, v in full_player_dict.items() if v == player_name]
     df = ele_df.copy()
     p_total_df = df.loc[df['id'] == p_id[0]]
+    p_gw_df = collate_hist_df_from_name(player_name)
+    p_total_df['xG'] = p_gw_df['xG'].astype(float).sum()
+    p_total_df['xA'] = p_gw_df['xA'].astype(float).sum()
+    p_total_df['xGI'] = p_gw_df['xGI'].astype(float).sum()
+    p_total_df['xGC'] = p_gw_df['xGC'].astype(float).sum()
     # index = web_name
-    col_rn_dict = {'form': 'Form', 'points_per_game': 'PPG',
-                   'total_points': 'Pts', 'minutes': 'Mins',
-                   'goals_scored': 'GS', 'clean_sheets': 'CS',
-                   'goals_conceded': 'GC', 'own_goals': 'OG', 'assists': 'A',
-                   'penalties_saved': 'Pen_Save', 'now_cost': 'Price',
-                   'penalties_missed': 'Pen_Miss', 'yellow_cards': 'YC',
-                   'red_cards': 'RC', 'saves': 'S', 'bonus': 'B', 'bps': 'BPS',
-                   'selected_by_percent': 'TSB%', 'influence': 'I',
-                   'creativity': 'C', 'threat': 'T', 'ict_index': 'ICT'}
-    p_t = p_total_df.rename(columns=col_rn_dict)
-    col_order = ['web_name', 'team', 'Form', 'PPG', 'Pts', 'Mins', 'GS', 'A',
-                 'Pen_Miss', 'CS', 'GC', 'OG', 'Pen_Save', 'S', 'YC', 'RC',
-                 'B', 'BPS', 'I', 'C', 'T', 'ICT', 'Price', 'TSB%', 'element_type']
+    rn_dict = {'form': 'Form', 'points_per_game': 'PPG', 'total_points': 'Pts',
+               'minutes': 'Mins', 'goals_scored': 'GS', 'clean_sheets': 'CS',
+               'goals_conceded': 'GC', 'own_goals': 'OG', 'assists': 'A',
+               'penalties_saved': 'Pen_Save', 'now_cost': 'Price',
+               'penalties_missed': 'Pen_Miss', 'yellow_cards': 'YC',
+               'red_cards': 'RC', 'saves': 'S', 'bonus': 'B', 'bps': 'BPS',
+               'selected_by_percent': 'TSB%', 'influence': 'I',
+               'creativity': 'C', 'threat': 'T', 'ict_index': 'ICT'}
+    p_t = p_total_df.rename(columns=rn_dict)
+    col_order = ['web_name', 'team', 'Form', 'PPG', 'Pts', 'Mins', 'GS', 'xG',
+                 'A', 'xA', 'xGI', 'Pen_Miss', 'CS', 'GC', 'xGC', 'OG',
+                 'Pen_Save', 'S', 'YC', 'RC', 'B', 'BPS', 'Price', 'I', 'C',
+                 'T', 'ICT', 'TSB%', 'element_type']
     p_t = p_t[col_order]
     p_t['Price'] = p_t['Price']/10
     p_t['TSB%'].replace('0.0', '0.09', inplace=True)
@@ -231,21 +236,22 @@ else:
     rows = st.columns(2)
     
     player1 = rows[0].selectbox("Choose Player One", full_player_dict.values(), index=int(ind1))
-    
     player1_df = collate_hist_df_from_name(player1)
     player1_total_df = collate_total_df_from_name(player1)
-    player1_total_df.drop('team', axis=1, inplace=True)
+    player1_total_df.drop(['team', 'element_type'], axis=1, inplace=True)
     rows[0].dataframe(player1_df.style.format({'Price': '£{:.1f}'}))
-    rows[0].dataframe(player1_total_df.style.format({'Price': '£{:.1f}',
-                                                     'TSB%': '{:.1%}'}))
+    total_fmt = {'xG':'{:.2f}', 'xA':'{:.2f}', 'xGI':'{:.2f}', 'xGC':'{:.2f}',
+                 'Price': '£{:.1f}', 'TSB%': '{:.1%}'}
+    rows[0].dataframe(player1_total_df.style.format(total_fmt))
     
     player2 = rows[1].selectbox("Choose Player Two", full_player_dict.values(), index=int(ind2))
     player2_df = collate_hist_df_from_name(player2)
     player2_total_df = collate_total_df_from_name(player2)
-    player2_total_df.drop('team', axis=1, inplace=True)
+    player2_total_df.drop(['team', 'element_type'], axis=1, inplace=True)
     rows[1].dataframe(player2_df.style.format({'Price': '£{:.1f}'}))
-    rows[1].dataframe(player2_total_df.style.format({'Price': '£{:.1f}',
-                                                     'TSB%': '{:.1%}'}))
+    total_fmt = {'xG':'{:.2f}', 'xA':'{:.2f}', 'xGI':'{:.2f}', 'xGC':'{:.2f}',
+                 'Price': '£{:.1f}', 'TSB%': '{:.1%}'}
+    rows[1].dataframe(player2_total_df.style.format(total_fmt))
     
     rows[0].plotly_chart(get_ICT_spider_plot(player1, player2))
     rows[1].plotly_chart(get_stats_spider_plot(player1, player2))
