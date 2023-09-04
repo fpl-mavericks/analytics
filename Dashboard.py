@@ -38,22 +38,20 @@ def display_frame(df):
     st.dataframe(df.style.format(subset=float_cols, formatter='{:.1f}'))
 
 
-ele_types_data = get_bootstrap_data()['element_types']
-ele_types_df = pd.DataFrame(ele_types_data)
+ele_types_df = pd.DataFrame(get_bootstrap_data()['element_types'])
 
-teams_data = get_bootstrap_data()['teams']
-teams_df = pd.DataFrame(teams_data)
+teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
 
-ele_data = get_bootstrap_data()['elements']
-ele_df = pd.DataFrame(ele_data)
+ele_df = pd.DataFrame(get_bootstrap_data()['elements'])
+
 
 ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
 ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 
 rn_cols = {'web_name': 'Name', 'team': 'Team', 'element_type': 'Pos', 
-           'event_points': 'GW_Pts', 'total_points': 'Pts', 'now_cost': 'Price',
+           'event_points': 'GW_Pts', 'total_points': 'Pts',
            'selected_by_percent': 'TSB%', 'minutes': 'Mins',
-           'goals_scored': 'GS', 'assists': 'A',
+           'goals_scored': 'GS', 'assists': 'A', 'now_cost': 'Price',
            'penalties_missed': 'Pen_Miss', 'clean_sheets': 'CS',
            'goals_conceded': 'GC', 'own_goals': 'OG',
            'penalties_saved': 'Pen_Save', 'saves': 'S',
@@ -64,7 +62,6 @@ rn_cols = {'web_name': 'Name', 'team': 'Team', 'element_type': 'Pos',
            'threat_rank': 'T_Rank', 'ict_index_rank': 'ICT_Rank',
            'transfers_in_event': 'T_In', 'transfers_out_event': 'T_Out'}
 ele_df.rename(columns=rn_cols, inplace=True)
-
 
 ele_df.sort_values('Pts', ascending=False, inplace=True)
 
