@@ -273,4 +273,7 @@ def get_current_season():
     return season
     
     
-    
+def get_player_url_list():
+    id_dict = get_player_id_dict()
+    url_list = [base_url + f'element-summary/{k}/' for k, v in id_dict.items()]
+    return url_list
