@@ -14,7 +14,8 @@ from fpl_utils.fpl_api_collection import (
     get_bootstrap_data, get_current_gw, get_fixt_dfs, get_league_table
 )
 from fpl_utils.fpl_utils import (
-    define_sidebar, get_annot_size, map_float_to_color
+    define_sidebar, get_annot_size, map_float_to_color,
+    get_text_color_from_hash
 )
 
 base_url = 'https://fantasy.premierleague.com/api/'
@@ -23,8 +24,7 @@ st.set_page_config(page_title='Fixtures', page_icon=':calendar:', layout='wide')
 define_sidebar()
 
 st.title("Premier League Fixtures")
-st.write('Use the sliders to filter the fixtures down to a specific gameweek range.')
-
+#st.write('Use the sliders to filter the fixtures down to a specific gameweek range.')
 
 league_df = get_league_table()
 team_fdr_df, team_fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
@@ -41,28 +41,18 @@ with col1:
     select_options = ['Fixture Difficulty Rating (FDR)',
                      'Average Goals Against (GA)',
                      'Average Goals For (GF)']
-    select_choice = st.selectbox("Sort fixtures by", select_options)
+    select_choice = st.selectbox("Sort fixtures by:", select_options)
 with col2:
     radio_options = ['Fixture', 'Statistic']
-    radio_choice = st.radio("Toggle fixture or statistic (FDR/GA/GF)",
+    radio_choice = st.radio("Toggle fixture or stat:",
                             radio_options,
                             horizontal=True)
-
-
-def get_text_color_from_hash(hash_color):
-    color_map = {
-        '#920947': 'white',
-        '#ff0057': 'white',
-        '#fa8072': 'white',
-        '#147d1b': 'white'
-    }
-    return color_map.get(hash_color, 'black')
-
 
 slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [int(ct_gw), int(ct_gw+4)], 1)
 annot_size = get_annot_size(slider1, slider2)
 
 if select_choice == 'Fixture Difficulty Rating (FDR)':
+    st.write('The higher up the heatmap, the \'easier\' (according to the FDRs) the games in the selected GW range.')
     filtered_fixt_df = team_fdr_df.iloc[:, slider1-1: slider2]
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
     new_fixt_df = filtered_fixt_df.copy()
@@ -107,7 +97,7 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
     
 
 elif select_choice == 'Average Goals Against (GA)':
-    st.write('The higher up the heatmap, the higher chance of scoring in the selected GW range.')
+    st.write('The higher up the heatmap, based on historic averages, the higher chance of scoring in the selected GW range.')
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
     filtered_ga_df = team_ga_df.iloc[:, slider1-1:slider2]
     ga_fixt_df = filtered_ga_df.copy()
@@ -149,7 +139,7 @@ elif select_choice == 'Average Goals Against (GA)':
     st.write(fig)
 
 elif select_choice == 'Average Goals For (GF)':
-    st.write('The higher up the plot, the higher chance of not conceeding in the selected GW range.')
+    st.write('The higher up the heatmap, based on historic averages, the higher chance of keeping a clean sheet in the selected GW range.')
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
     filtered_gf_df = team_gf_df.iloc[:, slider1-1:slider2]
     gf_fixt_df = filtered_gf_df.copy()

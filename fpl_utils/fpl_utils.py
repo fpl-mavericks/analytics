@@ -57,3 +57,24 @@ def map_float_to_color(val, cmap, min_value, max_value):
     normalized_value = (value - min_value) / (max_value - min_value)
     index = min(int(normalized_value * (len(cmap))), len(cmap) - 1)
     return cmap[index]
+
+
+def chip_converter(name):
+    if name == '3xc':
+        return 'Triple Captain'
+    if name == 'bboost':
+        return 'Bench Boost'
+    if name == 'freehit':
+        return 'Free Hit'
+    if name == 'wildcard':
+        return 'Wildcard'
+
+
+def get_text_color_from_hash(hash_color):
+    color_map = {
+        '#920947': 'white',
+        '#ff0057': 'white',
+        '#fa8072': 'white',
+        '#147d1b': 'white'
+    }
+    return color_map.get(hash_color, 'black')

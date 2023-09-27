@@ -28,7 +28,7 @@ from fpl_utils.fpl_api_collection import (
     get_manager_details, get_player_data, get_current_season
 )
 from fpl_utils.fpl_utils import (
-    define_sidebar
+    define_sidebar, chip_converter
 )
 
 
@@ -56,17 +56,7 @@ ele_df = pd.DataFrame(ele_data)
 ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
 ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 
-def chip_converter(name):
-    if name == '3xc':
-        return 'Triple Captain'
-    if name == 'bboost':
-        return 'Bench Boost'
-    if name == 'freehit':
-        return 'Free Hit'
-    if name == 'wildcard':
-        return 'Wildcard'
-    
-col1, col2, col3 = st.columns([2,1,1])
+col1, col2, col3 = st.columns([3,2,1])
 
 
 with col1:
@@ -84,7 +74,7 @@ with col1:
                 manager_name = manager_data['player_first_name'] + ' ' + manager_data['player_last_name']
                 manager_team = manager_data['name']
                 season = get_current_season()
-                st.write('Displaying ' + season + ' FPL GW Season Data for ' + manager_name + '\'s Team (' + manager_team + ')')
+                st.write('Displaying ' + season + ' GW data for ' + manager_name + '\'s Team (' + manager_team + ')')
                 man_data = get_manager_history_data(fpl_id)
                 current_df = pd.DataFrame(man_data['current'])
                 if len(current_df) == 0:

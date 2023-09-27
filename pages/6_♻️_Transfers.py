@@ -23,7 +23,7 @@ define_sidebar()
 
 st.title('Transfers')
 
-col1, col2 = st.columns([3,2])
+col1, col2 = st.columns([6,3])
 
 with col1:
     st.write('Table ordered by most transferred in this GW.')
