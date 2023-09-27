@@ -265,6 +265,59 @@ def get_fixture_dfs():
     return team_fdr_df, team_fixt_df
 
 
+def get_fixt_dfs():
+    fixt_df = pd.DataFrame(get_fixture_data())
+    teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
+    teams_list = teams_df['short_name'].unique().tolist()
+    league_df = get_league_table().reset_index()
+    fixt_df['team_h'] = fixt_df['team_h'].map(teams_df.set_index('id')['short_name'])
+    fixt_df['team_a'] = fixt_df['team_a'].map(teams_df.set_index('id')['short_name'])
+    
+    gw_dict = dict(zip(range(1,381),
+                       [num for num in range(1, 39) for x in range(10)]))
+    fixt_df['event_lock'] = fixt_df['id'].map(gw_dict)
+    team_fdr_data = []
+    team_fixt_data = []
+    team_ga_data = []
+    team_gf_data = []
+    for team in teams_list:
+        home_data = fixt_df.copy().loc[fixt_df['team_h'] == team]
+        away_data = fixt_df.copy().loc[fixt_df['team_a'] == team]
+        home_data.loc[:, 'was_home'] = True
+        away_data.loc[:, 'was_home'] = False
+        df = pd.concat([home_data, away_data])
+        df.sort_values(['kickoff_time'], inplace=True)
+        h_filt = (df['team_h'] == team) & (df['event'].notnull())
+        a_filt = (df['team_a'] == team) & (df['event'].notnull())
+        df.loc[h_filt, 'next'] = df['team_a'] + ' (H)'
+        df.loc[a_filt, 'next'] = df['team_h'] + ' (A)'
+        df['team'] = df['next'].str[:3]
+        dup_df = df.duplicated(subset=['event'], keep=False).reset_index()
+        dup_df.columns = ['index', 'multiple']
+        df = df.reset_index().merge(dup_df, on='index', how='left')
+        df.set_index('index', inplace=True)
+        df.loc[h_filt, 'next_fdr'] = df['team_h_difficulty']
+        df.loc[a_filt, 'next_fdr'] = df['team_a_difficulty']
+        new_df = df.merge(league_df[['team', 'GA/Game', 'GF/Game']], on='team', how='left')
+        event_df = pd.DataFrame({'event': [num for num in range(1, 39)]})
+        dedup_df = df.groupby('event').agg({'next': ' + '.join}).reset_index()
+        dedup_fdr_df = new_df.groupby('event')[['next_fdr', 'GA/Game', 'GF/Game']].mean().reset_index()
+        dedup_df = dedup_df.merge(dedup_fdr_df, on='event', how='left')
+        join_df = event_df.merge(dedup_df, on='event', how='left')
+        join_df.loc[join_df['next'].isnull(), 'next'] = 'BLANK'
+        join_df['GA/Game'] = join_df['GA/Game'].apply(lambda x: round(x, 2))
+        join_df['GF/Game'] = join_df['GF/Game'].apply(lambda x: round(x, 2))
+        team_fixt_data.append(pd.DataFrame([team] + list(join_df['next'])).transpose())
+        team_fdr_data.append(pd.DataFrame([team] + list(join_df['next_fdr'])).transpose())
+        team_ga_data.append(pd.DataFrame([team] + list(join_df['GA/Game'])).transpose())
+        team_gf_data.append(pd.DataFrame([team] + list(join_df['GF/Game'])).transpose())
+    team_fdr_df = pd.concat(team_fdr_data).set_index(0)
+    team_fixt_df = pd.concat(team_fixt_data).set_index(0)
+    team_ga_df = pd.concat(team_ga_data).set_index(0)
+    team_gf_df = pd.concat(team_gf_data).set_index(0)
+    return team_fdr_df, team_fixt_df, team_ga_df, team_gf_df
+
+
 def get_current_season():
     events_df = pd.DataFrame(get_bootstrap_data()['events'])
     start_year = events_df.iloc[0]['deadline_time'][:4]

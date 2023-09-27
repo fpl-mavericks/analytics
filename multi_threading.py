@@ -33,8 +33,11 @@ async def fetch_url(session, url, semaphore):
         async with session.get(url) as response:
             return await response.json()
 
-async def get_hist_df():
+
+async def main():
     api_urls = get_player_url_list()
+    # List of your API URLs
+    
     async with aiohttp.ClientSession() as session:
         semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
         tasks = [asyncio.create_task(fetch_url(session, url,
@@ -47,12 +50,11 @@ async def get_hist_df():
         
     flat_data = [item for sublist in data for item in sublist]
     df = pd.DataFrame(flat_data)
-    print(df)
 
 
-get_hist_df()
-    
-
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
     
 
 def collate_player_hist() -> pd.DataFrame():

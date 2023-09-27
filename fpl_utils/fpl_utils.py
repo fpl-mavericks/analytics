@@ -38,3 +38,22 @@ def get_annot_size(sl1, sl2):
     else:
         annot_size = 8
     return annot_size
+
+
+def map_float_to_color(val, cmap, min_value, max_value):
+    """
+    Map a float value to a hashed color from a custom colormap represented as a list of hashed colors within a specific range.
+
+    Args:
+        value (float): The float value to map to a color (between min_value and max_value).
+        cmap (list): A custom list of hashed colors to use as the colormap.
+        min_value (float): The minimum value in the range.
+        max_value (float): The maximum value in the range.
+
+    Returns:
+        str: The hashed color corresponding to the input float value.
+    """
+    value = max(min_value, min(max_value, val))
+    normalized_value = (value - min_value) / (max_value - min_value)
+    index = min(int(normalized_value * (len(cmap))), len(cmap) - 1)
+    return cmap[index]

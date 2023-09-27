@@ -11,10 +11,10 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from fpl_utils.fpl_api_collection import (
-    get_bootstrap_data, get_current_gw, get_fixture_dfs, get_league_table
+    get_bootstrap_data, get_current_gw, get_fixt_dfs, get_league_table
 )
 from fpl_utils.fpl_utils import (
-    define_sidebar, get_annot_size
+    define_sidebar, get_annot_size, map_float_to_color
 )
 
 base_url = 'https://fantasy.premierleague.com/api/'
@@ -27,7 +27,7 @@ st.write('Use the sliders to filter the fixtures down to a specific gameweek ran
 
 
 league_df = get_league_table()
-team_fdr_df, team_fixt_df = get_fixture_dfs()
+team_fdr_df, team_fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
 
 events_df = pd.DataFrame(get_bootstrap_data()['events'])
 gw_min = min(events_df['id'])
@@ -47,6 +47,17 @@ with col2:
     radio_choice = st.radio("Toggle fixture or statistic (FDR/GA/GF)",
                             radio_options,
                             horizontal=True)
+
+
+def get_text_color_from_hash(hash_color):
+    color_map = {
+        '#920947': 'white',
+        '#ff0057': 'white',
+        '#fa8072': 'white',
+        '#147d1b': 'white'
+    }
+    return color_map.get(hash_color, 'black')
+
 
 slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [int(ct_gw), int(ct_gw+4)], 1)
 annot_size = get_annot_size(slider1, slider2)
@@ -68,28 +79,36 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
         flatui = ["#147d1b", "#00ff78", "#eceae6", "#ff0057", "#920947"]
     if radio_choice == 'Fixture':
         annot_df = filtered_team_df
+        sns.heatmap(new_fixt_df,
+                    ax=ax,
+                    cmap=flatui,
+                    annot=False,
+                    fmt='',
+                    cbar=False,
+                    linewidth=1)
+        for i in range(len(annot_df)):
+            for j in range(slider2 - slider1+1):  # Adjust for the number of columns in the heatmap
+                val = annot_df[slider1 + j][list(annot_df[slider1 + j].keys())[i]]
+                g_val = new_fixt_df[slider1 + j][list(new_fixt_df[slider1 + j].keys())[i]]
+                if len(val) > 7:
+                    fontsize = annot_size/1.5  # Adjust font size for strings longer than 7 letters
+                else:
+                    fontsize = annot_size  # Use the default font size for other strings
+                text_color = 'white' if flatui[int(g_val-2)] == flatui[-1] or flatui[int(g_val-2)] == flatui[-2]  or flatui[int(g_val-2)] == '#147d1b' else 'black'
+                plt.text(j + 0.5, i + 0.5, val, ha='center', va='center', fontsize=fontsize, color=text_color)
     else:
         annot_df = new_fixt_df # .astype(int)
-    sns.heatmap(new_fixt_df,
-                ax=ax,
-                annot=annot_df,
-                fmt='',
-                cmap=flatui,
-                annot_kws={'size': annot_size},
-                cbar=False,
-                linewidth=1)
-    
+        sns.heatmap(new_fixt_df, ax=ax, annot=True, fmt='', cmap=flatui,
+                    annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
+
     ax.set_xlabel('Gameweek')
     ax.set_ylabel('Team')
     st.write(fig)
+    
 
 elif select_choice == 'Average Goals Against (GA)':
     st.write('The higher up the heatmap, the higher chance of scoring in the selected GW range.')
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
-    team_ga_df = team_fixt_df.copy()
-    for col in team_fixt_df.columns.tolist():
-        team_ga_df[col] = team_fixt_df[col].astype(str).str[:3].map(league_df['GA/Game'])
-    
     filtered_ga_df = team_ga_df.iloc[:, slider1-1:slider2]
     ga_fixt_df = filtered_ga_df.copy()
     ga_fixt_df.loc[:, 'fixt_ave'] = ga_fixt_df.mean(axis=1)
@@ -99,15 +118,32 @@ elif select_choice == 'Average Goals Against (GA)':
     filtered_team_df_ga = filtered_team_df.loc[ga_fixt_df.index]
     
     fig, ax = plt.subplots()
-    flatui_rev = ["#147d1b", "#00ff78", "#caf4bd", "#eceae6", "#fa8072",
-                  "#ff0057", "#920947"][::-1]
+    flatui_rev = ["#147d1b", "#00ff78", "#caf4bd", "#eceae6", "#fa8072", "#ff0057",
+              "#920947"][::-1]
     if radio_choice == 'Fixture':
         annot_df = filtered_team_df_ga
+        sns.heatmap(ga_fixt_df,
+                    ax=ax,
+                    cmap=flatui_rev,
+                    annot=False,
+                    fmt='',
+                    cbar=False,
+                    linewidth=1)
+        for i in range(len(annot_df)):
+            for j in range(slider2 - slider1+1):
+                val = annot_df[slider1 + j][list(annot_df[slider1 + j].keys())[i]]
+                g_val = ga_fixt_df[slider1 + j][list(ga_fixt_df[slider1 + j].keys())[i]]
+                if len(val) > 7:
+                    fontsize = annot_size/1.5
+                else:
+                    fontsize = annot_size
+                hash_color = map_float_to_color(g_val, flatui_rev, ga_fixt_df.min().min(), ga_fixt_df.max().max())
+                text_color = get_text_color_from_hash(hash_color)
+                plt.text(j + 0.5, i + 0.5, val, ha='center', va='center', fontsize=fontsize, color=text_color)
     else:
-        annot_df = ga_fixt_df
-    sns.heatmap(ga_fixt_df, ax=ax, annot=annot_df, fmt='', cmap=flatui_rev,
-                annot_kws={'size': annot_size}, cbar=False, linewidth=1)
-    # "RdBu"
+        annot_df = ga_fixt_df # .astype(int)
+        sns.heatmap(annot_df, ax=ax, annot=True, fmt='', cmap=flatui_rev,
+                    annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
     ax.set_xlabel('Gameweek')
     ax.set_ylabel('Team')
     st.write(fig)
@@ -115,10 +151,6 @@ elif select_choice == 'Average Goals Against (GA)':
 elif select_choice == 'Average Goals For (GF)':
     st.write('The higher up the plot, the higher chance of not conceeding in the selected GW range.')
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
-    team_gf_df = team_fixt_df.copy()
-    for col in team_fixt_df.columns.tolist():
-        team_gf_df[col] = team_fixt_df[col].astype(str).str[:3].map(league_df['GF/Game'])
-    
     filtered_gf_df = team_gf_df.iloc[:, slider1-1:slider2]
     gf_fixt_df = filtered_gf_df.copy()
     gf_fixt_df.loc[:, 'fixt_ave'] = gf_fixt_df.mean(axis=1)
@@ -126,18 +158,36 @@ elif select_choice == 'Average Goals For (GF)':
     gf_fixt_df.drop('fixt_ave', axis=1, inplace=True)
     gf_fixt_df = gf_fixt_df.astype(float)
     filtered_team_df_gf = filtered_team_df.loc[gf_fixt_df.index]
+    
+    fig, ax = plt.subplots()
     flatui = ["#147d1b", "#00ff78", "#caf4bd", "#eceae6", "#fa8072", "#ff0057",
               "#920947"]
     if radio_choice == 'Fixture':
         annot_df = filtered_team_df_gf
+        sns.heatmap(gf_fixt_df,
+                    ax=ax,
+                    cmap=flatui,
+                    annot=False,
+                    fmt='',
+                    cbar=False,
+                    linewidth=1)
+        for i in range(len(annot_df)):
+            for j in range(slider2 - slider1+1):
+                val = annot_df[slider1 + j][list(annot_df[slider1 + j].keys())[i]]
+                g_val = gf_fixt_df[slider1 + j][list(gf_fixt_df[slider1 + j].keys())[i]]
+                if len(val) > 7:
+                    fontsize = annot_size/1.5
+                else:
+                    fontsize = annot_size
+                hash_color = map_float_to_color(g_val, flatui, gf_fixt_df.min().min(), gf_fixt_df.max().max())
+                text_color = get_text_color_from_hash(hash_color)
+                plt.text(j + 0.5, i + 0.5, val, ha='center', va='center', fontsize=fontsize, color=text_color)
     else:
-        annot_df = gf_fixt_df
-    fig, ax = plt.subplots()
-    sns.heatmap(gf_fixt_df, ax=ax, annot=annot_df, fmt='', cmap=flatui,
-                annot_kws={'size': annot_size}, cbar=False, linewidth=1)
-    
+        annot_df = gf_fixt_df # .astype(int)
+        sns.heatmap(annot_df, ax=ax, annot=True, fmt='', cmap=flatui,
+                    annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
     ax.set_xlabel('Gameweek')
     ax.set_ylabel('Team')
     st.write(fig)
-    
+
 #updated
