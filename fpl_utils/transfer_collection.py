@@ -90,21 +90,21 @@ def get_hist_prices_df():
                 sp = p_hist_df['Price'].iloc[0]
                 np = p_hist_df['Price'].iloc[-1]
                 new_df = pd.DataFrame({'Player': [name],
-                                        'Start_Price': [sp],
-                                        'Now_Price': [np],
-                                        'Price_+/-': [np - sp]})
+                                        'Start': [sp],
+                                        'Now': [np],
+                                        '+/-': [np - sp]})
             df_list.append(new_df)
     total_df = pd.concat(df_list)
-    total_df.sort_values('Price_+/-', ascending=False, inplace=True)
+    total_df.sort_values('+/-', ascending=False, inplace=True)
     total_df.set_index('Player', inplace=True)
     return total_df
 
 
 def write_data():
     prices_df = get_hist_prices_df()
-    prices_df['Start'] = prices_df['Start_Price'].map('{:,.1f}'.format)
-    prices_df['Now'] = prices_df['Now_Price'].map('{:,.1f}'.format)
-    prices_df['+/-'] = prices_df['Price_+/-'].map('{:,.1f}'.format)
+    prices_df['Start'] = prices_df['Start'].map('{:,.1f}'.format)
+    prices_df['Now'] = prices_df['Now'].map('{:,.1f}'.format)
+    prices_df['+/-'] = prices_df['+/-'].map('{:,.1f}'.format)
     prices_df.to_csv('./data/player_prices.csv', index=True)
 
 
