@@ -94,9 +94,9 @@ with col2:
     st.write('Table ordered by biggest price increase this PL Season.')
     prices_df = pd.read_csv('./data/player_prices.csv')
     prices_df.set_index('Player', inplace=True)
-    st.dataframe(prices_df.style.format({'Start_Price': '£{:.1f}',
-                                         'Now_Price': '£{:.1f}',
-                                         'Price_+/-': '£{:.1f}'}))
+    st.dataframe(prices_df.style.format({'Start': '£{:.1f}',
+                                         'Now': '£{:.1f}',
+                                         '+/-': '£{:.1f}'}))
     
     
 # Graph of ownership over time for a specific player, two y-axis (transfers in and price?)

@@ -102,9 +102,9 @@ def get_hist_prices_df():
 
 def write_data():
     prices_df = get_hist_prices_df()
-    prices_df['Start_Price'] = prices_df['Start_Price'].map('{:,.1f}'.format)
-    prices_df['Now_Price'] = prices_df['Now_Price'].map('{:,.1f}'.format)
-    prices_df['Price_+/-'] = prices_df['Price_+/-'].map('{:,.1f}'.format)
+    prices_df['Start'] = prices_df['Start_Price'].map('{:,.1f}'.format)
+    prices_df['Now'] = prices_df['Now_Price'].map('{:,.1f}'.format)
+    prices_df['+/-'] = prices_df['Price_+/-'].map('{:,.1f}'.format)
     prices_df.to_csv('./data/player_prices.csv', index=True)
 
 
