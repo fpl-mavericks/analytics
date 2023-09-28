@@ -7,15 +7,8 @@ Created on Thu Sep 29 20:20:43 2022
 
 Useful Manager IDs
 
-Tim: 392357
-Brookie: 524077
-Cam: 1200628
-Rosco: 1842899
-Ben Youell: 1423578
-Matt Childs: 264665
-Dhilesh: 2448780
-Teebs: 11255
-Rank 1 post-GW12: 5409263
+Tim: 94660
+
 """
 
 import streamlit as st

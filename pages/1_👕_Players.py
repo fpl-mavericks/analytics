@@ -186,9 +186,9 @@ def collate_hist_df_from_name(player_name):
                'selected': 'SB', 'transfers_in': 'Tran_In',
                'transfers_out': 'Tran_Out', 'expected_goals': 'xG',
                'expected_assists': 'xA', 'expected_goal_involvements': 'xGI',
-               'expected_goals_conceded': 'xGC'}
+               'expected_goals_conceded': 'xGC', 'result': 'Result'}
     p_df.rename(columns=rn_dict, inplace=True)
-    col_order = ['GW', 'vs', 'result', 'Pts', 'Mins', 'GS', 'xG', 'A', 'xA',
+    col_order = ['GW', 'vs', 'Result', 'Pts', 'Mins', 'GS', 'xG', 'A', 'xA',
                  'xGI', 'Pen_Miss', 'CS', 'GC', 'xGC', 'OG', 'Pen_Save', 'S',
                  'YC', 'RC', 'B', 'BPS', 'Price', 'I', 'C', 'T', 'ICT', 'SB',
                  'Tran_In', 'Tran_Out', 'was_home']
@@ -329,6 +329,7 @@ def get_player_next3(player):
 if len(get_player_data(list(full_player_dict.keys())[0])['history']) == 0:
     st.write("Please wait for season to begin for individual player statistics")
 else:
+    st.write('Order players by: Points, Price (High->Low), Price(Low->High), A->Z, Z->A')
     ind1, ind2 = get_top_two_mid_ids()
     init_rows = st.columns(4)
     player1 = init_rows[0].selectbox("Choose Player One", full_player_dict.values(), index=int(ind1))
