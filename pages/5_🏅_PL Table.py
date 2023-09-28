@@ -6,10 +6,11 @@ Created on Thu Sep 29 20:21:38 2022
 @author: timyouell
 """
 
+
 import streamlit as st
 import pandas as pd
 from fpl_utils.fpl_api_collection import (
-    get_league_table, get_current_gw, get_fixture_dfs, get_bootstrap_data
+    get_league_table, get_current_gw, get_fixt_dfs, get_bootstrap_data
 )
 from fpl_utils.fpl_utils import (
     define_sidebar
@@ -24,7 +25,7 @@ st.title('Premier League Table')
 
 league_df = get_league_table()
 
-team_fdr_df, team_fixt_df = get_fixture_dfs()
+team_fdr_df, team_fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
 
 ct_gw = get_current_gw()
 
@@ -51,15 +52,18 @@ teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
 def get_home_away_str_dict():
     new_fdr_df.columns = new_fixt_cols
     result_dict = {}
-    for column in new_fdr_df.columns:
-        values = list(new_fdr_df[column])
-        strings = list(new_fixt_df[column])
+    for col in new_fdr_df.columns:
+        values = list(new_fdr_df[col])
+        max_length = new_fixt_df[col].str.len().max()
+        if max_length > 7:
+            new_fixt_df.loc[new_fixt_df[col].str.len() <= 7, col] = new_fixt_df[col].str.pad(width=max_length+9, side='both', fillchar=' ')
+        strings = list(new_fixt_df[col])
         value_dict = {}
         for value, string in zip(values, strings):
             if value not in value_dict:
                 value_dict[value] = []
             value_dict[value].append(string)
-        result_dict[column] = value_dict
+        result_dict[col] = value_dict
     
     merged_dict = {}
     for k, dict1 in result_dict.items():
@@ -83,16 +87,16 @@ home_away_dict = get_home_away_str_dict()
 def color_fixtures(val):
     bg_color = 'background-color: '
     font_color = 'color: '
-    if any(i in val for i in home_away_dict[1]):
+    if val in home_away_dict[1]:
         bg_color += '#147d1b'
-    elif any(i in val for i in home_away_dict[2]):
+    elif val in home_away_dict[2]:
         bg_color += '#00ff78'
-    elif any(i in val for i in home_away_dict[3]):
+    elif val in home_away_dict[3]:
         bg_color += '#eceae6'
-    elif any(i in val for i in home_away_dict[4]):
+    elif val in home_away_dict[4]:
         bg_color += '#ff0057'
         font_color += 'white'
-    elif any(i in val for i in home_away_dict[5]):
+    elif val in home_away_dict[5]:
         bg_color += '#920947'
         font_color += 'white'
     else:
@@ -100,7 +104,13 @@ def color_fixtures(val):
     style = bg_color + '; ' + font_color
     return style
 
+for col in new_fixt_cols:
+    if league_df[col].dtype == 'O':
+        max_length = league_df[col].str.len().max()
+        if max_length > 7:
+            league_df.loc[league_df[col].str.len() <= 7, col] = league_df[col].str.pad(width=max_length+9, side='both', fillchar=' ')
+
+# league_df['GW7'] = ' ' * 10 + league_df['GW7'] + ' ' * 10
 
 st.dataframe(league_df.style.applymap(color_fixtures, subset=new_fixt_cols) \
              .format(subset=float_cols, formatter='{:.2f}'), height=740, width=None)
-

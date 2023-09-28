@@ -148,6 +148,7 @@ with col2:
         man_picks_data = get_manager_team_data(fpl_id, fpl_gw)
         manager_team_df = pd.DataFrame(man_picks_data['picks'])
         ele_cut = ele_df[['id', 'web_name', 'team', 'element_type']]
+        ele_cut = ele_cut.copy()
         ele_cut.rename(columns={'id': 'element'}, inplace=True)
         manager_team_df = manager_team_df.merge(ele_cut, how='left', on='element')
         # pull gw data for each player

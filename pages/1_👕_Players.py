@@ -9,7 +9,8 @@ Created on Thu Sep 29 20:14:22 2022
 import streamlit as st
 import pandas as pd
 from fpl_utils.fpl_api_collection import (
-    get_player_id_dict, get_bootstrap_data, get_player_data
+    get_player_id_dict, get_bootstrap_data, get_player_data, get_league_table,
+    get_fixt_dfs, get_current_gw
 )
 import plotly.graph_objects as go
 from fpl_utils.fpl_utils import (
@@ -33,6 +34,7 @@ teams_df = pd.DataFrame(teams_data)
 ele_data = get_bootstrap_data()['elements']
 ele_df = pd.DataFrame(ele_data)
 
+
 ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
 
 
@@ -49,6 +51,87 @@ ele_cols = ['id', 'web_name', 'chance_of_playing_this_round', 'element_type',
             'ict_index_rank', 'ict_index_rank_type', 'dreamteam_count']
 
 ele_df = ele_df[ele_cols]
+
+league_df = get_league_table()
+
+team_fdr_df, team_fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
+
+ct_gw = get_current_gw()
+
+new_fixt_df = team_fixt_df.loc[:, ct_gw:(ct_gw+2)]
+new_fixt_cols = ['GW' + str(col) for col in new_fixt_df.columns.tolist()]
+new_fixt_df.columns = new_fixt_cols
+
+new_fdr_df = team_fdr_df.loc[:, ct_gw:(ct_gw+2)]
+
+league_df = league_df.join(new_fixt_df)
+
+float_cols = league_df.select_dtypes(include='float64').columns.values
+
+league_df = league_df.reset_index()
+league_df.rename(columns={'team': 'Team'}, inplace=True)
+league_df.index += 1
+
+league_df['GD'] = league_df['GD'].map('{:+}'.format)
+
+teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
+
+## Very slow to load, works but needs to be sped up.
+def get_home_away_str_dict():
+    new_fdr_df.columns = new_fixt_cols
+    result_dict = {}
+    for col in new_fdr_df.columns:
+        values = list(new_fdr_df[col])
+        max_length = new_fixt_df[col].str.len().max()
+        if max_length > 7:
+            new_fixt_df.loc[new_fixt_df[col].str.len() <= 7, col] = new_fixt_df[col].str.pad(width=max_length+9, side='both', fillchar=' ')
+        strings = list(new_fixt_df[col])
+        value_dict = {}
+        for value, string in zip(values, strings):
+            if value not in value_dict:
+                value_dict[value] = []
+            value_dict[value].append(string)
+        result_dict[col] = value_dict
+    
+    merged_dict = {}
+    for k, dict1 in result_dict.items():
+        for key, value in dict1.items():
+            if key in merged_dict:
+                merged_dict[key].extend(value)
+            else:
+                merged_dict[key] = value
+    for k, v in merged_dict.items():
+        decoupled_list = list(set(v))
+        merged_dict[k] = decoupled_list
+    for i in range(1,6):
+        if i not in merged_dict:
+            merged_dict[i] = []
+    return merged_dict
+
+
+home_away_dict = get_home_away_str_dict()
+
+
+def color_fixtures(val):
+    bg_color = 'background-color: '
+    font_color = 'color: '
+    if val in home_away_dict[1]:
+        bg_color += '#147d1b'
+    elif val in home_away_dict[2]:
+        bg_color += '#00ff78'
+    elif val in home_away_dict[3]:
+        bg_color += '#eceae6'
+    elif val in home_away_dict[4]:
+        bg_color += '#ff0057'
+        font_color += 'white'
+    elif val in home_away_dict[5]:
+        bg_color += '#920947'
+        font_color += 'white'
+    else:
+        bg_color += ''
+    style = bg_color + '; ' + font_color
+    return style
+
 
 # df_cut = ele_df.loc[ele_df['minutes'] >= 90]
 # pivot=ele_df.pivot_table(index='element_type', values='total_points', aggfunc=np.mean).reset_index()
@@ -69,7 +152,7 @@ ele_df = ele_df[ele_cols]
 # - etc
 
 st.title("Players")
-st.write("Currently only looking at data available through the FPL API. FBRef and Understat data being added is on the To-Do list.")
+#st.write("Currently only looking at data available through the FPL API. FBRef and Understat data being added is on the To-Do list.")
 
 # get player id from player name
 # player1_id = ...
@@ -123,6 +206,7 @@ def collate_total_df_from_name(player_name):
     p_id = [k for k, v in full_player_dict.items() if v == player_name]
     df = ele_df.copy()
     p_total_df = df.loc[df['id'] == p_id[0]]
+    p_total_df = p_total_df.copy()
     p_gw_df = collate_hist_df_from_name(player_name)
     p_total_df['xG'] = p_gw_df['xG'].astype(float).sum()
     p_total_df['xA'] = p_gw_df['xA'].astype(float).sum()
@@ -158,7 +242,10 @@ def collated_spider_df_from_name(player_name):
     sp_df['gp'] = len(p_df)
     sp_df['90s'] = sp_df['Mins']/90
     sp_df['G/90'] = sp_df['GS']/sp_df['90s']
+    sp_df['xG/90'] = sp_df['xG']/sp_df['90s']
     sp_df['A/90'] = sp_df['A']/sp_df['90s']
+    sp_df['xA/90'] = sp_df['xA']/sp_df['90s']
+    sp_df['xGI/90'] = sp_df['xGI']/sp_df['90s']
     sp_df['BPS/90'] = sp_df['BPS']/sp_df['90s']
     sp_df['Ave_Mins'] = sp_df['Mins']/sp_df['gp']
     sp_df['Influence/90'] = sp_df['I'].astype(float)/sp_df['90s']
@@ -167,6 +254,7 @@ def collated_spider_df_from_name(player_name):
     sp_df['ICT/90'] = sp_df['ICT'].astype(float)/sp_df['90s']
     sp_df['CS/90'] = sp_df['CS']/sp_df['90s']
     sp_df['GC/90'] = sp_df['GC']/sp_df['90s']
+    sp_df['xGC/90'] = sp_df['xGC']/sp_df['90s']
     sp_df['YC/90'] = sp_df['YC']/sp_df['90s']
     sp_df['B/90'] = sp_df['B']/sp_df['90s']
     sp_df['S/90'] = sp_df['S']/sp_df['90s']
@@ -201,7 +289,8 @@ def get_ICT_spider_plot(player_name1, player_name2):
 
 
 def get_stats_spider_plot(player_name1, player_name2):
-    cats = ['G/90', 'A/90', 'CS/90', 'GC/90', 'YC/90', 'B/90', 'S/90']
+    cats = ['G/90', 'xG/90', 'A/90', 'xA/90', 'xGI/90', 'CS/90', 'GC/90',
+            'xGC/90', 'YC/90', 'B/90', 'S/90']
     sp1_df = collated_spider_df_from_name(player_name1)
     sp1_df['player_name'] = player_name1
     sp1_df.set_index('player_name', inplace=True)
@@ -229,13 +318,41 @@ def get_top_two_mid_ids():
     return top2['index'][0], top2['index'][1]
 
 
+def get_player_next3(player):
+    player_team = player[len(player) - 4:].replace(')', '')
+    player_next3 = league_df.loc[league_df['Team'] == player_team][new_fixt_cols]
+    player_next3['i'] = player_team + ' next 3 GWs:'
+    player_next3.set_index('i', inplace=True)
+    return player_next3
+    
+
 if len(get_player_data(list(full_player_dict.keys())[0])['history']) == 0:
     st.write("Please wait for season to begin for individual player statistics")
 else:
     ind1, ind2 = get_top_two_mid_ids()
-    rows = st.columns(2)
+    init_rows = st.columns(4)
+    player1 = init_rows[0].selectbox("Choose Player One", full_player_dict.values(), index=int(ind1))
+    player1_next3 = get_player_next3(player1)
+    for col in new_fixt_cols:
+        if player1_next3[col].dtype == 'O':
+            max_length = player1_next3[col].str.len().max()
+            if max_length > 7:
+                player1_next3.loc[player1_next3[col].str.len() <= 7, col] = player1_next3[col].str.pad(width=max_length+9, side='both', fillchar=' ')
+    init_rows[1].dataframe(player1_next3.style.applymap(color_fixtures, subset=new_fixt_df.columns) \
+        .format(subset=player1_next3.select_dtypes(include='float64') \
+                .columns.values,formatter='{:.2f}'))
+    player2 = init_rows[2].selectbox("Choose Player Two", full_player_dict.values(), index=int(ind2))
+    player2_next3 = get_player_next3(player2)
+    for col in new_fixt_cols:
+        if player2_next3[col].dtype == 'O':
+            max_length = player2_next3[col].str.len().max()
+            if max_length > 7:
+                player2_next3.loc[player2_next3[col].str.len() <= 7, col] = player2_next3[col].str.pad(width=max_length+9, side='both', fillchar=' ')
+    init_rows[3].dataframe(player2_next3.style.applymap(color_fixtures, subset=new_fixt_df.columns) \
+        .format(subset=player2_next3.select_dtypes(include='float64') \
+                .columns.values,formatter='{:.2f}'))
     
-    player1 = rows[0].selectbox("Choose Player One", full_player_dict.values(), index=int(ind1))
+    rows = st.columns(2)
     player1_df = collate_hist_df_from_name(player1)
     player1_total_df = collate_total_df_from_name(player1)
     player1_total_df.drop(['team', 'element_type'], axis=1, inplace=True)
@@ -244,7 +361,6 @@ else:
                  'Price': '£{:.1f}', 'TSB%': '{:.1%}'}
     rows[0].dataframe(player1_total_df.style.format(total_fmt))
     
-    player2 = rows[1].selectbox("Choose Player Two", full_player_dict.values(), index=int(ind2))
     player2_df = collate_hist_df_from_name(player2)
     player2_total_df = collate_total_df_from_name(player2)
     player2_total_df.drop(['team', 'element_type'], axis=1, inplace=True)
@@ -255,8 +371,6 @@ else:
     
     rows[0].plotly_chart(get_ICT_spider_plot(player1, player2))
     rows[1].plotly_chart(get_stats_spider_plot(player1, player2))
-
-    
 
 #st.plotly_chart(get_spider_plot(player1, player2), use_container_width=True)
 

@@ -330,3 +330,75 @@ def get_player_url_list():
     id_dict = get_player_id_dict()
     url_list = [base_url + f'element-summary/{k}/' for k, v in id_dict.items()]
     return url_list
+
+
+def filter_fixture_dfs_by_gw():
+    fdr_df, fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
+    ct_gw = get_current_gw()
+    new_fixt_df = fixt_df.loc[:, ct_gw:(ct_gw+2)]
+    new_fixt_cols = ['GW' + str(col) for col in new_fixt_df.columns.tolist()]
+    new_fixt_df.columns = new_fixt_cols
+    new_fdr_df = fdr_df.loc[:, ct_gw:(ct_gw+2)]
+    new_fdr_df.columns = new_fixt_cols
+    return new_fixt_df, new_fdr_df
+
+
+def add_fixts_to_lg_table(new_fixt_df):
+    league_df = get_league_table().join(new_fixt_df)
+    league_df = league_df.reset_index()
+    league_df.rename(columns={'team': 'Team'}, inplace=True)
+    league_df.index += 1
+    league_df['GD'] = league_df['GD'].map('{:+}'.format)
+    return league_df
+
+
+## Very slow to load, works but needs to be sped up.
+def get_home_away_str_dict():
+    new_fixt_df, new_fdr_df = filter_fixture_dfs_by_gw()
+    result_dict = {}
+    for column in new_fdr_df.columns:
+        values = list(new_fdr_df[column])
+        strings = list(new_fixt_df[column])
+        value_dict = {}
+        for value, string in zip(values, strings):
+            if value not in value_dict:
+                value_dict[value] = []
+            value_dict[value].append(string)
+        result_dict[column] = value_dict
+    
+    merged_dict = {}
+    for k, dict1 in result_dict.items():
+        for key, value in dict1.items():
+            if key in merged_dict:
+                merged_dict[key].extend(value)
+            else:
+                merged_dict[key] = value
+    for k, v in merged_dict.items():
+        decoupled_list = list(set(v))
+        merged_dict[k] = decoupled_list
+    for i in range(1,6):
+        if i not in merged_dict:
+            merged_dict[i] = []
+    return merged_dict
+
+
+def color_fixtures(val):
+    ha_dict = get_home_away_str_dict()
+    bg_color = 'background-color: '
+    font_color = 'color: '
+    if any(i in val for i in ha_dict[1]):
+        bg_color += '#147d1b'
+    elif any(i in val for i in ha_dict[2]):
+        bg_color += '#00ff78'
+    elif any(i in val for i in ha_dict[3]):
+        bg_color += '#eceae6'
+    elif any(i in val for i in ha_dict[4]):
+        bg_color += '#ff0057'
+        font_color += 'white'
+    elif any(i in val for i in ha_dict[5]):
+        bg_color += '#920947'
+        font_color += 'white'
+    else:
+        bg_color += ''
+    style = bg_color + '; ' + font_color
+    return style
