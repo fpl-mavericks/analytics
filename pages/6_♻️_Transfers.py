@@ -112,7 +112,7 @@ with col1:
 
 def collate_hist_df_from_name(ele_df, player_name):
     player_df = ele_df.loc[ele_df['full_name'] == player_name]
-    full_player_dict = get_player_id_dict(web_name=False)
+    full_player_dict = get_player_id_dict(order_by_col='total_points', web_name=False)
     p_id = [k for k, v in full_player_dict.items() if v == player_name]
     p_data = get_player_data(str(p_id[0]))
     p_df = pd.DataFrame(p_data['history'])
