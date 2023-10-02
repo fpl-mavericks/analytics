@@ -55,7 +55,7 @@ def get_ele_df():
 
 def collate_tran_df_from_name(ele_df, player_name):
     player_df = ele_df.loc[ele_df['full_name'] == player_name]
-    full_player_dict = get_player_id_dict(web_name=False)
+    full_player_dict = get_player_id_dict(order_by_col='now_cost', web_name=False)
     p_id = [k for k, v in full_player_dict.items() if v == player_name]
     p_data = get_player_data(str(p_id[0]))
     if len(p_data['history']) == 0:
