@@ -38,6 +38,11 @@ def display_frame(df):
     st.dataframe(df.style.format(subset=float_cols, formatter='{:.1f}'))
 
 
+def get_min_max_vals(df, x_var):
+    min_ = (df[x_var].min())
+    max_ = (df[x_var].max())
+    return min_, max_
+
 ele_types_df = pd.DataFrame(get_bootstrap_data()['element_types'])
 
 teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
@@ -107,65 +112,60 @@ with col2:
         ['GKP', 'DEF', 'MID', 'FWD']
     )
 
+min_, max_ = get_min_max_vals(ele_df, scatter_x_var)
+if scatter_x_var == 'Price':
+    slider1, slider2 = st.slider('Filter ' + scatter_x_var + ': ', min_, max_,
+                                 [min_, max_], 0.1, format='£%.1f')
+elif scatter_x_var == 'TSB%':
+    min_ = min_*100
+    max_ = max_*100
+    slider1, slider2 = st.slider('Filter ' + scatter_x_var + ': ', min_, max_,
+                                 [min_, max_], 0.1, format='%.1f')
+else:
+    slider1, slider2 = st.slider('Filter ' + scatter_x_var + ': ', min_, max_,
+                                 [min_, max_], 1)
+
 st.header('Points per ' + scatter_x_var)
-c = alt.Chart(ele_df.loc[ele_df['Pos'].isin(filter_pos)]).mark_circle(size=75).encode(
-    alt.X(scatter_lookup[scatter_x_var], scale=alt.Scale(zero=False)),
-    y='Pts',
-    color='Pos',
-    tooltip=['Name', 'Pts']
-)
+if scatter_x_var == 'TSB%':
+    c = alt.Chart(ele_df.loc[ele_df['Pos'].isin(filter_pos) &
+                             (ele_df[scatter_x_var] >= slider1/100) &
+                             (ele_df[scatter_x_var] <= slider2/100)]).mark_circle(size=75).encode(
+        alt.X(scatter_lookup[scatter_x_var], scale=alt.Scale(zero=False)),
+        y='Pts',
+        color='Pos',
+        tooltip=['Name', 'Pts']
+    )
+else:
+    c = alt.Chart(ele_df.loc[ele_df['Pos'].isin(filter_pos) &
+                             (ele_df[scatter_x_var] >= slider1) &
+                             (ele_df[scatter_x_var] <= slider2)]).mark_circle(size=75).encode(
+        alt.X(scatter_lookup[scatter_x_var], scale=alt.Scale(zero=False)),
+        y='Pts',
+        color='Pos',
+        tooltip=['Name', 'Pts']
+    )
 st.altair_chart(c, use_container_width=True)
 
-# df for split on X axis variable
-# e.g. points per million df sorted by ppm
 var_df = indexed_ele_df.copy()
-if scatter_x_var == 'Mins':
-    radio_options = ['All Players', '> 25% Minutes']
-    radio_choice = st.radio("Toggle Players who have played more than 25% of minutes.",
-                            radio_options,
-                            horizontal=True)
-    max_mins = var_df['Mins'].max()
-    if radio_choice == '> 25% Minutes':
-        var_df = var_df.loc[(var_df['Pos'].isin(filter_pos)) & (var_df['Mins'] >= (max_mins*0.25))]
-        var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
-        var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
-        droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
-        var_df.drop(droppers, axis=1, inplace=True)
-        st.dataframe(var_df.style.format({'Price': '£{:.1f}',
-                                          'TSB%': '{:.1%}',
-                                          'Pts/Mins': '{:.3f}'}))
-    else:
-        var_df = var_df.loc[(var_df['Pos'].isin(filter_pos))]
-        var_df['Pts/' + scatter_x_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
-        var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
-        droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
-        var_df.drop(droppers, axis=1, inplace=True)
-        st.dataframe(var_df.style.format({'Price': '£{:.1f}',
-                                          'TSB%': '{:.1%}',
-                                          'Pts/Mins': '{:.3f}'}))
+if scatter_x_var == 'TSB%':
+    var_df = var_df.loc[(var_df['Pos'].isin(filter_pos)) &
+                        (var_df[scatter_x_var] >= slider1/100) &
+                        (var_df[scatter_x_var] <= slider2/100)]
 else:
-    var_df = var_df.loc[(var_df['Pos'].isin(filter_pos))]
-    per_var = 'Pts/' + scatter_x_var
-    var_df[per_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
-    var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
-    droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
-    var_df.drop(droppers, axis=1, inplace=True)
-    if per_var == 'Pts/TSB%':
-        var_df[per_var] = var_df[per_var]/100
-        st.dataframe(var_df.style.format({'Price': '£{:.1f}',
-                                          'TSB%': '{:.1%}',
-                                          per_var: '{:.2f}'}))
-    else:
-        st.dataframe(var_df.style.format({'Price': '£{:.1f}',
-                                          'TSB%': '{:.1%}',
-                                          per_var: '{:.3f}'}))
-
-
-# ht_df = pd.read_csv('data/haaland_transfers.csv')
-
-# st.dataframe(ht_df)
-
-
-
-
-
+    var_df = var_df.loc[(var_df['Pos'].isin(filter_pos)) &
+                        (var_df[scatter_x_var] >= slider1) &
+                        (var_df[scatter_x_var] <= slider2)]
+per_var = 'Pts/' + scatter_x_var
+var_df[per_var] = var_df['Pts'].astype(float)/var_df[scatter_x_var].astype(float)
+var_df.sort_values('Pts/' + scatter_x_var, ascending=False, inplace=True)
+droppers = ['I', 'C', 'T', 'ICT', 'I_Rank','C_Rank', 'T_Rank', 'ICT_Rank']
+var_df.drop(droppers, axis=1, inplace=True)
+if per_var == 'Pts/TSB%':
+    var_df[per_var] = var_df[per_var]/100
+    st.dataframe(var_df.style.format({'Price': '£{:.1f}',
+                                      'TSB%': '{:.1%}',
+                                      per_var: '{:.2f}'}))
+else:
+    st.dataframe(var_df.style.format({'Price': '£{:.1f}',
+                                      'TSB%': '{:.1%}',
+                                      per_var: '{:.3f}'}))
