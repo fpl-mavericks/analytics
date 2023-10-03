@@ -45,7 +45,6 @@ league_df.index += 1
 
 league_df['GD'] = league_df['GD'].map('{:+}'.format)
 
-
 teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
 
 ## Very slow to load, works but needs to be sped up.
