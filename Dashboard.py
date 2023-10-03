@@ -27,7 +27,10 @@ st.title('FPL Dashboard')
 define_sidebar()
 
 
-def get_total_fpl_players():
+def get_total_fpl_players() -> int:
+    '''
+    returns an int value of the current total number of fpl teams.
+    '''
     base_resp = requests.get(base_url + 'bootstrap-static/')
     return base_resp.json()['total_players']
 
