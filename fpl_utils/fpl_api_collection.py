@@ -135,11 +135,18 @@ picks_df = get_manager_team_data(9, 4)
 # shouldn't matter if new player_id's are added via tranfsers etc because it
 # should just get added to the big dataset
 
+def remove_moved_players(df):
+    strings = ['loan', 'Loan', 'Contract cancelled', 'Left the club',
+               'Permanent', 'Released', 'Signed for', 'Transferred',
+               'Season long', 'Not training', 'permanent', 'transferred']
+    df_copy = df.loc[~df['news'].str.contains('|'.join(strings), case=False)]
+    return df_copy
 
 # get player_id list
 
 def get_player_id_dict(order_by_col, web_name=True) -> dict:
     ele_df = pd.DataFrame(get_bootstrap_data()['elements'])
+    ele_df = remove_moved_players(ele_df)
     teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
     ele_df['team_name'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
     ele_df.sort_values(order_by_col, ascending=False, inplace=True)
@@ -231,6 +238,14 @@ def get_current_gw():
     events_df = pd.DataFrame(get_bootstrap_data()['events'])
     current_gw = events_df.loc[events_df['is_next'] == True].reset_index()['id'][0]
     return current_gw
+
+
+def get_current_season():
+    events_df = pd.DataFrame(get_bootstrap_data()['events'])
+    id_first = events_df['deadline_time'].str[:4].iloc[0]
+    id_last = events_df['deadline_time'].str[2:4].iloc[-1]
+    current_season = str(id_first) + '/' + str(id_last)
+    return current_season
 
 
 def get_fixture_dfs():
@@ -329,7 +344,7 @@ def get_current_season():
     
     
 def get_player_url_list():
-    id_dict = get_player_id_dict()
+    id_dict = get_player_id_dict(order_by_col='id')
     url_list = [base_url + f'element-summary/{k}/' for k, v in id_dict.items()]
     return url_list
 

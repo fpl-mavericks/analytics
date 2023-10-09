@@ -53,6 +53,7 @@ teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
 ele_df = pd.DataFrame(get_bootstrap_data()['elements'])
 
 
+
 ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
 ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 

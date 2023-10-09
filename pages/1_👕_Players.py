@@ -10,7 +10,7 @@ import streamlit as st
 import pandas as pd
 from fpl_utils.fpl_api_collection import (
     get_player_id_dict, get_bootstrap_data, get_player_data, get_league_table,
-    get_fixt_dfs, get_current_gw
+    get_fixt_dfs, get_current_gw, remove_moved_players
 )
 import plotly.graph_objects as go
 from fpl_utils.fpl_utils import (
@@ -340,10 +340,7 @@ else:
     slider1, slider2 = filter_rows[1].slider('Filter Price: ', price_min, price_max, [price_min, price_max], 0.1, format='£%.1f')
     ele_copy['team_name'] = ele_copy['team'].map(teams_df.set_index('id')['short_name'])
     ele_copy['price'] = ele_copy['now_cost']/10
-    search_strings = ['loan', 'Loan', 'Contract cancelled', 'Left the club',
-                      'Permanent', 'Released', 'Signed for', 'Transferred',
-                      'Season long', 'Not training']
-    ele_copy = ele_copy.loc[~ele_copy['news'].str.contains('|'.join(search_strings), case=False)]
+    ele_copy = remove_moved_players(ele_copy)
     ele_cut = ele_copy.loc[(ele_copy['price'] <= slider2) &
                             (ele_copy['price'] > slider1) &
                             (ele_copy['element_type'].isin(filter_pos))]
