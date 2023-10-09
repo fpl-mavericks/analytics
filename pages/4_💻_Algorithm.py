@@ -22,7 +22,7 @@ st.set_page_config(page_title='Algorithm', page_icon=':computer:', layout='wide'
 define_sidebar()
 
 st.title('Predicted Points Algorithm')
-st.write('Gradient Boosting Regressor Algorithm trained on 22/23 historic data and 23/24 data so far.')
+st.write('Gradient Boosting Regressor Algorithm trained on 22/23 historic and 23/24 FPL data so far.')
 
 crnt_gw = get_current_gw()
 
@@ -116,7 +116,7 @@ df = preds_df.loc[preds_df['GW'] == gw_slider]
 ele_df['Pos'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
 ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 ele_df.rename(columns={'id': 'element',
-                       'total_points': 'Pts',
+                       'total_points': 'Total_Pts',
                        'news': 'News',
                        'selected_by_percent': 'TSB%'}, inplace=True)
 ele_df['Name'] = ele_df['element'].map(player_dict)
@@ -140,7 +140,7 @@ merge_df = ele_df.merge(df, on='element', how='left')
 full_df = merge_df.merge(league_cut, on='team', how='left')
 full_df.sort_values('Pred_Pts', ascending=False, inplace=True)
 
-full_cut = full_df[['Name', 'Pos', 'TSB%', 'News', 'Pts', 'Price', 'Pred_Pts'] + new_fixt_cols].set_index('Name').copy()
+full_cut = full_df[['Name', 'Pos', 'TSB%', 'News', 'Total_Pts', 'Price', 'Pred_Pts'] + new_fixt_cols].set_index('Name').copy()
 full_cut['TSB%'] = full_cut['TSB%'].astype(float)/100
 
 final_df = full_cut.loc[(full_cut['Price'] <= slider2) &
