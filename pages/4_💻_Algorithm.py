@@ -103,7 +103,6 @@ filter_pos = cols[2].multiselect(
         ['GKP', 'DEF', 'MID', 'FWD']
     )
 
-
 price_min = (ele_df['now_cost'].min())/10
 price_max = (ele_df['now_cost'].max())/10
 slider1, slider2 = second_cols[0].slider('Filter Price: ', price_min, price_max, [price_min, price_max], 0.1, format='£%.1f')
@@ -122,7 +121,6 @@ ele_df.rename(columns={'id': 'element',
                        'selected_by_percent': 'TSB%'}, inplace=True)
 ele_df['Name'] = ele_df['element'].map(player_dict)
 ele_df['Price'] = ele_df['now_cost']/10
-# ele_cut = ele_df.copy()[['element', 'Name', 'Pos', 'News', 'Pts', 'Price', 'team']]
 
 team_fdr_df, team_fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
 new_fixt_df = team_fixt_df.loc[:, gw_slider:(gw_slider)]
