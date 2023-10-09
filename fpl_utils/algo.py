@@ -181,8 +181,11 @@ def get_total_df():
     total_df.sort_values(['p_id', 'fixture'], ascending=True, inplace=True)
     total_df['points'] = total_df['total_points']
     total_df.rename(columns=renamed_cols, inplace=True)
-    
-    total_df[cols_to_tf] = total_df.groupby('p_id')[cols_to_tf].shift(1)
+    total_df[cols_to_tf] = total_df[cols_to_tf].apply(pd.to_numeric)
+    tot_cols_to_tf = ['total_' + col for col in cols_to_tf]
+    total_df[tot_cols_to_tf] = total_df.groupby('p_id')[cols_to_tf].cumsum()
+    shift_cols = cols_to_tf + tot_cols_to_tf
+    total_df[shift_cols] = total_df.groupby('p_id')[shift_cols].shift(1)
     total_cut = total_df.loc[total_df['points_fpf'].notnull()]
     total_cut.reset_index(inplace=True)
     t_cut = total_cut.copy()
