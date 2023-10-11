@@ -79,12 +79,14 @@ with col1:
                         man_gw_hist = pd.DataFrame(man_data['current'])
                         man_gw_hist.sort_values('event', ascending=False, inplace=True)
                         man_gw_hist = man_gw_hist.merge(ave_df, on='event', how='left')
-                        man_gw_hist.set_index('event', inplace=True)
-                        rn_cols = {'points': 'GWP', 'total_points': 'OP', 'rank': 'GWR',
-                                   'overall_rank': 'OR', 'bank': '£', 'value': 'TV',
-                                   'event_transfers': 'TM', 'event_transfers_cost': 'TC',
-                                   'points_on_bench': 'PoB'}
+                        rn_cols = {'points': 'GWP', 'total_points': 'OP',
+                                   'rank': 'GWR', 'overall_rank': 'OR',
+                                   'bank': '£', 'value': 'TV',
+                                   'event_transfers': 'TM', 'event': 'Event',
+                                   'event_transfers_cost': 'TC',
+                                   'points_on_bench': 'PoB', 'name': 'Chip'}
                         man_gw_hist.rename(columns=rn_cols, inplace=True)
+                        man_gw_hist.set_index('Event', inplace=True)
                         man_gw_hist.drop('rank_sort', axis=1, inplace=True)
                         man_gw_hist['TV'] = man_gw_hist['TV']/10
                         man_gw_hist['£'] = man_gw_hist['£']/10
@@ -104,12 +106,14 @@ with col1:
                         man_gw_hist = man_gw_hist.merge(chips_df, on='event', how='left')
                         man_gw_hist = man_gw_hist.merge(ave_df, on='event', how='left')
                         man_gw_hist['name'].fillna('None', inplace=True)
-                        man_gw_hist.set_index('event', inplace=True)
-                        rn_cols = {'points': 'GWP', 'total_points': 'OP', 'rank': 'GWR',
-                                   'overall_rank': 'OR', 'bank': '£', 'value': 'TV',
-                                   'event_transfers': 'TM', 'event_transfers_cost': 'TC',
+                        rn_cols = {'points': 'GWP', 'total_points': 'OP',
+                                   'rank': 'GWR', 'overall_rank': 'OR',
+                                   'bank': '£', 'value': 'TV',
+                                   'event_transfers': 'TM', 'event': 'Event',
+                                   'event_transfers_cost': 'TC',
                                    'points_on_bench': 'PoB', 'name': 'Chip'}
                         man_gw_hist.rename(columns=rn_cols, inplace=True)
+                        man_gw_hist.set_index('Event', inplace=True)
                         man_gw_hist.drop('rank_sort', axis=1, inplace=True)
                         man_gw_hist['TV'] = man_gw_hist['TV']/10
                         man_gw_hist['£'] = man_gw_hist['£']/10
