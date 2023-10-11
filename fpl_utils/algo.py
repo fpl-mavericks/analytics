@@ -33,30 +33,6 @@ fixt_cols = ['fixture', 'team_h_difficulty', 'team_a_difficulty']
 
 ele_cols = ['element', 'name', 'position', 'team']
 
-# renamed_cols = {'total_points': 'points_fpf',
-#                 'minutes': 'mins_fpf',
-#                 'goals_scored': 'goals_fpf',
-#                 'assists': 'assists_fpf',
-#                 'clean_sheets': 'cs_fpf',
-#                 'goals_conceded': 'gc_fpf',
-#                 'own_goals': 'og_fpf',
-#                 'penalties_saved': 'ps_fpf',
-#                 'penalties_missed': 'pm_fpf',
-#                 'yellow_cards': 'yc_fpf',
-#                 'red_cards': 'rc_fpf',
-#                 'saves': 'saves_fpf',
-#                 'bonus': 'bonus_fpf',
-#                 'bps': 'bps_fpf',
-#                 'influence': 'i_fpf',
-#                 'creativity': 'c_fpf',
-#                 'threat': 't_fpf',
-#                 'ict_index': 'ict_fpf',
-#                 'starts': 'starts_fpf',
-#                 'expected_goals': 'xG_fpf',
-#                 'expected_assists': 'xA_fpf',
-#                 'expected_goal_involvements': 'xGI_fpf',
-#                 'expected_goals_conceded': 'xGC_fpf'}
-
 renamed_cols = {'total_points': 'points',
                 'minutes': 'mins',
                 'goals_scored': 'goals',
@@ -78,45 +54,40 @@ renamed_cols = {'total_points': 'points',
                 'expected_goal_involvements': 'xGI',
                 'expected_goals_conceded': 'xGC'}
 
-# cols_to_tf = ['points_fpf', 'mins_fpf', 'goals_fpf', 'assists_fpf', 'cs_fpf',
-#               'gc_fpf', 'og_fpf', 'ps_fpf', 'pm_fpf', 'yc_fpf', 'rc_fpf',
-#               'saves_fpf', 'bonus_fpf', 'bps_fpf', 'i_fpf', 'c_fpf', 't_fpf',
-#               'ict_fpf', 'starts_fpf', 'xG_fpf', 'xA_fpf', 'xGI_fpf',
-#               'xGC_fpf', 'prop_mins']
-
 string_cols = ['position', 'team', 'oppo_name', 'was_home', 'season']
 
 x_keys = ['assists_fpf', 'bps_fpf', 'cs_fpf', 'c_fpf', 'xA_fpf', 'xGI_fpf',
           'xG_fpf', 'xGC_fpf', 'gc_fpf', 'goals_fpf', 'ict_fpf',
           'i_fpf', 'mins_fpf', 'og_fpf', 'pm_fpf', 'ps_fpf', 'rc_fpf',
-          'saves_fpf', 't_fpf', 'points_fpf', 'prop_mins_fpf',
-          'ave_points_fpf', 'ave_assists_fpf', 'ave_goals_fpf', 'ave_cs_fpf',
-          'ave_xA_fpf', 'ave_xGI_fpf', 'ave_xG_fpf', 'ave_bps_fpf',
-          'ave_xGC_fpf', 'ave_i_fpf', 'ave_c_fpf', 'ave_t_fpf', 'ave_ict_fpf',
-          'ave_saves_fpf', 'ave_ps_fpf', 'ave_yc_fpf', 'ave_rc_fpf',
-          'transfers_balance', 'transfers_in', 'transfers_out', 'value',
-          'yc_fpf', 'team_str', 'team_str_h', 'team_str_a', 'team_str_att_h',
-          'team_str_att_a', 'team_str_def_h', 'team_str_def_a', 'oppo_str',
-          'oppo_str_h', 'oppo_str_a', 'oppo_str_att_h', 'oppo_str_att_a',
-          'oppo_str_def_h', 'oppo_str_def_a', 'oppo_difficulty',
-          'position_DEF', 'position_FWD', 'position_GKP', 'position_MID',
-          'team_Arsenal', 'team_Aston Villa', 'team_Bournemouth',
-          'team_Brentford', 'team_Brighton', 'team_Burnley', 'team_Chelsea',
-          'team_Crystal Palace', 'team_Everton', 'team_Fulham', 'team_Leeds',
-          'team_Leicester', 'team_Liverpool', 'team_Luton', 'team_Man City',
-          'team_Man Utd', 'team_Newcastle', "team_Nott'm Forest",
-          'team_Sheffield Utd', 'team_Southampton', 'team_Spurs',
-          'team_West Ham', 'team_Wolves', 'oppo_name_Arsenal',
-          'oppo_name_Aston Villa', 'oppo_name_Bournemouth',
-          'oppo_name_Brentford', 'oppo_name_Brighton', 'oppo_name_Burnley',
-          'oppo_name_Chelsea', 'oppo_name_Crystal Palace', 'oppo_name_Everton',
-          'oppo_name_Fulham', 'oppo_name_Leeds', 'oppo_name_Leicester',
-          'oppo_name_Liverpool', 'oppo_name_Luton', 'oppo_name_Man City',
-          'oppo_name_Man Utd', 'oppo_name_Newcastle',
-          "oppo_name_Nott'm Forest", 'oppo_name_Sheffield Utd',
-          'oppo_name_Southampton', 'oppo_name_Spurs', 'oppo_name_West Ham',
-          'oppo_name_Wolves', 'was_home_False', 'was_home_True',
-          'season_2022/23', 'season_2023/24']
+          'saves_fpf', 't_fpf', 'points_fpf', 'prop_mins_fpf', 'ave_points_fpf', 'ave_assists_fpf',
+          'ave_goals_fpf', 'ave_cs_fpf','ave_xA_fpf', 'ave_xGI_fpf',
+          'ave_xG_fpf', 'ave_bps_fpf','ave_xGC_fpf', 'ave_i_fpf', 'ave_c_fpf',
+          'ave_t_fpf', 'ave_ict_fpf','ave_saves_fpf', 'ave_ps_fpf',
+          'ave_yc_fpf', 'ave_rc_fpf', 'ave_team_goals_fpf', 'ave_team_xG_fpf',
+          'ave_team_xA_fpf', 'transfers_balance', 'transfers_in', 'transfers_out',
+          
+          'team_str', 'team_str_h', 'team_str_a', 'team_str_att_h',
+'team_str_att_a', 'team_str_def_h', 'team_str_def_a', 'oppo_str',
+'oppo_str_h', 'oppo_str_a', 'oppo_str_att_h', 'oppo_str_att_a',
+'oppo_str_def_h', 'oppo_str_def_a', 'oppo_difficulty',
+'position_DEF', 'position_FWD', 'position_GKP', 'position_MID',
+'team_Arsenal', 'team_Aston Villa', 'team_Bournemouth',
+'team_Brentford', 'team_Brighton', 'team_Burnley', 'team_Chelsea',
+'team_Crystal Palace', 'team_Everton', 'team_Fulham', 'team_Leeds',
+'team_Leicester', 'team_Liverpool', 'team_Luton', 'team_Man City',
+'team_Man Utd', 'team_Newcastle', "team_Nott'm Forest",
+'team_Sheffield Utd', 'team_Southampton', 'team_Spurs',
+'team_West Ham', 'team_Wolves', 'oppo_name_Arsenal',
+'oppo_name_Aston Villa', 'oppo_name_Bournemouth',
+'oppo_name_Brentford', 'oppo_name_Brighton', 'oppo_name_Burnley',
+'oppo_name_Chelsea', 'oppo_name_Crystal Palace', 'oppo_name_Everton',
+'oppo_name_Fulham', 'oppo_name_Leeds', 'oppo_name_Leicester',
+'oppo_name_Liverpool', 'oppo_name_Luton', 'oppo_name_Man City',
+'oppo_name_Man Utd', 'oppo_name_Newcastle',
+"oppo_name_Nott'm Forest", 'oppo_name_Sheffield Utd',
+'oppo_name_Southampton', 'oppo_name_Spurs', 'oppo_name_West Ham',
+'oppo_name_Wolves', 'was_home_False', 'was_home_True',
+'season_2022/23', 'season_2023/24']
 
 new_ele_cols = ['element', 'name', 'position', 'team', 'now_cost',
                 'transfers_in_event', 'transfers_out_event']
@@ -218,13 +189,21 @@ def get_total_df():
     cols_to_ave = ['points', 'assists', 'goals', 'cs', 'xA', 'xGI', 'xG',
                    'bps', 'xGC', 'i', 'c', 't', 'ict', 'saves', 'ps', 'yc',
                    'rc', 'mins']
-    
+    team_stat_cols = ['goals', 'xG', 'xA']
+    team_stat_cols_extra = ['team_' + col for col in team_stat_cols]
+    ave_team_stat_cols = ['ave_' + col for col in team_stat_cols_extra]
     ave_cols = ['ave_' + col for col in cols_to_ave]
     t_cols = cols_to_ave + ['gc' , 'og', 'pm', 'prop_mins']
-    fpf_cols = [col + '_fpf' for col in (t_cols + ave_cols)]
+    fpf_cols = [col + '_fpf' for col in (t_cols + ave_cols + ave_team_stat_cols)]
     total_df[t_cols] = total_df[t_cols].apply(pd.to_numeric)
-    total_df = calculate_average_values(total_df, cols_to_ave)
-    fpf_rename_cols = dict(zip((t_cols + ave_cols), fpf_cols))
+    
+
+    for col in team_stat_cols:
+         total_df['team_' + col] = total_df.groupby(['team', 'fixture'])[col].transform('sum')
+     
+    total_df = calculate_average_values(total_df, cols_to_ave + team_stat_cols_extra)
+
+    fpf_rename_cols = dict(zip((t_cols + ave_cols + ave_team_stat_cols), fpf_cols))
     total_df.rename(columns=fpf_rename_cols, inplace=True)
     total_df['points'] = total_df['points_fpf']
     total_df[fpf_cols] = total_df.groupby('p_id')[fpf_cols].shift(1)
@@ -279,13 +258,20 @@ def get_future_df():
     cols_to_ave = ['points', 'assists', 'goals', 'cs', 'xA', 'xGI', 'xG',
                    'bps', 'xGC', 'i', 'c', 't', 'ict', 'saves', 'ps', 'yc',
                    'rc', 'mins']
-    
+    team_stat_cols = ['goals', 'xG', 'xA']
+    team_stat_cols_extra = ['team_' + col for col in team_stat_cols]
+    ave_team_stat_cols = ['ave_' + col for col in team_stat_cols_extra]
     ave_cols = ['ave_' + col for col in cols_to_ave]
     t_cols = cols_to_ave + ['gc' , 'og', 'pm', 'prop_mins']
-    fpf_cols = [col + '_fpf' for col in (t_cols + ave_cols)]
+    fpf_cols = [col + '_fpf' for col in (t_cols + ave_cols + ave_team_stat_cols)]
     curr_cut[t_cols] = curr_cut[t_cols].apply(pd.to_numeric)
-    curr_cut = calculate_average_values(curr_cut, cols_to_ave)
-    fpf_rename_cols = dict(zip((t_cols + ave_cols), fpf_cols))
+    
+    for col in team_stat_cols:
+        curr_cut['team_' + col] = curr_cut.groupby(['team', 'fixture'])[col].transform('sum')
+    
+    curr_cut = calculate_average_values(curr_cut, cols_to_ave + team_stat_cols_extra)
+
+    fpf_rename_cols = dict(zip((t_cols + ave_cols + ave_team_stat_cols), fpf_cols))
     curr_cut.rename(columns=fpf_rename_cols, inplace=True)
     curr_cut['points'] = curr_cut['points_fpf']
     curr_cut[fpf_cols] = curr_cut.groupby('p_id')[fpf_cols].shift(1)
@@ -366,10 +352,3 @@ future_total = pd.concat([future_cut.reset_index(drop=True),
 preds = future_total[['element', 'GW', 'xP']].groupby(['element', 'GW']).sum().reset_index()
 
 preds.to_csv('./data/2023_24_pred_file.csv', index=False)
-
-
-# need to transform data so it can be run through a model - ChatGPT
-# randomise bottom all - most recent gw and use that as the private_test set.
-# Build a training and testing pipeline to keep train and test separate - like what Will built at Aviva
-# need to build some CI/CD so this happens either automatically or I can simply
-# re-train a model, analyse and then upload via a pickle file to GitHub, using the model to predict each GW
