@@ -320,8 +320,8 @@ def get_top_two_mid_ids():
 def get_player_next3(player):
     player_team = player[len(player) - 4:].replace(')', '')
     player_next3 = league_df.loc[league_df['Team'] == player_team][new_fixt_cols]
-    player_next3['i'] = player_team + ' next 3:'
-    player_next3.set_index('i', inplace=True)
+    player_next3['Team'] = player_team + ' next 3:'
+    player_next3.set_index('Team', inplace=True)
     return player_next3
     
 
