@@ -113,7 +113,7 @@ with col1:
                         man_gw_hist.drop('rank_sort', axis=1, inplace=True)
                         man_gw_hist['TV'] = man_gw_hist['TV']/10
                         man_gw_hist['£'] = man_gw_hist['£']/10
-                        man_gw_hist = man_gw_hist[['Ave', 'GWP', 'OP', 'GWR', 'OR', '£', 'TV', 'TM', 'TC', 'PoB', 'Chip']]
+                        man_gw_hist = man_gw_hist[['GWP', 'Ave', 'OP', 'GWR', 'OR', '£', 'TV', 'TM', 'TC', 'PoB', 'Chip']]
                         st.dataframe(man_gw_hist.style.format({'TV': '£{:.1f}',
                                                                '£': '£{:.1f}'}),
                                      width=800, height=522)
