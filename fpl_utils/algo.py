@@ -16,10 +16,10 @@ from concurrent.futures import ThreadPoolExecutor
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
 
-t_cols = ['id', 'name', 'strength', 'strength_overall_home',
-          'strength_overall_away', 'strength_attack_home',
-          'strength_attack_away', 'strength_defence_home',
-          'strength_defence_away']
+str_cols = ['id', 'name', 'strength', 'strength_overall_home',
+            'strength_overall_away', 'strength_attack_home',
+            'strength_attack_away', 'strength_defence_home',
+            'strength_defence_away']
 
 team_cols = ['id', 'team', 'team_str', 'team_str_h', 'team_str_a',
              'team_str_att_h', 'team_str_att_a', 'team_str_def_h',
@@ -33,50 +33,75 @@ fixt_cols = ['fixture', 'team_h_difficulty', 'team_a_difficulty']
 
 ele_cols = ['element', 'name', 'position', 'team']
 
-renamed_cols = {'total_points': 'points_fpf',
-                'minutes': 'mins_fpf',
-                'goals_scored': 'goals_fpf',
-                'assists': 'assists_fpf',
-                'clean_sheets': 'cs_fpf',
-                'goals_conceded': 'gc_fpf',
-                'own_goals': 'og_fpf',
-                'penalties_saved': 'ps_fpf',
-                'penalties_missed': 'pm_fpf',
-                'yellow_cards': 'yc_fpf',
-                'red_cards': 'rc_fpf',
-                'saves': 'saves_fpf',
-                'bonus': 'bonus_fpf',
-                'bps': 'bps_fpf',
-                'influence': 'i_fpf',
-                'creativity': 'c_fpf',
-                'threat': 't_fpf',
-                'ict_index': 'ict_fpf',
-                'starts': 'start_fpf',
-                'expected_goals': 'xG_fpf',
-                'expected_assists': 'xA_fpf',
-                'expected_goal_involvements': 'xGI_fpf',
-                'expected_goals_conceded': 'xGC_fpf'}
+# renamed_cols = {'total_points': 'points_fpf',
+#                 'minutes': 'mins_fpf',
+#                 'goals_scored': 'goals_fpf',
+#                 'assists': 'assists_fpf',
+#                 'clean_sheets': 'cs_fpf',
+#                 'goals_conceded': 'gc_fpf',
+#                 'own_goals': 'og_fpf',
+#                 'penalties_saved': 'ps_fpf',
+#                 'penalties_missed': 'pm_fpf',
+#                 'yellow_cards': 'yc_fpf',
+#                 'red_cards': 'rc_fpf',
+#                 'saves': 'saves_fpf',
+#                 'bonus': 'bonus_fpf',
+#                 'bps': 'bps_fpf',
+#                 'influence': 'i_fpf',
+#                 'creativity': 'c_fpf',
+#                 'threat': 't_fpf',
+#                 'ict_index': 'ict_fpf',
+#                 'starts': 'starts_fpf',
+#                 'expected_goals': 'xG_fpf',
+#                 'expected_assists': 'xA_fpf',
+#                 'expected_goal_involvements': 'xGI_fpf',
+#                 'expected_goals_conceded': 'xGC_fpf'}
 
-cols_to_tf = ['points_fpf', 'mins_fpf', 'goals_fpf', 'assists_fpf', 'cs_fpf',
-              'gc_fpf', 'og_fpf', 'ps_fpf', 'pm_fpf', 'yc_fpf', 'rc_fpf',
-              'saves_fpf', 'bonus_fpf', 'bps_fpf', 'i_fpf', 'c_fpf', 't_fpf',
-              'ict_fpf', 'start_fpf', 'xG_fpf', 'xA_fpf', 'xGI_fpf', 'xGC_fpf']
+renamed_cols = {'total_points': 'points',
+                'minutes': 'mins',
+                'goals_scored': 'goals',
+                'assists': 'assists',
+                'clean_sheets': 'cs',
+                'goals_conceded': 'gc',
+                'own_goals': 'og',
+                'penalties_saved': 'ps',
+                'penalties_missed': 'pm',
+                'yellow_cards': 'yc',
+                'red_cards': 'rc',
+                'influence': 'i',
+                'creativity': 'c',
+                'threat': 't',
+                'ict_index': 'ict',
+                'starts': 'starts',
+                'expected_goals': 'xG',
+                'expected_assists': 'xA',
+                'expected_goal_involvements': 'xGI',
+                'expected_goals_conceded': 'xGC'}
 
-str_cols = ['position', 'team', 'oppo_name', 'was_home', 'season']
+# cols_to_tf = ['points_fpf', 'mins_fpf', 'goals_fpf', 'assists_fpf', 'cs_fpf',
+#               'gc_fpf', 'og_fpf', 'ps_fpf', 'pm_fpf', 'yc_fpf', 'rc_fpf',
+#               'saves_fpf', 'bonus_fpf', 'bps_fpf', 'i_fpf', 'c_fpf', 't_fpf',
+#               'ict_fpf', 'starts_fpf', 'xG_fpf', 'xA_fpf', 'xGI_fpf',
+#               'xGC_fpf', 'prop_mins']
 
-x_keys = ['assists_fpf', 'bonus_fpf', 'bps_fpf', 'cs_fpf', 'c_fpf', 'xA_fpf',
-          'xGI_fpf', 'xG_fpf', 'xGC_fpf', 'gc_fpf', 'goals_fpf', 'ict_fpf',
+string_cols = ['position', 'team', 'oppo_name', 'was_home', 'season']
+
+x_keys = ['assists_fpf', 'bps_fpf', 'cs_fpf', 'c_fpf', 'xA_fpf', 'xGI_fpf',
+          'xG_fpf', 'xGC_fpf', 'gc_fpf', 'goals_fpf', 'ict_fpf',
           'i_fpf', 'mins_fpf', 'og_fpf', 'pm_fpf', 'ps_fpf', 'rc_fpf',
-          'saves_fpf', 'start_fpf', 't_fpf', 'points_fpf',
-          'transfers_balance', 'transfers_in',
-          'transfers_out', 'value', 'yc_fpf', 'team_str', 'team_str_h',
-          'team_str_a', 'team_str_att_h', 'team_str_att_a', 'team_str_def_h',
-          'team_str_def_a', 'oppo_str', 'oppo_str_h', 'oppo_str_a',
-          'oppo_str_att_h', 'oppo_str_att_a', 'oppo_str_def_h',
-          'oppo_str_def_a', 'oppo_difficulty', 'position_DEF', 'position_FWD',
-          'position_GKP', 'position_MID', 'team_Arsenal',
-          'team_Aston Villa', 'team_Bournemouth', 'team_Brentford',
-          'team_Brighton', 'team_Burnley', 'team_Chelsea',
+          'saves_fpf', 't_fpf', 'points_fpf', 'prop_mins_fpf',
+          'ave_points_fpf', 'ave_assists_fpf', 'ave_goals_fpf', 'ave_cs_fpf',
+          'ave_xA_fpf', 'ave_xGI_fpf', 'ave_xG_fpf', 'ave_bps_fpf',
+          'ave_xGC_fpf', 'ave_i_fpf', 'ave_c_fpf', 'ave_t_fpf', 'ave_ict_fpf',
+          'ave_saves_fpf', 'ave_ps_fpf', 'ave_yc_fpf', 'ave_rc_fpf',
+          'transfers_balance', 'transfers_in', 'transfers_out', 'value',
+          'yc_fpf', 'team_str', 'team_str_h', 'team_str_a', 'team_str_att_h',
+          'team_str_att_a', 'team_str_def_h', 'team_str_def_a', 'oppo_str',
+          'oppo_str_h', 'oppo_str_a', 'oppo_str_att_h', 'oppo_str_att_a',
+          'oppo_str_def_h', 'oppo_str_def_a', 'oppo_difficulty',
+          'position_DEF', 'position_FWD', 'position_GKP', 'position_MID',
+          'team_Arsenal', 'team_Aston Villa', 'team_Bournemouth',
+          'team_Brentford', 'team_Brighton', 'team_Burnley', 'team_Chelsea',
           'team_Crystal Palace', 'team_Everton', 'team_Fulham', 'team_Leeds',
           'team_Leicester', 'team_Liverpool', 'team_Luton', 'team_Man City',
           'team_Man Utd', 'team_Newcastle', "team_Nott'm Forest",
@@ -127,7 +152,7 @@ def call_api(endpoint):
 
 def get_curr_season_hist_data():
     player_endpoints = get_player_url_list()
-    with ThreadPoolExecutor(max_workers=100) as executor:
+    with ThreadPoolExecutor(max_workers=50) as executor:
         res = executor.map(call_api, player_endpoints)
     hist_df = pd.concat(res)
     return hist_df
@@ -144,8 +169,8 @@ def get_current_season_df():
     merge_df = a_curr_df.merge(ele_cut, on='element', how='left')
     merge_df['GW'] = merge_df['round']
     fixt_cut = fixt_df[fixt_cols]
-    team_cut = teams_df[t_cols]
-    oppo_cut = teams_df[t_cols]
+    team_cut = teams_df[str_cols]
+    oppo_cut = teams_df[str_cols]
     team_cut.columns = team_cols
     oppo_cut.columns = oppo_cols
     merge_df.rename(columns={'team': 'id'}, inplace=True)
@@ -159,8 +184,8 @@ def get_current_season_df():
 def get_historic_season_df():
     fixts_22_23.rename(columns={'id': 'fixture'}, inplace=True)
     fixt_22_23_cut = fixts_22_23[fixt_cols]
-    team_22_23_cut = teams_22_23[t_cols]
-    oppo_22_23_cut = teams_22_23[t_cols]
+    team_22_23_cut = teams_22_23[str_cols]
+    oppo_22_23_cut = teams_22_23[str_cols]
     team_22_23_cut.columns = team_cols
     oppo_22_23_cut.columns = oppo_cols
     hist_copy = hist_df.copy()
@@ -171,21 +196,38 @@ def get_historic_season_df():
     hist_t_df['season'] = '2022/23'
     return hist_t_df
 
+curr_df = get_current_season_df()
+hist_df = get_historic_season_df()
+
+
+def calculate_average_values(df, cols):
+    for col in cols:
+        df['ave_' + col] = df.groupby('p_id')[col].cumsum() / df['games_avail']
+    return df
+
 
 def get_total_df():
-    curr_df = get_current_season_df()
-    hist_df = get_historic_season_df()
-    
     total_df = pd.concat([hist_df, curr_df])
+    total_df.rename(columns=renamed_cols, inplace=True)
     total_df['p_id'] = total_df['season'] + '_' + total_df['element'].astype(str)
     total_df.sort_values(['p_id', 'fixture'], ascending=True, inplace=True)
-    total_df['points'] = total_df['total_points']
-    total_df.rename(columns=renamed_cols, inplace=True)
-    total_df[cols_to_tf] = total_df[cols_to_tf].apply(pd.to_numeric)
-    tot_cols_to_tf = ['total_' + col for col in cols_to_tf]
-    total_df[tot_cols_to_tf] = total_df.groupby('p_id')[cols_to_tf].cumsum()
-    shift_cols = cols_to_tf + tot_cols_to_tf
-    total_df[shift_cols] = total_df.groupby('p_id')[shift_cols].shift(1)
+    
+    total_df['games_avail'] = (total_df.groupby('p_id').cumcount() + 1)
+    total_df['prop_mins'] = total_df.groupby('p_id')['mins'].apply(lambda x: x.cumsum())/(total_df['games_avail']*90)
+    
+    cols_to_ave = ['points', 'assists', 'goals', 'cs', 'xA', 'xGI', 'xG',
+                   'bps', 'xGC', 'i', 'c', 't', 'ict', 'saves', 'ps', 'yc',
+                   'rc', 'mins']
+    
+    ave_cols = ['ave_' + col for col in cols_to_ave]
+    t_cols = cols_to_ave + ['gc' , 'og', 'pm', 'prop_mins']
+    fpf_cols = [col + '_fpf' for col in (t_cols + ave_cols)]
+    total_df[t_cols] = total_df[t_cols].apply(pd.to_numeric)
+    total_df = calculate_average_values(total_df, cols_to_ave)
+    fpf_rename_cols = dict(zip((t_cols + ave_cols), fpf_cols))
+    total_df.rename(columns=fpf_rename_cols, inplace=True)
+    total_df['points'] = total_df['points_fpf']
+    total_df[fpf_cols] = total_df.groupby('p_id')[fpf_cols].shift(1)
     total_cut = total_df.loc[total_df['points_fpf'].notnull()]
     total_cut.reset_index(inplace=True)
     t_cut = total_cut.copy()
@@ -195,7 +237,7 @@ def get_total_df():
               'oppo_difficulty'] = t_cut['team_a_difficulty']
     t_cut['position'].replace('GK', 'GKP', inplace=True)
     t_cut.set_index('index', inplace=True)
-    dummy_df = pd.get_dummies(t_cut, columns=str_cols)
+    dummy_df = pd.get_dummies(t_cut, columns=string_cols)
     return dummy_df
 
 
@@ -223,13 +265,35 @@ model = define_model(df)
 
 
 def get_future_df():
-    curr_df = get_current_season_df()
+    curr_cut = curr_df.copy()
     fixt_copy = fixt_df.copy()
     ele_copy = ele_df.copy()
-    mr_fixt_df = curr_df.sort_values('kickoff_time', ascending=False) \
+    
+    curr_cut.rename(columns=renamed_cols, inplace=True)
+    curr_cut['p_id'] = curr_cut['season'] + '_' + curr_cut['element'].astype(str)
+    curr_cut.sort_values(['p_id', 'fixture'], ascending=True, inplace=True)
+    
+    curr_cut['games_avail'] = (curr_cut.groupby('p_id').cumcount() + 1)
+    curr_cut['prop_mins'] = curr_cut.groupby('p_id')['mins'].apply(lambda x: x.cumsum())/(curr_cut['games_avail']*90)
+    
+    cols_to_ave = ['points', 'assists', 'goals', 'cs', 'xA', 'xGI', 'xG',
+                   'bps', 'xGC', 'i', 'c', 't', 'ict', 'saves', 'ps', 'yc',
+                   'rc', 'mins']
+    
+    ave_cols = ['ave_' + col for col in cols_to_ave]
+    t_cols = cols_to_ave + ['gc' , 'og', 'pm', 'prop_mins']
+    fpf_cols = [col + '_fpf' for col in (t_cols + ave_cols)]
+    curr_cut[t_cols] = curr_cut[t_cols].apply(pd.to_numeric)
+    curr_cut = calculate_average_values(curr_cut, cols_to_ave)
+    fpf_rename_cols = dict(zip((t_cols + ave_cols), fpf_cols))
+    curr_cut.rename(columns=fpf_rename_cols, inplace=True)
+    curr_cut['points'] = curr_cut['points_fpf']
+    curr_cut[fpf_cols] = curr_cut.groupby('p_id')[fpf_cols].shift(1)
+    
+    mr_fixt_df = curr_cut.sort_values('kickoff_time', ascending=False) \
         .groupby('element').head(1)
-    mr_fixt_df.rename(columns=renamed_cols, inplace=True)
-    mr_fixt_row = mr_fixt_df[['element'] + cols_to_tf]
+    # mr_fixt_df.rename(columns=renamed_cols, inplace=True)
+    mr_fixt_row = mr_fixt_df[['element'] + fpf_cols]
     fixt_cut = fixt_copy.loc[fixt_copy['event'] >= crnt_gw]
     team_id_list = teams_df['id'].tolist()
     total_fixts_df_list = []
@@ -264,8 +328,8 @@ def get_future_df():
     ele_merge_fixt_df.loc[ele_merge_fixt_df['was_home'] == True, 'oppo_difficulty'] = ele_merge_fixt_df['team_h_difficulty']
     ele_merge_fixt_df.loc[ele_merge_fixt_df['was_home'] == False, 'oppo_difficulty'] = ele_merge_fixt_df['team_a_difficulty']
     
-    team_cut = teams_df[t_cols]
-    oppo_cut = teams_df[t_cols]
+    team_cut = teams_df[str_cols]
+    oppo_cut = teams_df[str_cols]
     team_cut.columns = team_cols
     oppo_cut.columns = oppo_cols
     
@@ -276,7 +340,7 @@ def get_future_df():
     
     fut_df = ele_teams_df.merge(mr_fixt_row, on='element', how='left')
     
-    fut_dummy_df = pd.get_dummies(fut_df, columns=str_cols)
+    fut_dummy_df = pd.get_dummies(fut_df, columns=string_cols)
     
     cols_to_add = ['team_Leeds', 'team_Leicester', 'team_Southampton',
                    'oppo_name_Leeds', 'oppo_name_Leicester',
@@ -286,6 +350,7 @@ def get_future_df():
     
     
     full_fut_df = pd.concat([fut_dummy_df, data_to_add], axis=1)
+    full_fut_df = full_fut_df.loc[full_fut_df['points_fpf'].notnull()]
     return full_fut_df
 
 
