@@ -51,7 +51,6 @@ ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 
 col1, col2, col3 = st.columns([3,2,1])
 
-
 with col1:
     fpl_id = st.text_input('Please enter your FPL ID:', 94660)
     if fpl_id == '':
