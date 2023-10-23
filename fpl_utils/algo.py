@@ -10,7 +10,7 @@ import requests
 import pandas as pd
 from fpl_utils.fpl_api_collection import (
     get_player_url_list, get_fixture_data, get_bootstrap_data, get_current_gw,
-    get_current_season, remove_moved_players
+    get_current_season, remove_moved_players, get_player_id_dict
 )
 from concurrent.futures import ThreadPoolExecutor
 from sklearn.model_selection import train_test_split
@@ -351,4 +351,13 @@ future_total = pd.concat([future_cut.reset_index(drop=True),
 
 preds = future_total[['element', 'GW', 'xP']].groupby(['element', 'GW']).sum().reset_index()
 
-preds.to_csv('./data/2023_24_pred_file.csv', index=False)
+
+df = preds.loc[preds['GW'] == crnt_gw]
+player_dict = get_player_id_dict(order_by_col='now_cost', web_name=False)
+ele_df.rename(columns={'id': 'element'}, inplace=True)
+ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
+ele_df['Name'] = ele_df['element'].map(player_dict)
+merge_df = ele_df.merge(df, on='element', how='left')[['Name', 'GW', 'xP']]
+
+
+#preds.to_csv('./data/2023_24_pred_file.csv', index=False)
