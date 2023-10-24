@@ -76,6 +76,7 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
                     fmt='',
                     cbar=False,
                     linewidth=1)
+        new_fixt_df.fillna(0, inplace=True)
         for i in range(len(annot_df)):
             for j in range(slider2 - slider1+1):  # Adjust for the number of columns in the heatmap
                 val = annot_df[slider1 + j][list(annot_df[slider1 + j].keys())[i]]
