@@ -94,6 +94,7 @@ player_dict = get_player_id_dict(order_by_col='now_cost', web_name=False)
 gw_max = max(events_df['id'])
 
 cols = st.columns([8, 1, 8])
+team_cols = st.columns([1])
 second_cols = st.columns([8,1,8])
 
 gw_slider = cols[0].selectbox('Select GW: ', range(int(crnt_gw), int(gw_max)))
@@ -101,6 +102,14 @@ filter_pos = cols[2].multiselect(
         'Filter Position',
         ['GKP', 'DEF', 'MID', 'FWD'],
         ['GKP', 'DEF', 'MID', 'FWD']
+    )
+
+teams_list = teams_df['short_name'].tolist()
+
+filter_team = team_cols[0].multiselect(
+        'Filter Team',
+        teams_list,
+        teams_list
     )
 
 price_min = (ele_df['now_cost'].min())/10
@@ -140,14 +149,15 @@ merge_df = ele_df.merge(df, on='element', how='left')
 full_df = merge_df.merge(league_cut, on='team', how='left')
 full_df.sort_values('Pred_Pts', ascending=False, inplace=True)
 
-full_cut = full_df[['Name', 'Pos', 'TSB%', 'News', 'Total_Pts', 'Price', 'Pred_Pts'] + new_fixt_cols].set_index('Name').copy()
+full_cut = full_df[['Name', 'Pos', 'TSB%', 'News', 'Total_Pts', 'Price', 'Pred_Pts', 'team'] + new_fixt_cols].set_index('Name').copy()
 full_cut['TSB%'] = full_cut['TSB%'].astype(float)/100
 
 final_df = full_cut.loc[(full_cut['Price'] <= slider2) &
                         (full_cut['Price'] > slider1) &
                         (full_cut['TSB%'] <= tsb_slid2/100) &
                         (full_cut['TSB%'] > tsb_slid1/100) &
-                        (full_cut['Pos'].isin(filter_pos))]
+                        (full_cut['Pos'].isin(filter_pos)) &
+                        (full_cut['team'].isin(filter_team))]
 
 home_away_dict = get_home_away_str_dict()
 
