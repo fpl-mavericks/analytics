@@ -159,6 +159,8 @@ final_df = full_cut.loc[(full_cut['Price'] <= slider2) &
                         (full_cut['Pos'].isin(filter_pos)) &
                         (full_cut['team'].isin(filter_team))]
 
+final_df.to_csv('./data/GW'+str(crnt_gw)+'_preds.csv', index=False)
+
 home_away_dict = get_home_away_str_dict()
 
 total_fmt = {'Price': '£{:.1f}', 'Pred_Pts': '{:.1f}', 'TSB%': '{:.1%}'}
