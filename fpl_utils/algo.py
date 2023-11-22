@@ -360,4 +360,4 @@ ele_df['Name'] = ele_df['element'].map(player_dict)
 merge_df = ele_df.merge(df, on='element', how='left')[['Name', 'GW', 'xP']]
 
 
-preds.to_csv('./data/2023_24_pred_file.csv', index=False)
+# preds.to_csv('./data/2023_24_pred_file.csv', index=False)
