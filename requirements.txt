@@ -1,5 +1,5 @@
 matplotlib
 pandas
 seaborn
-streamlit
+streamlit==1.4.0
 plotly
