@@ -358,6 +358,7 @@ ele_df.rename(columns={'id': 'element'}, inplace=True)
 ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 ele_df['Name'] = ele_df['element'].map(player_dict)
 merge_df = ele_df.merge(df, on='element', how='left')[['Name', 'GW', 'xP']]
+merge_df.sort_values('xP', ascending=False, inplace=True)
 
 
 # preds.to_csv('./data/2023_24_pred_file.csv', index=False)
