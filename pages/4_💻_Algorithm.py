@@ -100,6 +100,9 @@ team_cols = st.columns([1])
 second_cols = st.columns([8,1,8])
 
 gw_slider = cols[0].multiselect('Select GW: ', list(range(int(crnt_gw), int(gw_max+1))), [int(crnt_gw)])
+# gw_slider = cols[0].multiselect('Select GW: ', list(range(int(crnt_gw), int(gw_max+1))), [22, 21])
+
+gw_slider = list(sorted(gw_slider))
 
 filter_pos = cols[2].multiselect(
         'Filter Position',
