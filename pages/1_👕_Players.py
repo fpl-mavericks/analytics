@@ -207,6 +207,7 @@ def collate_total_df_from_name(player_name):
     p_total_df = df.loc[df['id'] == p_id[0]]
     p_total_df = p_total_df.copy()
     p_gw_df = collate_hist_df_from_name(player_name)
+    p_total_df['GP'] = (p_gw_df['Mins'] > 0).sum()
     p_total_df['xG'] = p_gw_df['xG'].astype(float).sum()
     p_total_df['xA'] = p_gw_df['xA'].astype(float).sum()
     p_total_df['xGI'] = p_gw_df['xGI'].astype(float).sum()
@@ -221,10 +222,10 @@ def collate_total_df_from_name(player_name):
                'selected_by_percent': 'TSB%', 'influence': 'I',
                'creativity': 'C', 'threat': 'T', 'ict_index': 'ICT'}
     p_t = p_total_df.rename(columns=rn_dict)
-    col_order = ['web_name', 'team', 'Form', 'PPG', 'Pts', 'Mins', 'GS', 'xG',
-                 'A', 'xA', 'xGI', 'Pen_Miss', 'CS', 'GC', 'xGC', 'OG',
+    col_order = ['web_name', 'team', 'GP', 'PPG', 'Pts', 'Mins', 'GS',
+                 'xG', 'A', 'xA', 'xGI', 'Pen_Miss', 'CS', 'GC', 'xGC', 'OG',
                  'Pen_Save', 'S', 'YC', 'RC', 'B', 'BPS', 'Price', 'I', 'C',
-                 'T', 'ICT', 'TSB%', 'element_type']
+                 'T', 'ICT', 'Form', 'TSB%', 'element_type']
     p_t = p_t[col_order]
     p_t['Price'] = p_t['Price']/10
     p_t['TSB%'].replace('0.0', '0.09', inplace=True)
@@ -413,9 +414,10 @@ else:
         total_fmt = {'xG':'{:.2f}', 'xA':'{:.2f}', 'xGI':'{:.2f}', 'xGC':'{:.2f}',
                      'Price': '£{:.1f}', 'TSB%': '{:.1%}'}
         rows[1].dataframe(player2_total_df.style.format(total_fmt))
+
+        rows[0].plotly_chart(get_stats_spider_plot(player1, player2))
+        rows[1].plotly_chart(get_ICT_spider_plot(player1, player2))
         
-        rows[0].plotly_chart(get_ICT_spider_plot(player1, player2))
-        rows[1].plotly_chart(get_stats_spider_plot(player1, player2))
 
 #st.plotly_chart(get_spider_plot(player1, player2), use_container_width=True)
 
