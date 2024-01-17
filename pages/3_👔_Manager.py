@@ -106,14 +106,14 @@ with col1:
                         man_gw_hist = man_gw_hist.merge(chips_df, on='event', how='left')
                         man_gw_hist = man_gw_hist.merge(ave_df, on='event', how='left')
                         man_gw_hist['name'].fillna('None', inplace=True)
-                        rn_cols = {'points': 'GWP', 'total_points': 'OP',
-                                   'rank': 'GWR', 'overall_rank': 'OR',
-                                   'bank': '£', 'value': 'TV',
-                                   'event_transfers': 'TM', 'event': 'Event',
+                        rn_cols = {'event': 'GW', 'points': 'GWP',
+                                   'total_points': 'OP', 'rank': 'GWR',
+                                   'overall_rank': 'OR', 'bank': '£',
+                                   'value': 'TV', 'event_transfers': 'TM',
                                    'event_transfers_cost': 'TC',
                                    'points_on_bench': 'PoB', 'name': 'Chip'}
                         man_gw_hist.rename(columns=rn_cols, inplace=True)
-                        man_gw_hist.set_index('Event', inplace=True)
+                        man_gw_hist.set_index('GW', inplace=True)
                         man_gw_hist.drop('rank_sort', axis=1, inplace=True)
                         man_gw_hist['TV'] = man_gw_hist['TV']/10
                         man_gw_hist['£'] = man_gw_hist['£']/10
@@ -176,11 +176,16 @@ with col2:
         manager_team_df.loc[manager_team_df['multiplier'] != 0, 'Played'] = True
         manager_team_df['Played'].fillna(False, inplace=True)
         manager_team_df = manager_team_df[['web_name', 'element_type', 'team', 'opponent_team', 'total_points', 'Played']]
-        rn_cols = {'element_type': 'Pos', 'team': 'Team', 'opponent_team': 'vs', 'total_points': 'GWP'}
-        manager_team_df.rename(columns=rn_cols, inplace=True)
         manager_team_df.set_index('web_name', inplace=True)
+        rn_cols = {'web_name': 'Player',
+                   'element_type': 'Pos',
+                   'team': 'Team',
+                   'opponent_team': 'vs',
+                   'total_points': 'GWP'}
+        manager_team_df.rename(columns=rn_cols, inplace=True)
         manager_team_df['vs'] = manager_team_df['vs'].map(teams_df.set_index('id')['short_name'])
         manager_team_df['vs'].fillna('BLANK', inplace=True)
+
         st.dataframe(manager_team_df, height=562)
 
 
@@ -217,7 +222,7 @@ else:
             ave_cut = ave_df.loc[ave_df['event'] <= max(curr_df['event'])]
             concat_df = pd.concat([curr_df, ave_cut])
             c = alt.Chart(concat_df).mark_line().encode(
-                x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
+                x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW'), scale=alt.Scale(domain=[1, len(curr_df)+1])),
                 y=alt.Y('points', axis=alt.Axis(title='GW Points')),
                 color='Manager').properties(
                     height=400)
@@ -256,7 +261,7 @@ else:
     total_df = pd.concat(df_list)
 
     c = alt.Chart(total_df).mark_line().encode(
-        x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW')),
+        x=alt.X('event', axis=alt.Axis(tickMinStep=1, title='GW'), scale=alt.Scale(domain=[1, len(total_df)+1])),
         y=alt.Y('overall_rank', axis=alt.Axis(title='Overall Rank'), scale=alt.Scale(reverse=True)),
         color='Manager').properties(
             height=700)
