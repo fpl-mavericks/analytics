@@ -176,13 +176,13 @@ with col2:
         manager_team_df.loc[manager_team_df['multiplier'] != 0, 'Played'] = True
         manager_team_df['Played'].fillna(False, inplace=True)
         manager_team_df = manager_team_df[['web_name', 'element_type', 'team', 'opponent_team', 'total_points', 'Played']]
-        manager_team_df.set_index('web_name', inplace=True)
         rn_cols = {'web_name': 'Player',
                    'element_type': 'Pos',
                    'team': 'Team',
                    'opponent_team': 'vs',
                    'total_points': 'GWP'}
         manager_team_df.rename(columns=rn_cols, inplace=True)
+        manager_team_df.set_index('Player', inplace=True)
         manager_team_df['vs'] = manager_team_df['vs'].map(teams_df.set_index('id')['short_name'])
         manager_team_df['vs'].fillna('BLANK', inplace=True)
 
