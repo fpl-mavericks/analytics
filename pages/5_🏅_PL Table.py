@@ -110,6 +110,9 @@ for col in new_fixt_cols:
             league_df.loc[league_df[col].str.len() <= 7, col] = league_df[col].str.pad(width=max_length+9, side='both', fillchar=' ')
 
 # league_df['GW7'] = ' ' * 10 + league_df['GW7'] + ' ' * 10
+league_df.loc[league_df['Team'] == 'EVE', 'Team'] = 'EVE*'
 
 st.dataframe(league_df.style.applymap(color_fixtures, subset=new_fixt_cols) \
              .format(subset=float_cols, formatter='{:.2f}'), height=740, width=None)
+
+st.text('*Everton received a 10 Point deduction on 17/11/2023 for breaching Financial Fair Play rules.')

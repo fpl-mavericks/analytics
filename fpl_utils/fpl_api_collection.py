@@ -218,9 +218,11 @@ def get_league_table():
                   'Form': [finished_df['result'].tail(5).str.cat(sep='')]}
         df_list.append(pd.DataFrame(l_data))
     league_df = pd.concat(df_list)
-    league_df.sort_values(['Pts', 'GD', 'GF', 'GA'], ascending=False, inplace=True)
     league_df['team'] = league_df['id'].map(teams_df.set_index('id')['short_name'])
     league_df.drop('id', axis=1, inplace=True)
+    league_df.reset_index(drop=True, inplace=True)
+    league_df.loc[league_df['team'] == 'EVE', 'Pts'] = league_df['Pts'] - 10
+    league_df.sort_values(['Pts', 'GD', 'GF', 'GA'], ascending=False, inplace=True)
     league_df.set_index('team', inplace=True)
     league_df['GF'] = league_df['GF'].astype(int)
     league_df['GA'] = league_df['GA'].astype(int)
