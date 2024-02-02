@@ -198,6 +198,7 @@ def collate_hist_df_from_name(player_name):
     convert_opponent_string(p_df)
     p_df.drop('was_home', axis=1, inplace=True)
     p_df.set_index('GW', inplace=True)
+    p_df.sort_values('GW', ascending=False, inplace=True)
     return p_df
 
 
