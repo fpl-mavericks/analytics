@@ -3,7 +3,7 @@
 """
 Created on Tue Oct  3 16:26:11 2023
 
-@author: timyouellservian
+@author: timyouell
 """
 
 import requests
@@ -160,7 +160,7 @@ def get_historic_season_df():
     team_22_23_cut.columns = team_cols
     oppo_22_23_cut.columns = oppo_cols
     hist_copy = hist_df.copy()
-    hist_copy.drop('xP', axis=1, inplace=True)
+    # hist_copy.drop('xP', axis=1, inplace=True)
     hist_t_df = hist_copy.merge(team_22_23_cut, on ='team', how='left')
     hist_t_df = hist_t_df.merge(oppo_22_23_cut, on='opponent_team', how='left')
     hist_t_df = hist_t_df.merge(fixt_22_23_cut, on='fixture', how='left')
@@ -184,7 +184,9 @@ def get_total_df():
     total_df.sort_values(['p_id', 'fixture'], ascending=True, inplace=True)
     
     total_df['games_avail'] = (total_df.groupby('p_id').cumcount() + 1)
-    total_df['prop_mins'] = total_df.groupby('p_id')['mins'].apply(lambda x: x.cumsum())/(total_df['games_avail']*90)
+    # total_df['prop_mins'] = total_df.groupby('p_id')['mins'].apply(lambda x: x.cumsum())/(total_df['games_avail']*90)
+
+    total_df['prop_mins'] = total_df.groupby('p_id')['mins'].transform(lambda x: x.cumsum()) / (total_df['games_avail'] * 90)
     
     cols_to_ave = ['points', 'assists', 'goals', 'cs', 'xA', 'xGI', 'xG',
                    'bps', 'xGC', 'i', 'c', 't', 'ict', 'saves', 'ps', 'yc',
@@ -253,7 +255,7 @@ def get_future_df():
     curr_cut.sort_values(['p_id', 'fixture'], ascending=True, inplace=True)
     
     curr_cut['games_avail'] = (curr_cut.groupby('p_id').cumcount() + 1)
-    curr_cut['prop_mins'] = curr_cut.groupby('p_id')['mins'].apply(lambda x: x.cumsum())/(curr_cut['games_avail']*90)
+    curr_cut['prop_mins'] = curr_cut.groupby('p_id')['mins'].transform(lambda x: x.cumsum())/(curr_cut['games_avail']*90)
     
     cols_to_ave = ['points', 'assists', 'goals', 'cs', 'xA', 'xGI', 'xG',
                    'bps', 'xGC', 'i', 'c', 't', 'ict', 'saves', 'ps', 'yc',
@@ -359,6 +361,5 @@ ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 ele_df['Name'] = ele_df['element'].map(player_dict)
 merge_df = ele_df.merge(df, on='element', how='left')[['Name', 'GW', 'xP']]
 merge_df.sort_values('xP', ascending=False, inplace=True)
-
 
 # preds.to_csv('./data/2023_24_pred_file.csv', index=False)
