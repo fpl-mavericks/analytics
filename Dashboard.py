@@ -21,7 +21,7 @@ from fpl_utils.fpl_utils import (
 base_url = 'https://fantasy.premierleague.com/api/'
 
 st.set_page_config(page_title='FPL Dashboard', page_icon=':soccer:', layout='wide')
-st.title('FPL Dashboard')
+st.title('FPL Dashboard :soccer:')
 #st.write('Please check back soon for Fantasy Premier League Football stats, graphs and predictions.')
 
 define_sidebar()
