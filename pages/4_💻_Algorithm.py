@@ -162,7 +162,10 @@ merge_df = ele_df.merge(df, on='element', how='left')
 new_fixt_df.reset_index(inplace=True)
 new_fixt_df.rename(columns={0: 'team'}, inplace=True)
 
+crnt_gw_str = 'GW' + str(crnt_gw)
+
 full_df = merge_df.merge(new_fixt_df, on='team', how='left')
+full_df.loc[full_df[crnt_gw_str] == 'BLANK', 'xPts'] = 0
 full_df.sort_values('xPts', ascending=False, inplace=True)
 
 full_df.rename(columns={'team': 'Team'}, inplace=True)
@@ -180,7 +183,7 @@ final_df = full_cut.loc[(full_cut['Price'] <= slider2) &
 
 final_df.drop('Team', axis=1, inplace=True)
 
-final_df.to_csv('./data/GW'+str(crnt_gw)+'_preds.csv', index=False)
+final_df.to_csv('./data/'+crnt_gw_str+'_preds.csv', index=False)
 
 home_away_dict = get_home_away_str_dict()
 
