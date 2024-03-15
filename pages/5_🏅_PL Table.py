@@ -115,4 +115,5 @@ league_df.loc[league_df['Team'] == 'EVE', 'Team'] = 'EVE*'
 st.dataframe(league_df.style.applymap(color_fixtures, subset=new_fixt_cols) \
              .format(subset=float_cols, formatter='{:.2f}'), height=740, width=None)
 
-st.text('*Everton received a 10 Point deduction on 17/11/2023 for breaching Financial Fair Play rules.')
+st.text('*Everton received a 10-point deduction on 17/11/2023 for breaching Financial Fair Play rules.')
+st.text('*Everton had their 10-point deduction reduced on 27/02/2024 to 6-points, following their appeal.')

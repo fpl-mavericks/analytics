@@ -221,7 +221,7 @@ def get_league_table():
     league_df['team'] = league_df['id'].map(teams_df.set_index('id')['short_name'])
     league_df.drop('id', axis=1, inplace=True)
     league_df.reset_index(drop=True, inplace=True)
-    league_df.loc[league_df['team'] == 'EVE', 'Pts'] = league_df['Pts'] - 10
+    league_df.loc[league_df['team'] == 'EVE', 'Pts'] = league_df['Pts'] - 6
     league_df.sort_values(['Pts', 'GD', 'GF', 'GA'], ascending=False, inplace=True)
     league_df.set_index('team', inplace=True)
     league_df['GF'] = league_df['GF'].astype(int)
