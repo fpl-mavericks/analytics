@@ -65,6 +65,10 @@ def get_home_away_str_dict():
         result_dict[col] = value_dict
     
     merged_dict = {}
+    merged_dict[1.5] = []
+    merged_dict[2.5] = []
+    merged_dict[3.5] = []
+    merged_dict[4.5] = []
     for k, dict1 in result_dict.items():
         for key, value in dict1.items():
             if key in merged_dict:
@@ -82,18 +86,26 @@ def get_home_away_str_dict():
 
 home_away_dict = get_home_away_str_dict()
 
-
 def color_fixtures(val):
     bg_color = 'background-color: '
     font_color = 'color: '
     if val in home_away_dict[1]:
         bg_color += '#147d1b'
+    if val in home_away_dict[1.5]:
+        bg_color += '#0ABE4A'
     elif val in home_away_dict[2]:
         bg_color += '#00ff78'
+    elif val in home_away_dict[2.5]:
+        bg_color += "#caf4bd"
     elif val in home_away_dict[3]:
         bg_color += '#eceae6'
+    elif val in home_away_dict[3.5]:
+        bg_color += "#fa8072"
     elif val in home_away_dict[4]:
         bg_color += '#ff0057'
+        font_color += 'white'
+    elif val in home_away_dict[4.5]:
+        bg_color += '#C9054F'
         font_color += 'white'
     elif val in home_away_dict[5]:
         bg_color += '#920947'
