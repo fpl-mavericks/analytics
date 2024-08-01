@@ -342,8 +342,8 @@ def get_current_season():
     events_df = pd.DataFrame(get_bootstrap_data()['events'])
     start_year = events_df.iloc[0]['deadline_time'][:4]
     end_year = events_df.iloc[37]['deadline_time'][2:4]
-    season = start_year + '/' + end_year
-    return season
+    current_season = start_year + '/' + end_year
+    return current_season
     
     
 def get_player_url_list():
