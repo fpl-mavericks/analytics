@@ -132,7 +132,7 @@ picks_df = get_manager_team_data(9, 4)
 '''
 
 # need to do an original data pull to get historic gw_data for every player_id
-# shouldn't matter if new player_id's are added via tranfsers etc because it
+# shouldn't matter if new player_id's are added via transfers etc because it
 # should just get added to the big dataset
 
 def remove_moved_players(df):
