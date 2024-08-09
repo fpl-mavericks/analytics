@@ -24,6 +24,8 @@ from fpl_utils.fpl_utils import (
     define_sidebar, chip_converter
 )
 
+from fpl_utils.fpl_params import MY_FPL_ID
+
 
 base_url = 'https://fantasy.premierleague.com/api/'
 
@@ -52,7 +54,7 @@ ele_df['team'] = ele_df['team'].map(teams_df.set_index('id')['short_name'])
 col1, col2, col3 = st.columns([3,2,1])
 
 with col1:
-    fpl_id = st.text_input('Please enter your FPL ID:', 94660)
+    fpl_id = st.text_input('Please enter your FPL ID:', MY_FPL_ID)
     if fpl_id == '':
     	st.write('')
     else:
