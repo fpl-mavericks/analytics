@@ -10,7 +10,7 @@ import streamlit as st
 import pandas as pd
 from fpl_utils.fpl_api_collection import (
     get_player_id_dict, get_bootstrap_data, get_player_data, get_league_table,
-    get_fixt_dfs, get_current_gw, remove_moved_players
+    get_fixt_dfs, get_current_gw, remove_moved_players, get_current_season
 )
 import plotly.graph_objects as go
 from fpl_utils.fpl_utils import (
@@ -33,6 +33,8 @@ teams_df = pd.DataFrame(teams_data)
 
 ele_data = get_bootstrap_data()['elements']
 ele_df = pd.DataFrame(ele_data)
+
+crnt_season = get_current_season()
 
 ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
 ele_copy = ele_df.copy()
@@ -331,7 +333,7 @@ price_min = (ele_copy['now_cost'].min())/10
 price_max = (ele_copy['now_cost'].max())/10
 
 if len(get_player_data(list(full_player_dict.keys())[0])['history']) == 0:
-    st.write("Please wait for season to begin for individual player statistics")
+    st.write(f"Please wait for the {crnt_season} season to begin for individual player statistics")
 else:
     filter_rows = st.columns([2,5])
     filter_pos = filter_rows[0].multiselect(

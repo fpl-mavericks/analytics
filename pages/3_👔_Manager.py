@@ -5,10 +5,6 @@ Created on Thu Sep 29 20:20:43 2022
 
 @author: timyouell
 
-Useful Manager IDs
-
-Tim: 94660
-
 """
 
 import streamlit as st
@@ -56,7 +52,7 @@ col1, col2, col3 = st.columns([3,2,1])
 with col1:
     fpl_id = st.text_input('Please enter your FPL ID:', MY_FPL_ID)
     if fpl_id == '':
-    	st.write('')
+        st.write('')
     else:
         try:
             fpl_id = int(fpl_id)
@@ -199,13 +195,16 @@ with col3:
         )
     hist_data = get_manager_history_data(fpl_id)
     hist_df = pd.DataFrame(hist_data['past'])
-    hist_df.columns=['Season', 'Pts', 'OR']
-    if col == 'OR':
-        hist_df.sort_values(col, ascending=True, inplace=True)
+    if len(hist_df) == 0:
+        st.write('No previous season history to display.')
     else:
-        hist_df.sort_values(col, ascending=False, inplace=True)
-    hist_df.set_index('Season', inplace=True)
-    st.dataframe(hist_df, height=562)
+        hist_df.columns=['Season', 'Pts', 'OR']
+        if col == 'OR':
+            hist_df.sort_values(col, ascending=True, inplace=True)
+        else:
+            hist_df.sort_values(col, ascending=False, inplace=True)
+        hist_df.set_index('Season', inplace=True)
+        st.dataframe(hist_df, height=562)
 
 
 if fpl_id == '':

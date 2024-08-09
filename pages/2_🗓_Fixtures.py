@@ -22,9 +22,7 @@ base_url = 'https://fantasy.premierleague.com/api/'
 
 st.set_page_config(page_title='Fixtures', page_icon=':calendar:', layout='wide')
 define_sidebar()
-
 st.title("Premier League Fixtures")
-#st.write('Use the sliders to filter the fixtures down to a specific gameweek range.')
 
 league_df = get_league_table()
 team_fdr_df, team_fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
@@ -33,7 +31,6 @@ events_df = pd.DataFrame(get_bootstrap_data()['events'])
 gw_min = min(events_df['id'])
 gw_max = max(events_df['id'])
 
-# [gw_min, gw_max] should be swapped with [current_gw, current_gw+5] for initial showing
 ct_gw = get_current_gw()
 
 col1, col2, col3 = st.columns([2,2,2])
@@ -78,17 +75,17 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
                     linewidth=1)
         new_fixt_df.fillna(0, inplace=True)
         for i in range(len(annot_df)):
-            for j in range(slider2 - slider1+1):  # Adjust for the number of columns in the heatmap
+            for j in range(slider2 - slider1+1):
                 val = annot_df[slider1 + j][list(annot_df[slider1 + j].keys())[i]]
                 g_val = new_fixt_df[slider1 + j][list(new_fixt_df[slider1 + j].keys())[i]]
                 if len(val) > 7:
-                    fontsize = annot_size/1.5  # Adjust font size for strings longer than 7 letters
+                    fontsize = annot_size/1.5
                 else:
-                    fontsize = annot_size  # Use the default font size for other strings
+                    fontsize = annot_size 
                 text_color = 'white' if flatui[int(g_val-2)] == flatui[-1] or flatui[int(g_val-2)] == flatui[-2]  or flatui[int(g_val-2)] == '#147d1b' else 'black'
                 plt.text(j + 0.5, i + 0.5, val, ha='center', va='center', fontsize=fontsize, color=text_color)
     else:
-        annot_df = new_fixt_df # .astype(int)
+        annot_df = new_fixt_df
         sns.heatmap(new_fixt_df, ax=ax, annot=True, fmt='', cmap=flatui,
                     annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
 
@@ -132,7 +129,7 @@ elif select_choice == 'Average Goals Against (GA)':
                 text_color = get_text_color_from_hash(hash_color)
                 plt.text(j + 0.5, i + 0.5, val, ha='center', va='center', fontsize=fontsize, color=text_color)
     else:
-        annot_df = ga_fixt_df # .astype(int)
+        annot_df = ga_fixt_df
         sns.heatmap(annot_df, ax=ax, annot=True, fmt='', cmap=flatui_rev,
                     annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
     ax.set_xlabel('Gameweek')
@@ -174,11 +171,11 @@ elif select_choice == 'Average Goals For (GF)':
                 text_color = get_text_color_from_hash(hash_color)
                 plt.text(j + 0.5, i + 0.5, val, ha='center', va='center', fontsize=fontsize, color=text_color)
     else:
-        annot_df = gf_fixt_df # .astype(int)
+        annot_df = gf_fixt_df
         sns.heatmap(annot_df, ax=ax, annot=True, fmt='', cmap=flatui,
                     annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
     ax.set_xlabel('Gameweek')
     ax.set_ylabel('Team')
     st.write(fig)
 
-#update
+print(new_fixt_df)

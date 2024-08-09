@@ -158,7 +158,7 @@ def get_player_id_dict(order_by_col, web_name=True) -> dict:
     return id_dict
 
 
-def collate_player_hist() -> pd.DataFrame():
+def collate_player_hist():
     res = []
     p_dict = get_player_id_dict()
     for p_id, p_name in p_dict.items():

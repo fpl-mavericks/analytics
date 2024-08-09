@@ -12,6 +12,7 @@ from fpl_utils.fpl_api_collection import (
 )
 from concurrent.futures import ThreadPoolExecutor
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingRegressor
 import requests
 
 base_url = 'https://fantasy.premierleague.com/api/'
@@ -80,7 +81,7 @@ def train_xgb_regr(df, y_key, nonmodel_vars):
     Y_train = train_out[y_key]
     X_test = test
     Y_test = test_out[y_key]
-    xgb_regr = XGBRegressor(n_estimators=500,
+    xgb_regr = GradientBoostingRegressor(n_estimators=500,
                             learning_rate=0.01,
                             max_depth=5,
                             min_samples_leaf=5)
@@ -88,60 +89,4 @@ def train_xgb_regr(df, y_key, nonmodel_vars):
     preds = xgb_regr.predict(X_test)
     preds_df = pd.DataFrame({'actual': Y_test, 'preds': preds})
     preds_df['preds'] = round(preds_df['preds'])
-    print('R2_Score: ' + str(r2_score(preds_df['actual'], preds_df['preds'])))
-    print('MAE: ' + str(mean_absolute_error(preds_df['actual'], preds_df['preds'])))
-    sns.regplot(preds_df['actual'], preds_df['preds'])
-    plt.title('R^2 Score: ' + str(r2_score(preds_df['actual'], preds_df['preds'])))
-    return xgb_regr
-
-
-xgb_regr = train_xgb_regr(df, y_key, nonmodel_vars)
-
-
-def get_fixtures_data():
-    fixtures_url = base_url + '/fixtures/'
-    resp = requests.get(fixtures_url)
-    data = resp.json()
-    fixtures_df = pd.DataFrame(data)
-    gw_dict = dict(zip(np.arange(1, 381),
-                       [num for num in np.arange(1, 39) for x in range(10)]))
-    fixtures_df.loc[fixtures_df['event'].isnull(),
-                    'event2'] = fixtures_df['id'].map(gw_dict)
-    fixtures_df['event2'].fillna(fixtures_df['event'], inplace=True)
-    fixtures_df.loc[fixtures_df['event'].isnull(), 'blank'] = True
-    fixtures_df['blank'].fillna(False, inplace=True)
-    fixtures_df.sort_values('event2', ascending=True, inplace=True)
-    return fixtures_df
-
-
-hist_df = get_curr_season_hist_data()
-
-
-def transform_fixt_data(fixt_df):
-    # remove event = nan
-    cut_df = fixt_df.loc[fixt_df['event'] >= 1]
-    # event = gw
-    # gw_dict = cut_df.set_index('id')['event'].astype(int).to_dict()
-    
-    return cut_df
-    
-
-cut_cols = ['total_points', 'round', 'fixture', 'was_home',
-            'player_minutes_FPGW', 'total_minutes_FPGW', 'player_goals_scored_FPGW',
-            'total_goals_scored_FPGW', 'player_assists_FPGW',
-            'total_assists_FPGW', 'player_goals_conceded_FPGW',
-            'total_goals_conceded_FPGW', 'player_saves_FPGW',
-            'total_saves_FPGW', 'player_bonus_FPGW', 'total_bonus_FPGW',
-            'player_bps_FPGW', 'total_bps_FPGW', 'player_influence_FPGW',
-            'total_influence_FPGW', 'player_creativity_FPGW',
-            'total_creativity_FPGW', 'player_threat_FPGW', 'total_threat_FPGW',
-            'player_ict_index_FPGW', 'total_ict_index_FPGW',
-            'player_yellow_cards_FPGW', 'total_yellow_cards_FPGW',
-            'player_red_cards_FPGW', 'total_red_cards_FPGW',
-            'player_team_goals_FPGW', 'total_team_goals_FPGW',
-            'player_team_conceded_FPGW', 'total_team_conceded_FPGW',
-            'player_total_points_FPGW', 'total_total_points_FPGW', 'player',
-            'team_full', 'opponent_full', 'position', 'value', 'element',
-            'player_value_FPGW']
-
-cut_df = hist_df[cut_cols]
+    return preds_df
