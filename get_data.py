@@ -98,15 +98,6 @@ def train_xgb_regr(df, y_key, nonmodel_vars):
 xgb_regr = train_xgb_regr(df, y_key, nonmodel_vars)
 
 
-
-
-
-
-
-
-
-
-
 def get_fixtures_data():
     fixtures_url = base_url + '/fixtures/'
     resp = requests.get(fixtures_url)
@@ -123,7 +114,6 @@ def get_fixtures_data():
     return fixtures_df
 
 
-
 hist_df = get_curr_season_hist_data()
 
 
@@ -135,19 +125,6 @@ def transform_fixt_data(fixt_df):
     
     return cut_df
     
-
-def transform_player_data():
-    
-    
-    
-    
-
-# data processing/transformations
-t_fixt_df = transform_fixt_data()
-
-
-
-
 
 cut_cols = ['total_points', 'round', 'fixture', 'was_home',
             'player_minutes_FPGW', 'total_minutes_FPGW', 'player_goals_scored_FPGW',
@@ -168,19 +145,3 @@ cut_cols = ['total_points', 'round', 'fixture', 'was_home',
             'player_value_FPGW']
 
 cut_df = hist_df[cut_cols]
-
-
-# Need to work out the columns required to train algorithm.
-
-# Train on first 4 gameweeks only to begin with, and then work on data
-# collection of previous seasons later.
-
-# need to pickle the model and work out if I can keep the seed the same
-# train_model() function and then pickle the result. Want to be able to
-# re-train manually and upload updated model to GitHub.
-
-# use pickled model to predict based on the chosen GW
-
-# Future goals:
-# previous seasons with xG data in too - big data engineering piece. Once data is there all good though.
-# Predict on multiple GWs and sum the total score to get best pred player over n gameweeks.
