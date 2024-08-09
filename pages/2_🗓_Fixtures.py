@@ -48,6 +48,7 @@ with col2:
 slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [int(ct_gw), int(ct_gw+4)], 1)
 annot_size = get_annot_size(slider1, slider2)
 
+# Fixture Difficulty Rating (FDR) seaborn plot
 if select_choice == 'Fixture Difficulty Rating (FDR)':
     st.write('The higher up the heatmap, the \'easier\' (according to the FDRs) the games in the selected GW range.')
     filtered_fixt_df = team_fdr_df.iloc[:, slider1-1: slider2]
@@ -92,8 +93,8 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
     ax.set_xlabel('Gameweek')
     ax.set_ylabel('Team')
     st.write(fig)
-    
 
+# Average Goals Against seaborn plot
 elif select_choice == 'Average Goals Against (GA)':
     st.write('The higher up the heatmap, based on historic averages, the higher chance of scoring in the selected GW range.')
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
@@ -136,6 +137,7 @@ elif select_choice == 'Average Goals Against (GA)':
     ax.set_ylabel('Team')
     st.write(fig)
 
+# Average Goals For seaborn plot
 elif select_choice == 'Average Goals For (GF)':
     st.write('The higher up the heatmap, based on historic averages, the higher chance of keeping a clean sheet in the selected GW range.')
     filtered_team_df = team_fixt_df.iloc[:, slider1-1: slider2]
