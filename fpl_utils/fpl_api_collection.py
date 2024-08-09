@@ -142,7 +142,6 @@ def remove_moved_players(df):
     df_copy = df.loc[~df['news'].str.contains('|'.join(strings), case=False)]
     return df_copy
 
-# get player_id list
 
 def get_player_id_dict(order_by_col, web_name=True) -> dict:
     ele_df = pd.DataFrame(get_bootstrap_data()['elements'])
@@ -221,8 +220,6 @@ def get_league_table():
     league_df['team'] = league_df['id'].map(teams_df.set_index('id')['short_name'])
     league_df.drop('id', axis=1, inplace=True)
     league_df.reset_index(drop=True, inplace=True)
-    league_df.loc[league_df['team'] == 'EVE', 'Pts'] = league_df['Pts'] - 6
-    league_df.loc[league_df['team'] == 'NFO', 'Pts'] = league_df['Pts'] - 4
     league_df.sort_values(['Pts', 'GD', 'GF', 'GA'], ascending=False, inplace=True)
     league_df.set_index('team', inplace=True)
     league_df['GF'] = league_df['GF'].astype(int)
