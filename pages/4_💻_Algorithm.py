@@ -16,8 +16,6 @@ from fpl_utils.fpl_utils import (
     define_sidebar
 )
 
-base_url = 'https://fantasy.premierleague.com/api/'
-
 st.set_page_config(page_title='Algorithm', page_icon=':computer:', layout='wide')
 define_sidebar()
 

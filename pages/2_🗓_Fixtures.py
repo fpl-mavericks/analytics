@@ -18,8 +18,6 @@ from fpl_utils.fpl_utils import (
     get_text_color_from_hash
 )
 
-base_url = 'https://fantasy.premierleague.com/api/'
-
 st.set_page_config(page_title='Fixtures', page_icon=':calendar:', layout='wide')
 define_sidebar()
 st.title("Premier League Fixtures")
@@ -179,5 +177,3 @@ elif select_choice == 'Average Goals For (GF)':
     ax.set_xlabel('Gameweek')
     ax.set_ylabel('Team')
     st.write(fig)
-
-print(new_fixt_df)

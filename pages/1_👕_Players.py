@@ -17,8 +17,6 @@ from fpl_utils.fpl_utils import (
     define_sidebar
 )
 
-base_url = 'https://fantasy.premierleague.com/api/'
-
 st.set_page_config(page_title='Player Stats', page_icon=':shirt:', layout='wide')
 define_sidebar()
 
