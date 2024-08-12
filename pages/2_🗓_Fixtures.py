@@ -10,12 +10,36 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import pytz
+import datetime as datetime
+import os
+import sys
+
+file_dir = os.path.dirname(r'/Users/2279556/analytics/analytics/')
+sys.path.append(file_dir)
+
+# To-Do:
+# Change the rotation on the xticks from 0 to 90 after a specified number of gws is selected.
+# Check the above on mobile first!
+
+# Update GF and GA plots to include tz_datetimes
+
+# Move continent and timezone below selection and slider
+# Make continent and timezone 2 columns
+
+# Update GF and GA to not load until after events_df['GW1 finished'] == True
+# Have text telling to wait until after GW1 is finished for plots.
+
+
 from fpl_utils.fpl_api_collection import (
     get_bootstrap_data, get_current_gw, get_fixt_dfs, get_league_table
 )
 from fpl_utils.fpl_utils import (
     define_sidebar, get_annot_size, map_float_to_color,
     get_text_color_from_hash
+)
+from fpl_utils.fpl_params import (
+    AUTHOR_CONTINENT, AUTHOR_CITY
 )
 
 st.set_page_config(page_title='Fixtures', page_icon=':calendar:', layout='wide')
@@ -26,6 +50,38 @@ league_df = get_league_table()
 team_fdr_df, team_fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
 
 events_df = pd.DataFrame(get_bootstrap_data()['events'])
+
+timezones = pytz.all_timezones
+continent_list = ['Africa', 'America', 'Asia', 'Australia', 'Brazil',
+                  'Canada', 'Europe', 'Indian', 'Pacific']
+
+timezones_by_continent = {
+    'Africa': [tz for tz in pytz.all_timezones if tz.startswith('Africa')],
+    'America': [tz for tz in pytz.all_timezones if tz.startswith('America')],
+    'Asia': [tz for tz in pytz.all_timezones if tz.startswith('Asia')],
+    'Australia': [tz for tz in pytz.all_timezones if tz.startswith('Australia')],
+    'Brazil': [tz for tz in pytz.all_timezones if tz.startswith('Brazil')],
+    'Canada': [tz for tz in pytz.all_timezones if tz.startswith('Canada')],
+    'Europe': [tz for tz in pytz.all_timezones if tz.startswith('Europe')],
+    'Indian': [tz for tz in pytz.all_timezones if tz.startswith('Indian')],
+    'Pacific': [tz for tz in pytz.all_timezones if tz.startswith('Pacific')],
+    'Other': [tz for tz in pytz.all_timezones if not any(tz.startswith(cont) for cont in continent_list)]
+}
+
+cont = st.selectbox("Select a continent:", options=list(timezones_by_continent.keys()),
+                    index=[i for i, k in enumerate(list(timezones_by_continent.items())) if k[0] == AUTHOR_CONTINENT][0])
+author_city = f"{AUTHOR_CONTINENT}/{AUTHOR_CITY}"
+if cont == 'Australia':
+    tz = st.selectbox("Select your timezone:",
+                      options=timezones_by_continent[cont],
+                      index=[i for i, k in enumerate(timezones_by_continent[cont]) if k == author_city][0])
+else:
+    tz = st.selectbox("Select your timezone:",
+                      options=timezones_by_continent[cont])
+
+events_df['deadline_time'] = pd.to_datetime(events_df['deadline_time'])
+events_df['tz_datetime'] = events_df['deadline_time'].apply(lambda x: x.astimezone(pytz.timezone(tz))).dt.strftime('%a %d-%b-%y %-I:%M%p').str.upper()
+
 gw_min = min(events_df['id'])
 gw_max = max(events_df['id'])
 
@@ -46,6 +102,10 @@ with col2:
 slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [int(ct_gw), int(ct_gw+4)], 1)
 annot_size = get_annot_size(slider1, slider2)
 
+gw_numbers = range(slider1, slider2+1)
+gw_deadlines = events_df.loc[(events_df['id'] >= slider1) & (events_df['id'] <= slider2)]['tz_datetime']
+custom_labels = [f'GW{gw_number}\n{my_string}' for gw_number, my_string in zip(gw_numbers, gw_deadlines)]
+print(custom_labels)
 # Fixture Difficulty Rating (FDR) seaborn plot
 if select_choice == 'Fixture Difficulty Rating (FDR)':
     st.write('The higher up the heatmap, the \'easier\' (according to the FDRs) the games in the selected GW range.')
@@ -88,7 +148,9 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
         sns.heatmap(new_fixt_df, ax=ax, annot=True, fmt='', cmap=flatui,
                     annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
 
-    ax.set_xlabel('Gameweek')
+    ax.set_xticks([x+0.5 for x in range(slider1-1, slider2)])
+    ax.set_xticklabels(custom_labels, rotation=90, ha='center')
+    plt.setp(ax.get_xticklabels(), fontsize=4)
     ax.set_ylabel('Team')
     st.write(fig)
 
