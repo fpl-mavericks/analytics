@@ -22,7 +22,6 @@ define_sidebar()
 st.title("Players")
 st.write("Currently only looking at data available through the FPL API. FBRef and Understat data being added is on the to-do list.")
 
-# 2 drop-down menus choosing 2 players
 full_player_dict = get_player_id_dict('total_points', web_name=False)
 
 ele_types_data = get_bootstrap_data()['element_types']
