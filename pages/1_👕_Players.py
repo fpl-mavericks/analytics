@@ -19,6 +19,8 @@ from fpl_utils.fpl_utils import (
 
 st.set_page_config(page_title='Player Stats', page_icon=':shirt:', layout='wide')
 define_sidebar()
+st.title("Players")
+st.write("Currently only looking at data available through the FPL API. FBRef and Understat data being added is on the to-do list.")
 
 # 2 drop-down menus choosing 2 players
 full_player_dict = get_player_id_dict('total_points', web_name=False)
@@ -149,9 +151,6 @@ def color_fixtures(val):
 # - saves per 90
 # - bps per 90
 # - etc
-
-st.title("Players")
-#st.write("Currently only looking at data available through the FPL API. FBRef and Understat data being added is on the To-Do list.")
 
 # get player id from player name
 # player1_id = ...

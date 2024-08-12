@@ -18,7 +18,6 @@ from fpl_utils.fpl_utils import (
 
 st.set_page_config(page_title='PL Table', page_icon=':sports-medal:', layout='wide')
 define_sidebar()
-
 st.title('Premier League Table')
 
 league_df = get_league_table()

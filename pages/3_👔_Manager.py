@@ -25,7 +25,6 @@ from fpl_utils.fpl_params import MY_FPL_ID, BASE_URL
 
 st.set_page_config(page_title='Manager', page_icon=':necktie:', layout='wide')
 define_sidebar()
-
 st.title('Manager')
 
 def get_total_fpl_players():

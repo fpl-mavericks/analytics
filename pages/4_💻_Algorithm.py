@@ -18,7 +18,6 @@ from fpl_utils.fpl_utils import (
 
 st.set_page_config(page_title='Algorithm', page_icon=':computer:', layout='wide')
 define_sidebar()
-
 st.title('Predicted Points Algorithm')
 st.write('Gradient Boosting Regressor Algorithm trained on 22/23 historic and 23/24 FPL data so far.')
 

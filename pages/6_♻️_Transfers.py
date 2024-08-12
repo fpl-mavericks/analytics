@@ -18,7 +18,6 @@ from fpl_utils.fpl_utils import (
 
 st.set_page_config(page_title='Transfers', page_icon=':recycle:', layout='wide')
 define_sidebar()
-
 st.title('Transfers')
 
 col1, col2 = st.columns([6,3])
