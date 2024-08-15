@@ -8,6 +8,10 @@ Created on Tue Oct  3 16:26:11 2023
 
 import requests
 import pandas as pd
+from concurrent.futures import ThreadPoolExecutor
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingRegressor
+
 from fpl_utils.fpl_api_collection import (
     get_player_url_list, get_fixture_data, get_bootstrap_data, get_current_gw,
     get_current_season, remove_moved_players, get_player_id_dict
@@ -15,9 +19,7 @@ from fpl_utils.fpl_api_collection import (
 from fpl_utils.fpl_params import (
     BASE_URL
 )
-from concurrent.futures import ThreadPoolExecutor
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import GradientBoostingRegressor
+
 
 str_cols = ['id', 'name', 'strength', 'strength_overall_home',
             'strength_overall_away', 'strength_attack_home',
@@ -101,12 +103,14 @@ fut_cols = ['element', 'name', 'fixture', 'id', 'opponent_team', 'GW', 'value']
 
 base_url = BASE_URL
 
-init_file = './data/2022_23_'
-data_22_23 = pd.read_csv(init_file + 'merged_gw.csv')
-teams_22_23 = pd.read_csv(init_file + 'teams.csv')
-fixts_22_23 = pd.read_csv(init_file + 'fixtures.csv')
+init_file = './data/20'
+data_22_23 = pd.read_csv(init_file + '22_23_' + 'merged_gw.csv')
+teams_22_23 = pd.read_csv(init_file + '22_23_' + 'teams.csv')
+fixts_22_23 = pd.read_csv(init_file + '22_23_' + 'fixtures.csv')
 
-
+data_23_24 = pd.read_csv(init_file + '23_24_' + 'merged_gw.csv')
+teams_23_24 = pd.read_csv(init_file + '23_24_' + 'teams.csv')
+fixts_23_24 = pd.read_csv(init_file + '23_24_' + 'fixtures.csv')
 
 hist_df = data_22_23.copy()
 
