@@ -12,6 +12,9 @@ from fpl_utils.fpl_api_collection import (
     get_player_url_list, get_fixture_data, get_bootstrap_data, get_current_gw,
     get_current_season, remove_moved_players, get_player_id_dict
 )
+from fpl_utils.fpl_params import (
+    BASE_URL
+)
 from concurrent.futures import ThreadPoolExecutor
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
@@ -96,12 +99,14 @@ new_fixt_cols = ['fixture', 'GW', 'team_h', 'team_a', 'team_h_difficulty',
 
 fut_cols = ['element', 'name', 'fixture', 'id', 'opponent_team', 'GW', 'value']
 
-base_url = 'https://fantasy.premierleague.com/api/'
+base_url = BASE_URL
 
 init_file = './data/2022_23_'
 data_22_23 = pd.read_csv(init_file + 'merged_gw.csv')
 teams_22_23 = pd.read_csv(init_file + 'teams.csv')
 fixts_22_23 = pd.read_csv(init_file + 'fixtures.csv')
+
+
 
 hist_df = data_22_23.copy()
 
@@ -112,6 +117,7 @@ fixt_df = pd.DataFrame(get_fixture_data())
 fixt_df.rename(columns={'id': 'fixture'}, inplace=True)
 
 crnt_gw = get_current_gw()
+
 
 def call_api(endpoint):
     resp = requests.get(endpoint)

@@ -18,10 +18,10 @@ from fpl_utils.fpl_api_collection import (
 )
 from fpl_utils.fpl_utils import (
     define_sidebar, get_annot_size, map_float_to_color,
-    get_text_color_from_hash, get_rotation, get_user_timezone
+    get_text_color_from_hash, get_rotation
 )
 from fpl_utils.fpl_params import (
-    TIMEZONES_BY_CONTINENT
+    TIMEZONES_BY_CONTINENT, AUTHOR_CONTINENT, AUTHOR_CITY
 )
 
 st.set_page_config(page_title='Fixtures', page_icon=':calendar:', layout='wide')
@@ -54,8 +54,10 @@ slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [int(ct_gw), int(ct_g
 annot_size = get_annot_size(slider1, slider2)
 rotation = get_rotation(slider1, slider2)
 
-user_tz = get_user_timezone()
-user_cont = user_tz.split('/')[0]
+# Tried with a get_user_timezone() function but the IP Address is automatically
+# set to Los Angeles as Streamlit/Github servers are there. Reverted to Sydney.
+user_tz = f'{AUTHOR_CONTINENT}/{AUTHOR_CITY}'
+user_cont = AUTHOR_CONTINENT
 tzs_by_cont = TIMEZONES_BY_CONTINENT
 colA, colB, colC = st.columns([1,1,1])
 with colA:
