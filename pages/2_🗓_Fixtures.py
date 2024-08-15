@@ -19,13 +19,7 @@ file_dir = os.path.dirname(r'/Users/2279556/analytics/analytics/')
 sys.path.append(file_dir)
 
 # To-Do:
-# Change the rotation on the xticks from 0 to 90 after a specified number of gws is selected.
-# Check the above on mobile first!
-
 # Update GF and GA plots to include tz_datetimes
-
-# Move continent and timezone below selection and slider
-# Make continent and timezone 2 columns
 
 # Update GF and GA to not load until after events_df['GW1 finished'] == True
 # Have text telling to wait until after GW1 is finished for plots.
@@ -36,10 +30,10 @@ from fpl_utils.fpl_api_collection import (
 )
 from fpl_utils.fpl_utils import (
     define_sidebar, get_annot_size, map_float_to_color,
-    get_text_color_from_hash, get_rotation
+    get_text_color_from_hash, get_rotation, get_user_timezone
 )
 from fpl_utils.fpl_params import (
-    AUTHOR_CONTINENT, AUTHOR_CITY
+    TIMEZONES_BY_CONTINENT
 )
 
 st.set_page_config(page_title='Fixtures', page_icon=':calendar:', layout='wide')
@@ -51,43 +45,12 @@ team_fdr_df, team_fixt_df, team_ga_df, team_gf_df = get_fixt_dfs()
 
 events_df = pd.DataFrame(get_bootstrap_data()['events'])
 
-timezones = pytz.all_timezones
-continent_list = ['Africa', 'America', 'Asia', 'Australia', 'Brazil',
-                  'Canada', 'Europe', 'Indian', 'Pacific']
-
-timezones_by_continent = {
-    'Africa': [tz for tz in pytz.all_timezones if tz.startswith('Africa')],
-    'America': [tz for tz in pytz.all_timezones if tz.startswith('America')],
-    'Asia': [tz for tz in pytz.all_timezones if tz.startswith('Asia')],
-    'Australia': [tz for tz in pytz.all_timezones if tz.startswith('Australia')],
-    'Brazil': [tz for tz in pytz.all_timezones if tz.startswith('Brazil')],
-    'Canada': [tz for tz in pytz.all_timezones if tz.startswith('Canada')],
-    'Europe': [tz for tz in pytz.all_timezones if tz.startswith('Europe')],
-    'Indian': [tz for tz in pytz.all_timezones if tz.startswith('Indian')],
-    'Pacific': [tz for tz in pytz.all_timezones if tz.startswith('Pacific')],
-    'Other': [tz for tz in pytz.all_timezones if not any(tz.startswith(cont) for cont in continent_list)]
-}
-
-cont = st.selectbox("Select a continent:", options=list(timezones_by_continent.keys()),
-                    index=[i for i, k in enumerate(list(timezones_by_continent.items())) if k[0] == AUTHOR_CONTINENT][0])
-author_city = f"{AUTHOR_CONTINENT}/{AUTHOR_CITY}"
-if cont == 'Australia':
-    tz = st.selectbox("Select your timezone:",
-                      options=timezones_by_continent[cont],
-                      index=[i for i, k in enumerate(timezones_by_continent[cont]) if k == author_city][0])
-else:
-    tz = st.selectbox("Select your timezone:",
-                      options=timezones_by_continent[cont])
-
-events_df['deadline_time'] = pd.to_datetime(events_df['deadline_time'])
-events_df['tz_datetime'] = events_df['deadline_time'].apply(lambda x: x.astimezone(pytz.timezone(tz))).dt.strftime('%a %d-%b-%y %-I:%M%p').str.upper()
-
 gw_min = min(events_df['id'])
 gw_max = max(events_df['id'])
 
 ct_gw = get_current_gw()
 
-col1, col2, col3 = st.columns([2,2,2])
+col1, col2, col3 = st.columns([1,1,1])
 with col1:
     select_options = ['Fixture Difficulty Rating (FDR)',
                      'Average Goals Against (GA)',
@@ -95,7 +58,7 @@ with col1:
     select_choice = st.selectbox("Sort fixtures by:", select_options)
 with col2:
     radio_options = ['Fixture', 'Statistic']
-    radio_choice = st.radio("Toggle fixture or stat:",
+    radio_choice = st.radio("Toggle:",
                             radio_options,
                             horizontal=True)
 
@@ -103,10 +66,28 @@ slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [int(ct_gw), int(ct_g
 annot_size = get_annot_size(slider1, slider2)
 rotation = get_rotation(slider1, slider2)
 
+user_tz = get_user_timezone()
+user_cont = user_tz.split('/')[0]
+tzs_by_cont = TIMEZONES_BY_CONTINENT
+colA, colB, colC = st.columns([1,1,1])
+with colA:
+    cont = st.selectbox("Select your continent:", options=list(tzs_by_cont.keys()),
+                        index=[i for i, k in enumerate(list(tzs_by_cont.items())) if k[0] == user_cont][0])
+with colB:
+    if user_cont == cont:
+        tz = st.selectbox("Select your timezone:",
+                        options=tzs_by_cont[cont],
+                        index=[i for i, k in enumerate(tzs_by_cont[cont]) if k == user_tz][0])
+    else:
+        tz = st.selectbox("Select your timezone:",
+                        options=tzs_by_cont[cont])
+
+events_df['deadline_time'] = pd.to_datetime(events_df['deadline_time'])
+events_df['tz_datetime'] = events_df['deadline_time'].apply(lambda x: x.astimezone(pytz.timezone(tz))).dt.strftime('%a %d-%b-%y %-I:%M%p').str.upper()
+
 gw_numbers = range(slider1, slider2+1)
 gw_deadlines = events_df.loc[(events_df['id'] >= slider1) & (events_df['id'] <= slider2)]['tz_datetime']
 custom_labels = [f'GW{gw_number}\n{my_string}' for gw_number, my_string in zip(gw_numbers, gw_deadlines)]
-
 
 # Fixture Difficulty Rating (FDR) seaborn plot
 if select_choice == 'Fixture Difficulty Rating (FDR)':

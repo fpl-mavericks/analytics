@@ -8,6 +8,7 @@ Created on Wed Oct 26 10:08:16 2022
 
 import streamlit as st
 from fpl_utils.fpl_api_collection import get_total_fpl_players
+import requests
 
 total_players = get_total_fpl_players()
 
@@ -87,3 +88,15 @@ def get_text_color_from_hash(hash_color):
         '#147d1b': 'white'
     }
     return color_map.get(hash_color, 'black')
+
+
+def get_user_timezone():
+    try:
+        ip = requests.get('https://api.ipify.org').text
+        response = requests.get(f'https://ipinfo.io/{ip}/json')
+        data = response.json()
+        return data['timezone']
+    except Exception as e:
+        # If the code fails to retrieve users IP address,
+        # automatically set the timezone to Australia/Sydney
+        return 'Australia/Sydney'
