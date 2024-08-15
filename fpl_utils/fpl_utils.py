@@ -40,6 +40,15 @@ def get_annot_size(sl1, sl2):
     return annot_size
 
 
+def get_rotation(sl1, sl2):
+    diff = sl2 - sl1
+    if diff < 7:
+        rotation = 0
+    else:
+        rotation = 90
+    return rotation
+
+
 def map_float_to_color(val, cmap, min_value, max_value):
     """
     Map a float value to a hashed color from a custom colormap represented as a list of hashed colors within a specific range.

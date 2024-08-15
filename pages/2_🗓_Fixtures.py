@@ -36,7 +36,7 @@ from fpl_utils.fpl_api_collection import (
 )
 from fpl_utils.fpl_utils import (
     define_sidebar, get_annot_size, map_float_to_color,
-    get_text_color_from_hash
+    get_text_color_from_hash, get_rotation
 )
 from fpl_utils.fpl_params import (
     AUTHOR_CONTINENT, AUTHOR_CITY
@@ -101,11 +101,13 @@ with col2:
 
 slider1, slider2 = st.slider('Gameweek: ', gw_min, gw_max, [int(ct_gw), int(ct_gw+4)], 1)
 annot_size = get_annot_size(slider1, slider2)
+rotation = get_rotation(slider1, slider2)
 
 gw_numbers = range(slider1, slider2+1)
 gw_deadlines = events_df.loc[(events_df['id'] >= slider1) & (events_df['id'] <= slider2)]['tz_datetime']
 custom_labels = [f'GW{gw_number}\n{my_string}' for gw_number, my_string in zip(gw_numbers, gw_deadlines)]
-print(custom_labels)
+
+
 # Fixture Difficulty Rating (FDR) seaborn plot
 if select_choice == 'Fixture Difficulty Rating (FDR)':
     st.write('The higher up the heatmap, the \'easier\' (according to the FDRs) the games in the selected GW range.')
@@ -149,7 +151,7 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
                     annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
 
     ax.set_xticks([x+0.5 for x in range(slider1-1, slider2)])
-    ax.set_xticklabels(custom_labels, rotation=90, ha='center')
+    ax.set_xticklabels(custom_labels, rotation=rotation, ha='center')
     plt.setp(ax.get_xticklabels(), fontsize=4)
     ax.set_ylabel('Team')
     st.write(fig)

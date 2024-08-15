@@ -22,21 +22,19 @@ define_sidebar()
 st.title("Players")
 st.write("Currently only looking at data available through the FPL API. FBRef and Understat data being added is on the to-do list.")
 
-full_player_dict = get_player_id_dict('total_points', web_name=False)
-
 ele_types_data = get_bootstrap_data()['element_types']
 ele_types_df = pd.DataFrame(ele_types_data)
+ele_data = get_bootstrap_data()['elements']
+ele_df = pd.DataFrame(ele_data)
+ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
+ele_copy = ele_df.copy()
 
 teams_data = get_bootstrap_data()['teams']
 teams_df = pd.DataFrame(teams_data)
 
-ele_data = get_bootstrap_data()['elements']
-ele_df = pd.DataFrame(ele_data)
+full_player_dict = get_player_id_dict('total_points', web_name=False)
 
 crnt_season = get_current_season()
-
-ele_df['element_type'] = ele_df['element_type'].map(ele_types_df.set_index('id')['singular_name_short'])
-ele_copy = ele_df.copy()
 
 ele_cols = ['id', 'web_name', 'chance_of_playing_this_round', 'element_type',
             'event_points', 'form', 'now_cost', 'points_per_game',
