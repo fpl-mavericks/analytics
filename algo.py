@@ -11,6 +11,8 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
+import sys
+sys.path.append('/Users/2279556/Documents/analytics/analytics')
 
 from fpl_utils.fpl_api_collection import (
     get_player_url_list, get_fixture_data, get_bootstrap_data, get_current_gw,
@@ -19,7 +21,6 @@ from fpl_utils.fpl_api_collection import (
 from fpl_utils.fpl_params import (
     BASE_URL
 )
-
 
 str_cols = ['id', 'name', 'strength', 'strength_overall_home',
             'strength_overall_away', 'strength_attack_home',
@@ -102,17 +103,21 @@ new_fixt_cols = ['fixture', 'GW', 'team_h', 'team_a', 'team_h_difficulty',
 fut_cols = ['element', 'name', 'fixture', 'id', 'opponent_team', 'GW', 'value']
 
 base_url = BASE_URL
+crnt_season = get_current_season()
+crnt_gw = get_current_gw()
 
-init_file = './data/20'
-data_22_23 = pd.read_csv(init_file + '22_23_' + 'merged_gw.csv')
-teams_22_23 = pd.read_csv(init_file + '22_23_' + 'teams.csv')
-fixts_22_23 = pd.read_csv(init_file + '22_23_' + 'fixtures.csv')
 
-data_23_24 = pd.read_csv(init_file + '23_24_' + 'merged_gw.csv')
-teams_23_24 = pd.read_csv(init_file + '23_24_' + 'teams.csv')
-fixts_23_24 = pd.read_csv(init_file + '23_24_' + 'fixtures.csv')
-
-hist_df = data_22_23.copy()
+init_file = '/Users/2279556/Documents/analytics/analytics/data/20'
+#init_file = './data/20'
+seasons = ['22_23', '23_24']
+data_files = {
+    season: {
+        'merged_gw': pd.read_csv(f"{init_file}{season}_merged_gw.csv"),
+        'teams': pd.read_csv(f"{init_file}{season}_teams.csv"),
+        'fixtures': pd.read_csv(f"{init_file}{season}_fixtures.csv")
+    }
+    for season in seasons
+}
 
 ele_df = remove_moved_players(pd.DataFrame(get_bootstrap_data()['elements']))
 teams_df = pd.DataFrame(get_bootstrap_data()['teams'])
@@ -120,63 +125,78 @@ ele_types_df = pd.DataFrame(get_bootstrap_data()['element_types'])
 fixt_df = pd.DataFrame(get_fixture_data())
 fixt_df.rename(columns={'id': 'fixture'}, inplace=True)
 
-crnt_gw = get_current_gw()
-
 
 def call_api(endpoint):
-    resp = requests.get(endpoint)
-    data = resp.json()
-    df = pd.DataFrame(data['history'])
-    return df
+    try:
+        response = requests.get(endpoint)
+        response.raise_for_status()
+        data = response.json()
+        return pd.DataFrame(data['history'])
+    except (requests.exceptions.RequestException, ValueError) as e:
+        print(f"Error fetching data from {endpoint}: {e}")
+        return pd.DataFrame()
 
 
 def get_curr_season_hist_data():
     player_endpoints = get_player_url_list()
     with ThreadPoolExecutor(max_workers=50) as executor:
         res = executor.map(call_api, player_endpoints)
-    hist_df = pd.concat(res)
-    return hist_df
-
-
-def get_current_season_df():
-    a_curr_df = get_curr_season_hist_data()
-    ele_copy = ele_df.copy()
-    ele_copy.rename(columns={'id': 'element'}, inplace=True)
-    ele_copy['name'] = ele_copy['first_name'] + ' ' + ele_copy['second_name']
-    ele_copy['position'] = ele_df['element_type'].map(
-        ele_types_df.set_index('id')['singular_name_short'])
-    ele_cut = ele_copy[ele_cols]
-    merge_df = a_curr_df.merge(ele_cut, on='element', how='left')
-    merge_df['GW'] = merge_df['round']
-    fixt_cut = fixt_df[fixt_cols]
-    team_cut = teams_df[str_cols]
-    oppo_cut = teams_df[str_cols]
-    team_cut.columns = team_cols
-    oppo_cut.columns = oppo_cols
-    merge_df.rename(columns={'team': 'id'}, inplace=True)
-    curr_teams_df = merge_df.merge(team_cut, on ='id', how='left')
-    curr_df = curr_teams_df.merge(oppo_cut, on='opponent_team', how='left')
-    curr_df = curr_df.merge(fixt_cut, on='fixture', how='left')
-    curr_df['season'] = '2023/24'
+    #curr_df = pd.concat(res)
+    curr_df = pd.concat([df for df in res if not df.empty], ignore_index=True)
     return curr_df
 
 
 def get_historic_season_df():
-    fixts_22_23.rename(columns={'id': 'fixture'}, inplace=True)
-    fixt_22_23_cut = fixts_22_23[fixt_cols]
-    team_22_23_cut = teams_22_23[str_cols]
-    oppo_22_23_cut = teams_22_23[str_cols]
-    team_22_23_cut.columns = team_cols
-    oppo_22_23_cut.columns = oppo_cols
-    hist_copy = hist_df.copy()
-    # hist_copy.drop('xP', axis=1, inplace=True)
-    hist_t_df = hist_copy.merge(team_22_23_cut, on ='team', how='left')
-    hist_t_df = hist_t_df.merge(oppo_22_23_cut, on='opponent_team', how='left')
-    hist_t_df = hist_t_df.merge(fixt_22_23_cut, on='fixture', how='left')
-    hist_t_df['season'] = '2022/23'
-    return hist_t_df
+    all_seasons_data = []
+    for season, data in data_files.items():
+        fixts = data['fixtures']
+        fixts.rename(columns={'id': 'fixture'}, inplace=True)
+        fixt_cut = fixts[fixt_cols]
 
-curr_df = get_current_season_df()
+        teams = data['teams']
+        team_cut = teams[str_cols]
+        oppo_cut = teams[str_cols]
+        team_cut.columns = team_cols
+        oppo_cut.columns = oppo_cols
+
+        hist_copy = data['merged_gw'].copy()
+        hist_t_df = hist_copy.merge(team_cut, on='team', how='left')
+        hist_t_df = hist_t_df.merge(oppo_cut, on='opponent_team', how='left')
+        hist_t_df = hist_t_df.merge(fixt_cut, on='fixture', how='left')
+        hist_t_df['season'] = f"20{season.replace('_', '/')}"
+        all_seasons_data.append(hist_t_df)
+
+    return pd.concat(all_seasons_data, ignore_index=True)
+
+
+def get_current_season_df(crnt_season):
+    a_curr_df = get_curr_season_hist_data()
+    if len(a_curr_df) == 0:
+        print(f"No data for {crnt_season} yet, please wait for season to begin.")
+        return None
+    else:
+        ele_copy = ele_df.copy()
+        ele_copy.rename(columns={'id': 'element'}, inplace=True)
+        ele_copy['name'] = ele_copy['first_name'] + ' ' + ele_copy['second_name']
+        ele_copy['position'] = ele_df['element_type'].map(
+            ele_types_df.set_index('id')['singular_name_short'])
+        ele_cut = ele_copy[ele_cols]
+        merge_df = a_curr_df.merge(ele_cut, on='element', how='left')
+        merge_df['GW'] = merge_df['round']
+        fixt_cut = fixt_df[fixt_cols]
+        team_cut = teams_df[str_cols]
+        oppo_cut = teams_df[str_cols]
+        team_cut.columns = team_cols
+        oppo_cut.columns = oppo_cols
+        merge_df.rename(columns={'team': 'id'}, inplace=True)
+        curr_teams_df = merge_df.merge(team_cut, on ='id', how='left')
+        curr_df = curr_teams_df.merge(oppo_cut, on='opponent_team', how='left')
+        curr_df = curr_df.merge(fixt_cut, on='fixture', how='left')
+        curr_df['season'] = crnt_season
+        return curr_df
+
+
+curr_df = get_current_season_df(crnt_season)
 hist_df = get_historic_season_df()
 
 
@@ -247,7 +267,6 @@ def define_model(df):
     reg.predict(X_test)
     print(reg.score(X_test, y_test))
     return reg
-
 
 
 df = get_total_df()
@@ -330,10 +349,9 @@ def get_future_df():
     team_cut.columns = team_cols
     oppo_cut.columns = oppo_cols
     
-    
     ele_teams_df = ele_merge_fixt_df.merge(team_cut, on ='id', how='left')
     ele_teams_df = ele_teams_df.merge(oppo_cut, on='opponent_team', how='left')
-    ele_teams_df['season'] = get_current_season()
+    ele_teams_df['season'] = crnt_season
     
     fut_df = ele_teams_df.merge(mr_fixt_row, on='element', how='left')
     
@@ -341,10 +359,13 @@ def get_future_df():
     
     cols_to_add = ['team_Leeds', 'team_Leicester', 'team_Southampton',
                    'oppo_name_Leeds', 'oppo_name_Leicester',
-                   'oppo_name_Southampton', 'season_2022/23']
+                   'oppo_name_Southampton', 'season_2022/23',
+                   'team_Burnley', 'team_Luton', 'team_Sheffield_Utd',
+                   'oppo_name_Burnley', 'oppo_name_Luton',
+                   'oppo_name_Sheffield_Utd', 'season_2023/24'
+                   ]
     
     data_to_add = pd.DataFrame(0, index=fut_dummy_df.index, columns=cols_to_add)
-    
     
     full_fut_df = pd.concat([fut_dummy_df, data_to_add], axis=1)
     full_fut_df = full_fut_df.loc[full_fut_df['points_fpf'].notnull()]
@@ -352,6 +373,7 @@ def get_future_df():
 
 
 fut_df = get_future_df()
+
 
 X_future = fut_df[x_keys]
 future_cut = fut_df[fut_cols]

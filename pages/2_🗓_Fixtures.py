@@ -11,7 +11,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pytz
-import datetime as datetime
+import datetime as datetim
 
 from fpl_utils.fpl_api_collection import (
     get_bootstrap_data, get_current_gw, get_fixt_dfs, get_league_table
@@ -123,7 +123,7 @@ if select_choice == 'Fixture Difficulty Rating (FDR)':
         annot_df = new_fixt_df
         sns.heatmap(new_fixt_df, ax=ax, annot=True, fmt='', cmap=flatui,
                     annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
-    ax.set_xticks([x+0.5 for x in range(slider1-1, slider2)])
+    ax.set_xticks([x+0.5 for x in range(0, len(range(slider1-1, slider2)))])
     ax.set_xticklabels(custom_labels, rotation=rotation, ha='center')
     plt.setp(ax.get_xticklabels(), fontsize=4)
     ax.set_ylabel('Team')
@@ -169,7 +169,7 @@ elif select_choice == 'Average Goals Against (GA)':
             annot_df = ga_fixt_df
             sns.heatmap(annot_df, ax=ax, annot=True, fmt='', cmap=flatui_rev,
                         annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
-        ax.set_xticks([x+0.5 for x in range(slider1-1, slider2)])
+        ax.set_xticks([x+0.5 for x in range(0, len(range(slider1-1, slider2)))])
         ax.set_xticklabels(custom_labels, rotation=rotation, ha='center')
         plt.setp(ax.get_xticklabels(), fontsize=4)
         ax.set_ylabel('Team')
@@ -217,7 +217,7 @@ elif select_choice == 'Average Goals For (GF)':
             annot_df = gf_fixt_df
             sns.heatmap(annot_df, ax=ax, annot=True, fmt='', cmap=flatui,
                         annot_kws={'size': annot_size}, cbar=False, linewidth=1, color='black')
-        ax.set_xticks([x+0.5 for x in range(slider1-1, slider2)])
+        ax.set_xticks([x+0.5 for x in range(0, len(range(slider1-1, slider2)))])
         ax.set_xticklabels(custom_labels, rotation=rotation, ha='center')
         plt.setp(ax.get_xticklabels(), fontsize=4)
         ax.set_ylabel('Team')

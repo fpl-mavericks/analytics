@@ -8,9 +8,13 @@ Created on Thu Sep 29 20:20:45 2022
 
 import pandas as pd
 import streamlit as st
+import sys
+sys.path.append('/Users/2279556/Documents/analytics/analytics')
+
 from fpl_utils.fpl_api_collection import (
-    get_bootstrap_data, get_current_gw, get_fixt_dfs, get_league_table,
-    remove_moved_players, get_player_id_dict
+    get_bootstrap_data, get_current_gw, get_current_season,
+    get_fixt_dfs, get_league_table, remove_moved_players,
+    get_player_id_dict
 )
 from fpl_utils.fpl_utils import (
     define_sidebar
@@ -22,8 +26,9 @@ st.title('Predicted Points Algorithm')
 st.write('Gradient Boosting Regressor Algorithm trained on 22/23 historic and 23/24 FPL data so far.')
 
 crnt_gw = get_current_gw()
+crnt_season = get_current_season().replace('/', '_')
 
-preds_df = pd.read_csv('./data/2023_24_pred_file.csv')
+preds_df = pd.read_csv(f'./data/{crnt_season}_pred_file.csv')
 preds_df.rename(columns={'xP': 'xPts'}, inplace=True)
 
 ele_df = remove_moved_players(pd.DataFrame(get_bootstrap_data()['elements']))
