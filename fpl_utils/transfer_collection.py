@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Nov  3 09:17:16 2022
-
-@author: timyouellservian
+Created on Thu Nov 3rd 2022
 """
 
 import pandas as pd
