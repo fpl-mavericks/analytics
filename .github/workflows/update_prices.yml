@@ -46,8 +46,9 @@ jobs:
     - id: push-to-repo
       name: Push .csv back to GitHub
       run: |
-        git config --global user.name github-actions
-        git config --global user.email github-actions@github.com
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git remote set-url origin https://${{ secrets.PAT }}@github.com/fpl-mavericks/analytics.git
         git pull origin main
         git commit -am 'prices.csv updated' --no-verify
         git push origin main
