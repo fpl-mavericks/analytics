@@ -19,14 +19,14 @@ jobs:
       with:
         fetch-depth: 0
 
-    # - id: checkout-repo
-    #   name: Checkout mavericks repo
-    #   uses: actions/checkout@v3
-    #   with:
-    #     repository: fpl-mavericks/analytics
-    #     ref: main
-    #     token: ${{ secrets.PAT }}
-    #     path: workflow
+    - id: checkout-repo
+      name: Checkout mavericks repo
+      uses: actions/checkout@v4
+      with:
+        repository: fpl-mavericks/analytics
+        ref: main
+        token: ${{ secrets.PAT }}
+        path: workflow
     
     # - id: setup_python
     #   name: Setup Python
