@@ -78,21 +78,21 @@ x_keys = ['assists_fpf', 'bps_fpf', 'cs_fpf', 'c_fpf', 'xA_fpf', 'xGI_fpf',
           'position_DEF', 'position_FWD', 'position_GKP', 'position_MID',
           'team_Arsenal', 'team_Aston Villa', 'team_Bournemouth',
           'team_Brentford', 'team_Brighton', 'team_Burnley', 'team_Chelsea',
-          'team_Crystal Palace', 'team_Everton', 'team_Fulham', 'team_Leeds',
-          'team_Leicester', 'team_Liverpool', 'team_Luton', 'team_Man City',
-          'team_Man Utd', 'team_Newcastle', "team_Nott'm Forest",
+          'team_Crystal Palace', 'team_Everton', 'team_Fulham', 'team_Ipswich',
+          'team_Leeds', 'team_Leicester', 'team_Liverpool', 'team_Luton',
+          'team_Man City', 'team_Man Utd', 'team_Newcastle', "team_Nott'm Forest",
           'team_Sheffield Utd', 'team_Southampton', 'team_Spurs',
           'team_West Ham', 'team_Wolves', 'oppo_name_Arsenal',
           'oppo_name_Aston Villa', 'oppo_name_Bournemouth',
           'oppo_name_Brentford', 'oppo_name_Brighton', 'oppo_name_Burnley',
           'oppo_name_Chelsea', 'oppo_name_Crystal Palace', 'oppo_name_Everton',
-          'oppo_name_Fulham', 'oppo_name_Leeds', 'oppo_name_Leicester',
-          'oppo_name_Liverpool', 'oppo_name_Luton', 'oppo_name_Man City',
-          'oppo_name_Man Utd', 'oppo_name_Newcastle',
+          'oppo_name_Fulham', 'oppo_name_Ipswich', 'oppo_name_Leeds',
+          'oppo_name_Leicester', 'oppo_name_Liverpool', 'oppo_name_Luton',
+          'oppo_name_Man City', 'oppo_name_Man Utd', 'oppo_name_Newcastle',
           "oppo_name_Nott'm Forest", 'oppo_name_Sheffield Utd',
           'oppo_name_Southampton', 'oppo_name_Spurs', 'oppo_name_West Ham',
           'oppo_name_Wolves', 'was_home_False', 'was_home_True',
-          'season_2022/23', 'season_2023/24']
+          'season_2022/23', 'season_2023/24', 'season_2024/25']
 
 new_ele_cols = ['element', 'name', 'position', 'team', 'now_cost',
                 'transfers_in_event', 'transfers_out_event']
@@ -357,13 +357,11 @@ def get_future_df():
     
     fut_dummy_df = pd.get_dummies(fut_df, columns=string_cols)
     
-    cols_to_add = ['team_Leeds', 'team_Leicester', 'team_Southampton',
-                   'oppo_name_Leeds', 'oppo_name_Leicester',
-                   'oppo_name_Southampton', 'season_2022/23',
-                   'team_Burnley', 'team_Luton', 'team_Sheffield_Utd',
-                   'oppo_name_Burnley', 'oppo_name_Luton',
-                   'oppo_name_Sheffield_Utd', 'season_2023/24'
-                   ]
+    cols_to_add = ['team_Burnley', 'team_Leeds', 'team_Luton',
+                   'team_Sheffield Utd', 'oppo_name_Burnley',
+                   'oppo_name_Leeds', 'oppo_name_Luton',
+                   'oppo_name_Sheffield Utd', 'season_2022/23',
+                   'season_2023/24']
     
     data_to_add = pd.DataFrame(0, index=fut_dummy_df.index, columns=cols_to_add)
     
@@ -393,4 +391,4 @@ ele_df['Name'] = ele_df['element'].map(player_dict)
 merge_df = ele_df.merge(df, on='element', how='left')[['Name', 'GW', 'xP']]
 merge_df.sort_values('xP', ascending=False, inplace=True)
 
-preds.to_csv('./data/2023_24_pred_file.csv', index=False)
+preds.to_csv(f"/Users/2279556/Documents/analytics/analytics/data/{crnt_season.replace('/', '_')}_pred_file.csv", index=False)

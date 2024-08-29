@@ -8,10 +8,7 @@ import pandas as pd
 from fpl_api_collection import (
     get_bootstrap_data, get_player_id_dict, get_player_data,
     get_total_fpl_players, remove_moved_players
-)
-
-base_url = 'https://fantasy.premierleague.com/api/'
-    
+) 
 
 def get_ele_df():
     ele_data = get_bootstrap_data()['elements']
@@ -113,5 +110,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-    
