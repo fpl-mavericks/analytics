@@ -8,8 +8,6 @@ Created on Thu Sep 29 20:20:45 2022
 
 import pandas as pd
 import streamlit as st
-import sys
-sys.path.append('/Users/2279556/Documents/analytics/analytics')
 
 from fpl_utils.fpl_api_collection import (
     get_bootstrap_data, get_current_gw, get_current_season,
@@ -23,7 +21,7 @@ from fpl_utils.fpl_utils import (
 st.set_page_config(page_title='Algorithm', page_icon=':computer:', layout='wide')
 define_sidebar()
 st.title('Predicted Points Algorithm')
-st.write('Gradient Boosting Regressor Algorithm trained on 22/23 historic and 23/24 FPL data so far.')
+st.write('Gradient Boosting Regressor Algorithm trained on 2022 -> 2024 historic and 24/25 FPL data so far.')
 
 crnt_gw = get_current_gw()
 crnt_season = get_current_season().replace('/', '_')
