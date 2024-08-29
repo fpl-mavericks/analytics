@@ -192,11 +192,9 @@ final_df = full_cut.loc[(full_cut['Price'] <= slider2) &
                         (full_cut['Team'].isin(filter_team))]
 
 final_df.drop('Team', axis=1, inplace=True)
-
 final_df.to_csv('./data/'+crnt_gw_str+'_preds.csv', index=False)
 
 home_away_dict = get_home_away_str_dict()
-
 total_fmt = {'Price': '£{:.1f}', 'xPts': '{:.1f}', 'TSB%': '{:.1%}'}
 st.dataframe(final_df.style.applymap(color_fixtures, subset=new_fixt_cols) \
              .format(total_fmt), height=1000, width=1000)
