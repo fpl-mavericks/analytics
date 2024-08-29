@@ -25,7 +25,6 @@ jobs:
       with:
         repository: fpl-mavericks/analytics
         ref: main
-        token: ${{ secrets.PAT }}
         path: workflow
     
     # - id: setup_python
