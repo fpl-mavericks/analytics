@@ -11,8 +11,6 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
-import sys
-sys.path.append('/Users/2279556/Documents/analytics/analytics')
 
 from fpl_utils.fpl_api_collection import (
     get_player_url_list, get_fixture_data, get_bootstrap_data, get_current_gw,
@@ -106,9 +104,7 @@ base_url = BASE_URL
 crnt_season = get_current_season()
 crnt_gw = get_current_gw()
 
-
-init_file = '/Users/2279556/Documents/analytics/analytics/data/20'
-#init_file = './data/20'
+init_file = './data/20'
 seasons = ['22_23', '23_24']
 data_files = {
     season: {
@@ -391,4 +387,4 @@ ele_df['Name'] = ele_df['element'].map(player_dict)
 merge_df = ele_df.merge(df, on='element', how='left')[['Name', 'GW', 'xP']]
 merge_df.sort_values('xP', ascending=False, inplace=True)
 
-preds.to_csv(f"/Users/2279556/Documents/analytics/analytics/data/{crnt_season.replace('/', '_')}_pred_file.csv", index=False)
+preds.to_csv(f"./data/{crnt_season.replace('/', '_')}_pred_file.csv", index=False)
