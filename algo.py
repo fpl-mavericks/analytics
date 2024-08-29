@@ -37,6 +37,9 @@ fixt_cols = ['fixture', 'team_h_difficulty', 'team_a_difficulty']
 
 ele_cols = ['element', 'name', 'position', 'team']
 
+pos_list = ['DEF', 'FWD', 'GKP', 'MID']
+pos_cols = [f'position_{pos}' for pos in pos_list]
+
 renamed_cols = {'total_points': 'points',
                 'minutes': 'mins',
                 'goals_scored': 'goals',
@@ -72,25 +75,7 @@ x_keys = ['assists_fpf', 'bps_fpf', 'cs_fpf', 'c_fpf', 'xA_fpf', 'xGI_fpf',
           'team_str', 'team_str_h', 'team_str_a', 'team_str_att_h',
           'team_str_att_a', 'team_str_def_h', 'team_str_def_a', 'oppo_str',
           'oppo_str_h', 'oppo_str_a', 'oppo_str_att_h', 'oppo_str_att_a',
-          'oppo_str_def_h', 'oppo_str_def_a', 'oppo_difficulty',
-          'position_DEF', 'position_FWD', 'position_GKP', 'position_MID',
-          'team_Arsenal', 'team_Aston Villa', 'team_Bournemouth',
-          'team_Brentford', 'team_Brighton', 'team_Burnley', 'team_Chelsea',
-          'team_Crystal Palace', 'team_Everton', 'team_Fulham', 'team_Ipswich',
-          'team_Leeds', 'team_Leicester', 'team_Liverpool', 'team_Luton',
-          'team_Man City', 'team_Man Utd', 'team_Newcastle', "team_Nott'm Forest",
-          'team_Sheffield Utd', 'team_Southampton', 'team_Spurs',
-          'team_West Ham', 'team_Wolves', 'oppo_name_Arsenal',
-          'oppo_name_Aston Villa', 'oppo_name_Bournemouth',
-          'oppo_name_Brentford', 'oppo_name_Brighton', 'oppo_name_Burnley',
-          'oppo_name_Chelsea', 'oppo_name_Crystal Palace', 'oppo_name_Everton',
-          'oppo_name_Fulham', 'oppo_name_Ipswich', 'oppo_name_Leeds',
-          'oppo_name_Leicester', 'oppo_name_Liverpool', 'oppo_name_Luton',
-          'oppo_name_Man City', 'oppo_name_Man Utd', 'oppo_name_Newcastle',
-          "oppo_name_Nott'm Forest", 'oppo_name_Sheffield Utd',
-          'oppo_name_Southampton', 'oppo_name_Spurs', 'oppo_name_West Ham',
-          'oppo_name_Wolves', 'was_home_False', 'was_home_True',
-          'season_2022/23', 'season_2023/24', 'season_2024/25']
+          'oppo_str_def_h', 'oppo_str_def_a', 'oppo_difficulty'] + pos_cols
 
 new_ele_cols = ['element', 'name', 'position', 'team', 'now_cost',
                 'transfers_in_event', 'transfers_out_event']
@@ -194,6 +179,22 @@ def get_current_season_df(crnt_season):
 
 curr_df = get_current_season_df(crnt_season)
 hist_df = get_historic_season_df()
+
+# Create the x_keys list to filter columns to go into the model
+teams_all = list(set(curr_df['team'].unique().tolist() + hist_df['team'].unique().tolist()))
+seasons_all = list(set(curr_df['season'].unique().tolist() + hist_df['season'].unique().tolist()))
+team_lister = [f'team_{team}' for team in teams_all]
+oppo_lister = [f'oppo_name_{team}' for team in teams_all]
+season_lister = [f'season_{season}' for season in seasons_all]
+x_keys += team_lister + oppo_lister + season_lister
+
+# Create a column list of historic cols to add to curr_df to feed into pred model.
+hist_team_all = list(set(hist_df['team'].unique().tolist()) - set(curr_df['team'].unique().tolist()))
+hist_season_all = hist_df['season'].unique().tolist()
+hist_team_lister = [f'team_{team}' for team in hist_team_all]
+hist_oppo_team_lister = [f'oppo_name_{team}' for team in hist_team_all]
+hist_season_lister = [f'season_{season}' for season in hist_season_all]
+cols_to_add = hist_team_lister + hist_oppo_team_lister + hist_season_lister
 
 
 def calculate_average_values(df, cols):
@@ -353,12 +354,6 @@ def get_future_df():
     
     fut_dummy_df = pd.get_dummies(fut_df, columns=string_cols)
     
-    cols_to_add = ['team_Burnley', 'team_Leeds', 'team_Luton',
-                   'team_Sheffield Utd', 'oppo_name_Burnley',
-                   'oppo_name_Leeds', 'oppo_name_Luton',
-                   'oppo_name_Sheffield Utd', 'season_2022/23',
-                   'season_2023/24']
-    
     data_to_add = pd.DataFrame(0, index=fut_dummy_df.index, columns=cols_to_add)
     
     full_fut_df = pd.concat([fut_dummy_df, data_to_add], axis=1)
@@ -377,7 +372,6 @@ future_total = pd.concat([future_cut.reset_index(drop=True),
                           future_preds.reset_index(drop=True)], axis=1)
 
 preds = future_total[['element', 'GW', 'xP']].groupby(['element', 'GW']).sum().reset_index()
-
 
 df = preds.loc[preds['GW'] == crnt_gw]
 player_dict = get_player_id_dict(order_by_col='now_cost', web_name=False)
