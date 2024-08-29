@@ -33,21 +33,21 @@ jobs:
       with:
         python-version: 3.8
 
-    # - id: install-packages
-    #   name: Install Python Dependencies
-    #   run: python -m pip install --upgrade -r ./fpl_utils/ci_cd_requirements.txt
+    - id: install-packages
+      name: Install Python Dependencies
+      run: python -m pip install --upgrade -r ./fpl_utils/ci_cd_requirements.txt
 
-    # - id: run-get-data
-    #   name: Run transfer_collection.py
-    #   run: |
-    #     python ./fpl_utils/transfer_collection.py
+    - id: run-get-data
+      name: Run transfer_collection.py
+      run: |
+        python ./fpl_utils/transfer_collection.py
     
-    # - id: push-to-repo
-    #   name: Push .csv back to GitHub
-    #   run: |
-    #     git config --global user.name "github-actions"
-    #     git config --global user.email "github-actions@github.com"
-    #     git remote set-url origin https://${{ secrets.PAT }}@github.com/fpl-mavericks/analytics.git
-    #     git pull origin main
-    #     git commit -am 'prices.csv updated' --no-verify
-    #     git push origin main
+    - id: push-to-repo
+      name: Push .csv back to GitHub
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git remote set-url origin https://${{ secrets.PAT }}@github.com/fpl-mavericks/analytics.git
+        git pull origin main
+        git commit -am 'prices.csv updated' --no-verify
+        git push origin main
