@@ -25,8 +25,8 @@ Sugawara Yukinari (SOU),4.5,4.5,0.0
 Djed Spence (TOT),4.5,4.5,0.0
 Hannibal Mejbri (MUN),4.5,4.5,0.0
 Evan Ferguson (BHA),5.5,5.5,0.0
-Kevin Mbabu (FUL),4.0,4.0,0.0
 Tyrone Mings (AVL),4.5,4.5,0.0
+Rob Holding (CRY),4.5,4.5,0.0
 Paul Onuachu (SOU),5.0,5.0,0.0
 Noni Madueke (CHE),6.5,6.5,0.0
 Tariq Lamptey (BHA),4.5,4.5,0.0
@@ -41,11 +41,11 @@ Lloyd Kelly (NEW),4.5,4.5,0.0
 Ashley Young (EVE),4.5,4.5,0.0
 João Victor Gomes da Silva (WOL),5.0,5.0,0.0
 Adam Smith (BOU),4.5,4.5,0.0
-Rob Holding (CRY),4.5,4.5,0.0
+Kevin Mbabu (FUL),4.0,4.0,0.0
 Benoît Badiashile (CHE),4.5,4.5,0.0
 Odysseas Vlachodimos (NEW),4.5,4.5,0.0
 João Pedro Ferreira Silva (NFO),6.0,6.0,0.0
-Jaidon Anthony (BOU),4.5,4.5,0.0
+Jack Harrison (EVE),5.5,5.5,0.0
 Matheus França de Oliveira (CRY),4.5,4.5,0.0
 Reece James (CHE),5.0,5.0,0.0
 Caleb Okoli (LEI),4.0,4.0,0.0
@@ -92,8 +92,8 @@ Joe Aribo (SOU),5.0,5.0,0.0
 Daniel Castelo Podence (WOL),5.5,5.5,0.0
 Jack Taylor (IPS),5.0,5.0,0.0
 George Hirst (IPS),5.5,5.5,0.0
-Alfie Devine (TOT),4.5,4.5,0.0
 Samuel Edozie (SOU),5.0,5.0,0.0
+Alfie Devine (TOT),4.5,4.5,0.0
 Harry Clarke (IPS),4.0,4.0,0.0
 James Hill (BOU),4.0,4.0,0.0
 Kaine Kesler-Hayden (AVL),4.0,4.0,0.0
@@ -103,8 +103,8 @@ Ronnie Edwards (SOU),4.0,4.0,0.0
 Brajan Gruda (BHA),5.5,5.5,0.0
 Mario Lemina (WOL),5.0,5.0,0.0
 Christian Walton (IPS),4.5,4.5,0.0
-Santiago Bueno (WOL),4.5,4.5,0.0
 Michael Keane (EVE),4.0,4.0,0.0
+Santiago Bueno (WOL),4.5,4.5,0.0
 Cesare Casadei (CHE),4.5,4.5,0.0
 Chris Mepham (BOU),4.5,4.5,0.0
 Juan Larios López (SOU),4.0,4.0,0.0
@@ -113,18 +113,18 @@ Kalvin Phillips (IPS),5.0,5.0,0.0
 Mathias Jorgensen (BRE),4.5,4.5,0.0
 William Osula (NEW),5.0,5.0,0.0
 Mads Hermansen (LEI),4.5,4.5,0.0
+Tino Livramento (NEW),4.5,4.5,0.0
 Pervis Estupiñán (BHA),5.0,5.0,0.0
 Jefferson Lerma Solís (CRY),5.0,5.0,0.0
 Jacob Ramsey (AVL),5.5,5.5,0.0
 Christian Nørgaard (BRE),5.0,5.0,0.0
-Tino Livramento (NEW),4.5,4.5,0.0
 James Bree (SOU),4.0,4.0,0.0
 Kevin Schade (BRE),5.5,5.5,0.0
-Flynn Downes (SOU),5.0,5.0,0.0
 Enzo Barrenechea (AVL),5.0,5.0,0.0
+Flynn Downes (SOU),5.0,5.0,0.0
 Alex Scott (BOU),5.0,5.0,0.0
 Mikkel Damsgaard (BRE),5.0,5.0,0.0
-Jack Harrison (EVE),5.5,5.5,0.0
+Jaidon Anthony (BOU),4.5,4.5,0.0
 Hamza Choudhury (LEI),4.5,4.5,0.0
 Kepa Arrizabalaga (CHE),4.5,4.5,0.0
 Richarlison de Andrade (TOT),7.0,7.0,0.0
@@ -181,12 +181,12 @@ Oleksandr Zinchenko (ARS),5.0,5.0,0.0
 Daniel Muñoz (CRY),5.0,5.0,0.0
 John McGinn (AVL),5.5,5.5,0.0
 Aaron Wan-Bissaka (WHU),4.5,4.5,0.0
-Destiny Udogie (TOT),5.0,5.0,0.0
+Roméo Lavia (CHE),4.5,4.5,0.0
 Guglielmo Vicario (TOT),5.0,5.0,0.0
 Abdul Fatawu (LEI),5.5,5.5,0.0
 Mats Wieffer (BHA),5.0,5.0,0.0
-Carlos Vinícius Alves Morais (FUL),5.0,5.0,0.0
 Raúl Jiménez (FUL),5.5,5.5,0.0
+Carlos Vinícius Alves Morais (FUL),5.0,5.0,0.0
 Jakub Moder (BHA),4.5,4.5,0.0
 Diego Carlos Santos Silva (AVL),4.5,4.5,0.0
 Luis Sinisterra (BOU),5.0,5.0,0.0
@@ -198,7 +198,7 @@ Conor Coady (LEI),4.0,4.0,0.0
 Ali Al-Hamadi (IPS),5.0,5.0,0.0
 Caoimhin Kelleher (LIV),4.5,4.5,0.0
 Ângelo Gabriel Borges Damaceno (CHE),4.5,4.5,0.0
-Josh Bowler (NFO),4.5,4.5,0.0
+Alphonse Areola (WHU),4.5,4.5,0.0
 Saša Kalajdžić (WOL),5.0,5.0,0.0
 Fraser Forster (TOT),4.5,4.5,0.0
 Emmanuel Dennis (NFO),5.0,5.0,0.0
@@ -208,11 +208,11 @@ João Neves Virgínia (EVE),4.0,4.0,0.0
 Rodrigo Martins Gomes (WOL),5.5,5.5,0.0
 Remi Matthews (CRY),4.0,4.0,0.0
 Omari Giraud-Hutchinson (IPS),5.5,5.5,0.0
-Roméo Lavia (CHE),4.5,4.5,0.0
+Destiny Udogie (TOT),5.0,5.0,0.0
 Luke Thomas (LEI),4.0,4.0,0.0
 Rúben Gato Alves Dias (MCI),5.5,5.5,0.0
-Malo Gusto (CHE),5.0,5.0,0.0
 Carlos Henrique Casimiro (MUN),5.0,5.0,0.0
+Malo Gusto (CHE),5.0,5.0,0.0
 Leon Bailey (AVL),6.5,6.5,0.0
 Leif Davis (IPS),4.5,4.5,0.0
 Moisés Caicedo Corozo (CHE),5.0,5.0,0.0
@@ -256,9 +256,9 @@ Aaron Cresswell (WHU),4.0,4.0,0.0
 Carl Rushworth (BHA),4.0,4.0,0.0
 Harry Winks (LEI),4.5,4.5,0.0
 Facundo Buonanotte (LEI),5.0,5.0,0.0
-Sandro Tonali (NEW),5.5,5.5,0.0
-Morgan Gibbs-White (NFO),6.5,6.5,0.0
 Danny Ward (LEI),4.0,4.0,0.0
+Morgan Gibbs-White (NFO),6.5,6.5,0.0
+Sandro Tonali (NEW),5.5,5.5,0.0
 Kenny Tete (FUL),4.5,4.5,0.0
 Jan Bednarek (SOU),4.0,4.0,0.0
 Nikola Milenković (NFO),4.5,4.5,0.0
@@ -319,7 +319,7 @@ Massimo Luongo (IPS),4.5,4.5,0.0
 Rayan Aït-Nouri (WOL),4.5,4.5,0.0
 Jhon Durán (AVL),6.0,6.0,0.0
 Luke Woolfenden (IPS),4.0,4.0,0.0
-Reiss Nelson (ARS),5.0,5.0,0.0
+Josh Bowler (NFO),4.5,4.5,0.0
 Will Dennis (BOU),4.0,4.0,0.0
 Joël Veltman (BHA),4.5,4.5,0.0
 Adama Traoré (FUL),5.0,5.0,0.0
@@ -327,8 +327,8 @@ Mark Flekken (BRE),4.5,4.5,0.0
 Kristoffer Ajer (BRE),4.5,4.5,0.0
 Matz Sels (NFO),4.5,4.5,0.0
 James Maddison (TOT),7.5,7.5,0.0
-Lewis Dunk (BHA),4.5,4.5,0.0
 Pedro Cardoso de Lima (WOL),4.0,4.0,0.0
+Lewis Dunk (BHA),4.5,4.5,0.0
 Axel Tuanzebe (IPS),4.0,4.0,0.0
 Tim Iroegbunam (EVE),4.5,4.5,0.0
 Cameron Archer (SOU),5.0,5.0,0.0
@@ -351,8 +351,8 @@ Cieran Slicker (IPS),4.0,4.0,0.0
 Rico Lewis (MCI),4.5,4.5,0.0
 Sávio 'Savinho' Moreira de Oliveira (MCI),6.5,6.5,0.0
 Tyrell Malacia (MUN),4.5,4.5,0.0
-Myles Peart-Harris (BRE),4.5,4.5,0.0
 Cameron Peupion (BHA),4.5,4.5,0.0
+Myles Peart-Harris (BRE),4.5,4.5,0.0
 Saša Lukić (FUL),5.0,5.0,0.0
 Yunus Emre Konak (BRE),4.5,4.5,0.0
 Tyler Adams (BOU),5.0,5.0,0.0
@@ -360,31 +360,31 @@ George Edmundson (IPS),4.0,4.0,0.0
 Kamaldeen Sulemana (SOU),5.0,5.0,0.0
 Boubacar Kamara (AVL),5.0,5.0,0.0
 Yasin Ayari (BHA),5.0,5.0,0.0
-Jamaal Lascelles (NEW),4.5,4.5,0.0
+Solly March (BHA),6.5,6.5,0.0
 Filip Marschall (AVL),4.0,4.0,0.0
-Lewis Miley (NEW),5.0,5.0,0.0
 Micky van de Ven (TOT),4.5,4.5,0.0
+Lewis Miley (NEW),5.0,5.0,0.0
 Ethan Brierley (BRE),4.5,4.5,0.0
 Ramón Sosa (NFO),5.5,5.5,0.0
 Jamal Lewis (NEW),4.0,4.0,0.0
 Martial Godo (FUL),4.5,4.5,0.0
 Guido Rodríguez (WHU),5.0,5.0,0.0
 Jakub Stolarczyk (LEI),4.0,4.0,0.0
-Jack Hinshelwood (BHA),5.0,5.0,0.0
 Virgil van Dijk (LIV),6.0,6.0,0.0
+Jack Hinshelwood (BHA),5.0,5.0,0.0
 Jay Stansfield (FUL),5.0,5.0,0.0
-Adrian Mazilu (BHA),4.5,4.5,0.0
+Nathan Broadhead (IPS),5.0,5.0,0.0
 Mateus Gonçalo Espanha Fernandes (SOU),5.0,5.0,0.0
-Nico O'Reilly (MCI),5.0,5.0,0.0
+Adrian Mazilu (BHA),4.5,4.5,0.0
+Reiss Nelson (ARS),5.0,5.0,0.0
 Isaac Hayden (NEW),4.5,4.5,0.0
 Ben Doak (LIV),4.5,4.5,0.0
-Alphonse Areola (WHU),4.5,4.5,0.0
 Enso González (WOL),4.5,4.5,0.0
 Tyler Morton (LIV),4.5,4.5,0.0
 Cole Palmer (CHE),10.5,10.5,0.0
 João Pedro Junqueira de Jesus (BHA),5.5,5.5,0.0
-Dango Ouattara (BOU),5.0,5.0,0.0
 Youssef Ramalho Chermiti (EVE),5.0,5.0,0.0
+Dango Ouattara (BOU),5.0,5.0,0.0
 Carlos Baleba (BHA),5.0,5.0,0.0
 Jean-Ricner Bellegarde (WOL),5.0,5.0,0.0
 Conor Townsend (IPS),4.0,4.0,0.0
@@ -392,16 +392,16 @@ Sven Botman (NEW),4.5,4.5,0.0
 David Raya Martin (ARS),5.5,5.5,0.0
 Idrissa Gueye (EVE),5.0,5.0,0.0
 Noussair Mazraoui (MUN),4.5,4.5,0.0
-Daniel Jebbison (BOU),4.5,4.5,0.0
 Omari Kellyman (CHE),4.5,4.5,0.0
+Daniel Jebbison (BOU),4.5,4.5,0.0
 Alex Mighten (NFO),4.5,4.5,0.0
-Pedro Porro (TOT),5.5,5.5,0.0
 Garang Kuol (NEW),4.5,4.5,0.0
+Pedro Porro (TOT),5.5,5.5,0.0
 James McConnell (LIV),4.5,4.5,0.0
-Nathan Broadhead (IPS),5.0,5.0,0.0
+Nico O'Reilly (MCI),5.0,5.0,0.0
 Billy Gilmour (BHA),5.0,5.0,0.0
-Solly March (BHA),6.5,6.5,0.0
-Marcus Bettinelli (CHE),4.0,4.0,0.0
+Jamaal Lascelles (NEW),4.5,4.5,0.0
+Mateus Gonçalo Espanha Fernandes (SOU),5.0,5.0,0.0
 Max Kilman (WHU),4.5,4.5,0.0
 Sander Berge (FUL),5.0,5.0,0.0
 Edson Álvarez Velázquez (WHU),5.0,5.0,0.0
@@ -411,12 +411,12 @@ Antoine Semenyo (BOU),5.5,5.5,0.0
 Luke Cundle (WOL),4.5,4.5,0.0
 Joe White (NEW),4.5,4.5,0.0
 Marcus Bettinelli (CHE),4.0,4.0,0.0
-Kosta Nedeljković (AVL),4.0,4.0,0.0
 Tom Heaton (MUN),4.0,4.0,0.0
+Kosta Nedeljković (AVL),4.0,4.0,0.0
 Josh King (FUL),4.5,4.5,0.0
 Thomas Partey (ARS),5.0,5.0,0.0
-Emil Krafth (NEW),4.5,4.5,0.0
 Daniel Iversen (LEI),4.0,4.0,0.0
+Emil Krafth (NEW),4.5,4.5,0.0
 Milos Kerkez (BOU),4.5,4.5,0.0
 Ethan Pinnock (BRE),4.5,4.5,0.0
 Scott Carson (MCI),4.0,4.0,0.0
@@ -430,37 +430,37 @@ Jens Cajuste (IPS),4.5,4.5,0.0
 Georginio Rutter (BHA),5.5,5.5,0.0
 Sander Berge (FUL),5.0,5.0,0.0
 Francisco Evanilson de Lima Barbosa (BOU),6.0,6.0,0.0
+Sander Berge (FUL),5.0,5.0,0.0
+Leon Chiwome (WOL),4.5,4.5,0.0
+Leon Chiwome (WOL),4.5,4.5,0.0
+Will Alves (LEI),4.5,4.5,0.0
+Luis Díaz (LIV),7.5,7.5,0.0
+Jenson Metcalfe (EVE),4.5,4.5,0.0
+Myles Lewis-Skelly (ARS),4.5,4.5,0.0
 Keane Lewis-Potter (BRE),5.0,5.0,0.0
 Issa Kaboré (MCI),4.5,4.5,0.0
-Jenson Metcalfe (EVE),4.5,4.5,0.0
-Ryan Trevitt (BRE),4.5,4.5,0.0
-Will Alves (LEI),4.5,4.5,0.0
-Toby Collyer (MUN),4.5,4.5,0.0
-Leon Chiwome (WOL),4.5,4.5,0.0
-Julián Araujo Zúñiga (BOU),4.5,4.5,0.0
 Odeluga Offiah (BHA),4.0,4.0,0.0
+Julián Araujo Zúñiga (BOU),4.5,4.5,0.0
+Ryan Trevitt (BRE),4.5,4.5,0.0
+Toby Collyer (MUN),4.5,4.5,0.0
 Will Alves (LEI),4.5,4.5,0.0
-Keane Lewis-Potter (BRE),5.0,5.0,0.0
-Myles Lewis-Skelly (ARS),4.5,4.5,0.0
-Luis Díaz (LIV),7.5,7.5,0.0
-Leon Chiwome (WOL),4.5,4.5,0.0
 Christopher Nkunku (CHE),6.5,6.4,-0.1
-Miguel Almirón Rejala (NEW),6.0,5.9,-0.1
 Riccardo Calafiori (ARS),6.0,5.9,-0.1
+Leandro Trossard (ARS),7.0,6.9,-0.1
+Miguel Almirón Rejala (NEW),6.0,5.9,-0.1
 Niclas Füllkrug (WHU),7.0,6.9,-0.1
 Ben Chilwell (CHE),5.0,4.9,-0.1
-Leandro Trossard (ARS),7.0,6.9,-0.1
 Hwang Hee-chan (WOL),6.5,6.4,-0.1
 Rodrigo 'Rodri' Hernandez (MCI),6.5,6.4,-0.1
-Dejan Kulusevski (TOT),6.5,6.4,-0.1
+Phil Foden (MCI),9.5,9.4,-0.1
 Brennan Johnson (TOT),6.5,6.4,-0.1
-Stephy Mavididi (LEI),5.5,5.4,-0.1
 Marcus Rashford (MUN),7.0,6.9,-0.1
+Stephy Mavididi (LEI),5.5,5.4,-0.1
 Ross Barkley (AVL),5.5,5.4,-0.1
 Jacob Murphy (NEW),5.5,5.4,-0.1
 Luke Shaw (MUN),5.0,4.9,-0.1
 Cody Gakpo (LIV),7.5,7.4,-0.1
-Vitalii Mykolenko (EVE),4.5,4.4,-0.1
+Dejan Kulusevski (TOT),6.5,6.4,-0.1
 Bruno Borges Fernandes (MUN),8.5,8.4,-0.1
 Dominic Calvert-Lewin (EVE),6.0,5.9,-0.1
 Taiwo Awoniyi (NFO),6.0,5.9,-0.1
@@ -479,10 +479,10 @@ Daichi Kamada (CRY),5.5,5.4,-0.1
 Kyle Walker (MCI),5.5,5.4,-0.1
 Ola Aina (NFO),4.5,4.4,-0.1
 Jarrad Branthwaite (EVE),5.0,4.9,-0.1
-Nathan Aké (MCI),5.5,5.4,-0.1
+Vitalii Mykolenko (EVE),4.5,4.4,-0.1
 Alejandro Garnacho (MUN),6.5,6.4,-0.1
+Nathan Aké (MCI),5.5,5.4,-0.1
 James Tarkowski (EVE),5.0,4.9,-0.1
-Phil Foden (MCI),9.5,9.4,-0.1
 Jordan Pickford (EVE),5.0,4.9,-0.1
 Luis Guilherme Lira dos Santos (WHU),5.0,4.9,-0.1
 Đorđe Petrović (CHE),4.5,4.4,-0.1
@@ -511,7 +511,7 @@ Martin Dúbravka (NEW),4.5,4.4,-0.1
 Rico Henry (BRE),4.5,4.4,-0.1
 Manor Solomon (TOT),5.5,5.4,-0.1
 Danilo dos Santos de Oliveira (NFO),5.0,4.9,-0.1
-Nicolás Domínguez (NFO),5.0,4.9,-0.1
+Tom Cairney (FUL),5.0,4.9,-0.1
 Marcus Myers-Harness (IPS),5.0,4.9,-0.1
 Nathan Patterson (EVE),4.5,4.4,-0.1
 Andy Irving (WHU),5.0,4.9,-0.1
@@ -521,23 +521,23 @@ Igor Thiago Nascimento Rodrigues (BRE),6.0,5.9,-0.1
 Maxwel Cornet (WHU),5.0,4.9,-0.1
 Enes Ünal (BOU),5.5,5.4,-0.1
 Ryan Fraser (NEW),5.0,4.9,-0.1
-Tom Cairney (FUL),5.0,4.9,-0.1
+Nicolás Domínguez (NFO),5.0,4.9,-0.1
 James McAtee (MCI),5.0,4.9,-0.1
 David Brooks (BOU),5.0,4.9,-0.1
 Jeremy Sarmiento Morante (BHA),5.0,4.9,-0.1
 Carney Chukwuemeka (CHE),5.0,4.9,-0.1
 Kasey McAteer (LEI),5.0,4.9,-0.1
 Josh Dasilva (BRE),5.0,4.9,-0.1
-Séamus Coleman (EVE),4.5,4.4,-0.1
 Fábio Ferreira Vieira (ARS),5.5,5.4,-0.1
+Séamus Coleman (EVE),4.5,4.4,-0.1
 Jeffrey Schlupp (CRY),5.0,4.9,-0.1
 Kieran Tierney (ARS),4.5,4.4,-0.1
 Nayef Aguerd (WHU),4.5,4.4,-0.1
 Curtis Jones (LIV),5.5,5.4,-0.1
 Leny Yoro (MUN),4.5,4.4,-0.1
 Patson Daka (LEI),5.0,4.9,-0.1
-Oscar Bobb (MCI),5.0,4.9,-0.1
 Victor Lindelöf (MUN),4.5,4.4,-0.1
+Oscar Bobb (MCI),5.0,4.9,-0.1
 Kiernan Dewsbury-Hall (CHE),6.0,5.9,-0.1
 Marcos Senesi (BOU),5.0,4.9,-0.1
 Joe Gomez (LIV),5.0,4.9,-0.1
@@ -575,9 +575,9 @@ Radu Drăgușin (TOT),4.5,4.4,-0.1
 Conor Chaplin (IPS),5.5,5.4,-0.1
 Harvey Barnes (NEW),6.5,6.4,-0.1
 Archie Gray (TOT),5.0,4.9,-0.1
+Aaron Ramsdale (ARS),4.5,4.4,-0.1
 Jake O'Brien (EVE),5.0,4.9,-0.1
 Jorge Luiz Frello Filho (ARS),5.0,4.9,-0.1
-Aaron Ramsdale (ARS),4.5,4.4,-0.1
 Gabriel Fernando de Jesus (ARS),7.0,6.8,-0.2
 Ivan Toney (BRE),7.5,7.3,-0.2
 Romelu Lukaku Bolingoli (CHE),6.5,6.3,-0.2
